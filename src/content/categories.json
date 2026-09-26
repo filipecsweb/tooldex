@@ -1,0 +1,44 @@
+[
+  {
+    "id": "dev-workflow",
+    "name": "Dev workflow",
+    "description": "Skills and agent setups that plan, review, test and ship code for you: the loop from idea to merged pull request, run by your coding agent.",
+    "keywords": ["code-review", "qa", "testing", "ship", "release", "engineering", "workflow", "refactor", "debug", "pull request", "developer-tools", "coding"]
+  },
+  {
+    "id": "research",
+    "name": "Research",
+    "description": "Tools that send your agent out to search, read and synthesise: web and social research, deep dives, trend tracking and grounded summaries.",
+    "keywords": ["research", "deep-research", "search", "web-search", "trends", "summarize", "reddit", "news", "arxiv", "scrape"]
+  },
+  {
+    "id": "marketing",
+    "name": "Marketing",
+    "description": "Agent tooling for growth work: paid ads, SEO, content marketing, campaigns and the audits and reports that go with them.",
+    "keywords": ["marketing", "ads", "advertising", "seo", "ppc", "campaign", "google-ads", "meta-ads", "growth", "social-media"]
+  },
+  {
+    "id": "design",
+    "name": "Design & diagrams",
+    "description": "Skills that make your agent better at visual work: interfaces, diagrams, slides and anything you need to look at rather than read.",
+    "keywords": ["design", "diagram", "diagrams", "ui", "ux", "frontend", "visualization", "architecture-diagram", "figma", "slides"]
+  },
+  {
+    "id": "writing",
+    "name": "Writing",
+    "description": "Tools for text: editing, rewriting, tone and style, and keeping agent-written prose from sounding like every other agent.",
+    "keywords": ["writing", "editing", "prose", "copywriting", "style", "slop", "blog", "docs", "grammar", "content"]
+  },
+  {
+    "id": "security",
+    "name": "Security",
+    "description": "Scanners and guardrails for the agent era: vetting skills and MCP servers before you install them, and catching prompt injection, exfiltration and supply-chain risks.",
+    "keywords": ["security", "scanner", "prompt-injection", "vulnerability", "supply-chain", "audit", "owasp", "agent-security", "sandbox", "secrets"]
+  },
+  {
+    "id": "agent-teams",
+    "name": "Agent teams",
+    "description": "Rosters of specialist subagents and personas you install as a set, so one harness can act as a whole team of experts.",
+    "keywords": ["agents", "subagents", "personas", "team", "roster", "agency", "multi-agent", "specialists", "roles"]
+  }
+]
