@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tooldex.workers.dev/sitemap-index.xml
