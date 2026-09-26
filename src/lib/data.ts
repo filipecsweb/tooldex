@@ -8,6 +8,11 @@ export type Category = CollectionEntry<'categories'> & { count: number };
 /** Featured first, then newest, then by name. */
 export async function getTools(): Promise<Tool[]> {
   const tools = await getCollection('tools');
+  // Astro only logs a broken reference(); fail the build instead.
+  const ids = new Set((await getCollection('categories')).map((c) => c.id));
+  const broken = tools.filter((t) => !ids.has(t.data.category.id));
+  if (broken.length)
+    throw new Error(`Unknown category in: ${broken.map((t) => `${t.id} (${t.data.category.id})`).join(', ')}`);
   return tools.sort(
     (a, b) =>
       Number(b.data.featured) - Number(a.data.featured) ||

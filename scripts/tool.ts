@@ -1,4 +1,4 @@
-// Per-tool workflow: add, thumbs, mv, rm, check. Run with `npm run tool <command>`.
+// Per-tool workflow: add, thumbs, mv, rm, check. Run with `npm run tool -- <command>`.
 // Every tool lives in src/content/tools/<slug>/ (index.md, thumb.webp, icon.png).
 import { existsSync, readdirSync, readFileSync, rmSync, renameSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -242,7 +242,7 @@ async function thumbs(slug: string, force: boolean) {
 // ---------- commands ----------
 
 async function add(urls: string[], opts: { slug?: string; category?: string }) {
-  if (!urls.length) throw new Error('Usage: npm run tool add <repo-or-website-url> [<second-url>] [--slug s] [--category id]');
+  if (!urls.length) throw new Error('Usage: npm run tool -- add <repo-or-website-url> [<second-url>] [--slug s] [--category id]');
   let repo: Repo | null = null;
   let website: string | undefined;
   for (const u of urls) {
@@ -309,7 +309,7 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
 }
 
 function mv(from: string, to: string) {
-  if (!from || !to) throw new Error('Usage: npm run tool mv <old-slug> <new-slug>');
+  if (!from || !to) throw new Error('Usage: npm run tool -- mv <old-slug> <new-slug>');
   if (to !== slugify(to)) throw new Error(`"${to}" is not a clean slug; try "${slugify(to)}"`);
   if (!existsSync(join(TOOLS, from))) throw new Error(`No tool "${from}"`);
   if (existsSync(join(TOOLS, to))) throw new Error(`"${to}" already exists`);
@@ -354,7 +354,7 @@ async function check(offline: boolean) {
       if (d[key] && !has) errors.push(`${where}: ${key} is set but ${file} is missing`);
       if (has && d[key] !== `./${file}`) errors.push(`${where}: ${file} exists but ${key} is not "./${file}"`);
     }
-    if (!files.includes('icon.png')) errors.push(`${where}: no icon (run npm run tool thumbs ${slug})`);
+    if (!files.includes('icon.png')) errors.push(`${where}: no icon (run npm run tool -- thumbs ${slug})`);
     if (!files.includes('thumb.webp')) notes.push(`${where}: no thumbnail, uses the fallback card`);
     for (const u of [d.repo, d.website, ...(d.links ?? []).map((l: any) => l.url)]) if (u) urls.set(u, slug);
   }
@@ -415,11 +415,11 @@ try {
   else if (cmd === 'check') await check(values.offline);
   else {
     console.log(`Usage:
-  npm run tool add <repo-or-website-url> [<second-url>] [--slug s] [--category id]
-  npm run tool thumbs [<slug>...] [--force]
-  npm run tool mv <old-slug> <new-slug>
-  npm run tool rm <slug>
-  npm run tool check [--offline]`);
+  npm run tool -- add <repo-or-website-url> [<second-url>] [--slug s] [--category id]
+  npm run tool -- thumbs [<slug>...] [--force]
+  npm run tool -- mv <old-slug> <new-slug>
+  npm run tool -- rm <slug>
+  npm run tool -- check [--offline]`);
     if (cmd) process.exitCode = 1;
   }
 } catch (e) {

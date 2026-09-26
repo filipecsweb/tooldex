@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build",
+    "build": "astro check && node scripts/tool.ts check --offline && astro build",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy",
     "check": "astro check && node scripts/tool.ts check",

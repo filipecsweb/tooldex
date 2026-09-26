@@ -135,7 +135,7 @@ export function parseRedirects(text: string): Rule[] {
 }
 
 export const serializeRedirects = (rules: Rule[]) =>
-  '# Managed by `npm run tool mv|rm`. Edits by hand are fine; `npm run tool check` validates them.\n' +
+  '# Managed by `npm run tool -- mv|rm`. Edits by hand are fine; `npm run tool -- check` validates them.\n' +
   rules.map((r) => `${r.from} ${r.to} ${r.status}`).join('\n') +
   '\n';
 
