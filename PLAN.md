@@ -1,0 +1,298 @@
+# tooldex — plan
+
+A public directory of **AI agent tooling**: skills, plugins, subagents, MCP servers and CLIs for Claude Code, Codex and similar harnesses. Astro 7 + `@astrojs/cloudflare` v14, fully prerendered, deployed as a Cloudflare Worker with static assets. One content collection of tools, one React island for search, thumbnails through `astro:assets`, `<ClientRouter />`. SEO is the traffic source.
+
+The per-tool workflow (add, edit, rename, delete, check) is a first-class feature. §6 specifies it.
+
+Status: approved 2026-09-26 with the answers in §13. Build follows §11. This file stays the source of truth.
+
+---
+
+## 1. Stack
+
+| Concern | Choice | Why |
+|---|---|---|
+| Framework | Astro 7, `output: 'static'` (default) | Every route prerendered. |
+| Adapter | `@astrojs/cloudflare` v14, `imageService: 'compile'` | Worker + static assets; sharp at build time. Assets are served without invoking the Worker, so the Worker idles until D1 is needed. |
+| UI island | `@astrojs/react`, one island | Decided. |
+| Styling | Tailwind v4 via `@tailwindcss/vite`, tokens in CSS `@theme` | Same classes work in `.astro` and the React card. **Light theme only**: no dark mode, no toggle. |
+| Design | [impeccable](https://github.com/pbakaus/impeccable) installed project-local for Claude Code and committed | Drives type, colour, layout. `PRODUCT.md` + `DESIGN.md` at the repo root record its decisions. |
+| Fonts | Chosen by impeccable, self-hosted via `@fontsource*` | No Google Fonts request. |
+| SEO plumbing | `@astrojs/sitemap` | Meta and JSON-LD hand-written. |
+| URLs | `trailingSlash: 'never'` + `build.format: 'file'` | Emits `tools/gstack.html`; Cloudflare's default `auto-trailing-slash` serves `/tools/gstack`. Dev and prod agree. |
+| Redirects | `public/_redirects` | Native to Workers static assets. Written by the rename/delete commands. |
+| Tool scripts | `scripts/tool.ts`, run by plain `node` (Node 24 strips TS) | One file, subcommands `add`, `thumbs`, `mv`, `rm`, `check`. |
+| Screenshots | `playwright` (dev dep, Chromium only) + sharp | Local only, never in the Worker. |
+| YAML | `yaml` (dev dep) | Scripts read and rewrite frontmatter. |
+| Wrangler | `wrangler@4` dev dep | No global install. |
+| Tests | `node --test` | Zero deps. Pure logic only: search matcher, category guess, homepage classifier. |
+
+Not added: Fuse/MiniSearch, Pagefind, MDX, CMS, D1, icon library, state library, analytics, CI, submissions.
+
+## 2. Data model
+
+### Layout on disk: one folder per tool
+
+```
+src/content/
+  tools/
+    <slug>/
+      index.md      # frontmatter + body copy
+      thumb.webp    # 1280x800, optional (fallback card when absent)
+      icon.png      # 128x128
+  categories.json   # array of categories
+```
+
+Why a folder per tool: everything about a tool lives in one place. Delete is `rm -r` of one folder, rename is one `mv`, and assets cannot be orphaned in a shared directory. The collection's `generateId` takes the folder name, so **folder name = slug = URL**.
+
+### Tool schema (`tools`, `glob({ pattern: '*/index.md' })`)
+
+```ts
+schema: ({ image }) => z.object({
+  name: z.string(),
+  tagline: z.string().max(160),              // card copy + meta description
+  category: reference('categories'),         // typo fails the build
+  tags: z.array(z.string()).default([]),     // kind (skill, plugin, subagents, mcp, cli) + hosts (claude-code, codex…) + topics
+  repo: z.url().optional(),                  // source repository
+  website: z.url().optional(),               // ONLY a real product/landing site
+  links: z.array(z.object({ label: z.string(), url: z.url() })).default([]), // docs, articles, anything else
+  thumbnail: image().optional(),             // ./thumb.webp
+  icon: image().optional(),                  // ./icon.png
+  featured: z.boolean().default(false),
+  added: z.coerce.date(),
+  updated: z.coerce.date().optional(),
+}).refine(t => t.repo || t.website, { message: 'A tool needs a repo, a website, or both' })
+```
+
+Rules:
+- **Primary CTA** goes to `website` if present, else `repo`.
+- `website` is a real product or landing site (archify's GitHub Pages, claude-ads.md). A repo "homepage" that is a blog post or docs page goes in `links`.
+- `pricing` from the draft plan is dropped: every tool in this niche is open source so far, so it would not discriminate. Re-add with a filter when paid tools arrive.
+
+### Category schema (`categories`, `file('src/content/categories.json')`)
+
+```ts
+z.object({
+  id: z.string(),              // slug, route /categories/<id>
+  name: z.string(),
+  description: z.string(),     // the category page's SEO paragraph
+  keywords: z.array(z.string()), // drives the category guess in `tool add`
+})
+```
+
+Presentation (colour, glyph) is decided by impeccable in `DESIGN.md`, not stored per category until the design needs it. Adding a category is one object in `categories.json`.
+
+Categories derived from the seven seeds, grouped by what the tool does:
+
+| id | name | seed |
+|---|---|---|
+| dev-workflow | Dev workflow | gstack |
+| research | Research | last30days |
+| marketing | Marketing | Claude Ads |
+| design | Design & diagrams | Archify |
+| writing | Writing | No AI Slop |
+| security | Security | SkillSpector |
+| agent-teams | Agent teams | The Agency |
+
+## 3. Everything derives from the collection
+
+Nothing per tool is hardcoded outside its folder. `src/lib/data.ts` is the only place pages read content from:
+
+- `getTools()` sorted (featured first, then newest).
+- `getCategories()` returns **only categories with at least one tool**, each with its count. Category pages, the categories hub, the home strip, the footer and the sitemap all use it, so an empty category renders nothing.
+- `relatedTools(tool)` ranks other tools by same category (+10) plus shared tags (+1 each), top 6 with score > 0.
+- Site-wide counts come from these arrays.
+
+## 4. Routes and layouts
+
+| Route | Content |
+|---|---|
+| `/` | Hero (what tooldex is, count, search box), category strip, the directory island with every tool SSR'd as static cards first. |
+| `/tools/[slug]` | Breadcrumb · icon · name · tagline · category · tags · primary CTA + repo/other links · thumbnail or fallback card · body · related tools · JSON-LD `SoftwareApplication` + `BreadcrumbList`. |
+| `/categories` | Categories with tools, with counts and descriptions. |
+| `/categories/[slug]` | Header (name, description, count) · grid of its tools · other categories · JSON-LD `ItemList`. Unpaginated. |
+| `/tools.json` | Prerendered index for the island (§5). |
+| `/404` | Search box + categories. |
+| `/sitemap-index.xml`, `/robots.txt` | Sitemap integration; robots in `public/`. |
+
+Components: `BaseLayout.astro` (head, canonical, OG/Twitter, JSON-LD, `<ClientRouter />`, header, footer), `ToolCard.tsx` (one card, rendered statically by Astro and by the island), `Thumb` (image or designed fallback card), `Directory.tsx` (island). `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
+
+The **fallback card** is HTML/CSS in the design system (tool name, icon, category), not a generated image. Tools without a thumbnail use the site default OG image for social shares.
+
+## 5. Search and filter
+
+`Directory.tsx`, `client:load`.
+
+- **Data.** SSR'd with the full list as props while the list is small. The same shape is served at `/tools.json`; the island switches to fetching it once the inline payload grows past ~200 tools.
+- **State.** `q`, `category`, `sort` (featured | newest | name), mirrored to the URL with `history.replaceState`.
+- **Matching** (`src/lib/match.ts`, tested): normalise (lowercase, strip diacritics); every token must appear in name, tagline, tags or category name; name-prefix hits rank first, then name-contains, then the rest.
+- Category chips with counts, result count, grid, empty state. "Show more" in pages of 48 once there are that many.
+
+## 6. Per-tool workflow
+
+One script, `scripts/tool.ts`, exposed as npm scripts. Every command is idempotent and prints what it changed.
+
+### Add
+
+```
+npm run tool add <repo-or-website-url> [<second-url>]
+```
+
+1. Classifies each URL: `github.com/<owner>/<repo>` is the repo, anything else is the website.
+2. Repo: GitHub REST API (uses `GITHUB_TOKEN` or `gh auth token` when available, else anonymous) for name, description, topics, homepage, default branch, owner avatar. The README's H1 is used as the name when short and clean, else the repo name.
+3. Homepage classifier: a domain root or a GitHub Pages project root is a `website`; a deep path (blog post, docs page) becomes a `links` entry labelled Docs or Article.
+4. Website only: title, meta description and any GitHub repo link on the page.
+5. Category guess: scores each category's `keywords` against topics + description + README. Prints the ranking so the reviewer can overrule it.
+6. Slug from the repo or site name, kebab-case. Refuses to overwrite an existing folder.
+7. Writes `src/content/tools/<slug>/index.md` with prefilled frontmatter, `added: today`, and a body placeholder `TODO: write 2–4 paragraphs`, then runs `thumbs` for it.
+
+What is left for a human or agent: the body copy, the tagline polish, the tags, and the category if the guess is wrong.
+
+### Thumbnails and icons
+
+```
+npm run tool thumbs [<slug>…] [--force]
+```
+
+Source order. The first that yields an image wins; a file already in the folder always wins unless `--force`.
+
+| Tool has | Thumbnail | Icon |
+|---|---|---|
+| a website | site `og:image`/`twitter:image` if ≥ 1000 px wide with aspect 1.3–2.2, else a Playwright screenshot (1280×800) | site's `apple-touch-icon` / `<link rel=icon>` / `/favicon.ico`, else the owner's avatar |
+| a repo only | the repo's **custom** social preview (`repository-images.githubusercontent.com`), else the first large README image (badges excluded, same size/aspect gate) | owner's GitHub avatar |
+| nothing usable | none: the designed fallback card renders | owner's avatar |
+
+GitHub's auto-generated repo card (`opengraph.githubassets.com`) is never used. All images are normalised with sharp (thumb: 1280×800 cover, webp q80; icon: 128×128 png) and the frontmatter `thumbnail:`/`icon:` lines are written or removed to match.
+
+### Edit
+
+Edit `src/content/tools/<slug>/index.md`. Schema validation runs in `astro dev`, `astro check` and `astro build`: a bad URL, unknown category, missing image file or missing repo+website fails loudly with the file and field.
+
+### Rename
+
+```
+npm run tool mv <old-slug> <new-slug>
+```
+
+Moves the folder and appends `/tools/<old> /tools/<new> 301` to `public/_redirects`, rewriting any earlier redirect that pointed at `<old>` so chains never form.
+
+### Delete
+
+```
+npm run tool rm <slug>
+```
+
+Removes the folder (entry and images together) and appends `/tools/<slug> /categories/<its-category> 301` so inbound links and search results land somewhere useful. If that category becomes empty, the redirect points at `/` instead.
+
+### Check
+
+```
+npm run check            # astro check (schema + types) then tool check
+npm run tool check [--offline]
+```
+
+`tool check` verifies, for every tool:
+- `index.md` exists in each folder, and no folder holds files other than `index.md`, `thumb.webp`, `icon.png` (orphans).
+- Referenced images exist; a missing thumbnail is reported as "uses fallback", not an error. A missing icon is an error.
+- Body is not the `TODO` placeholder.
+- Every `_redirects` source is not a live page, and every target resolves to a live page or category.
+- Every category id referenced exists (also enforced by the schema).
+- Unless `--offline`: `repo`, `website` and `links` return < 400 (HEAD, falling back to GET; 8 in parallel; 10 s timeout).
+
+Exit code is non-zero on any error, so it can gate a deploy later.
+
+### Documentation
+
+`README.md` documents setup, dev, deploy and the workflow above. `CLAUDE.md` has a "Managing tools" section with the exact commands and rules (website vs links, category keywords, body style), so any agent can add, edit or delete tools without reading the code.
+
+## 7. SEO
+
+- Unique title "{name}: {tagline} · tooldex", meta description = tagline, canonical from `Astro.site`, OG/Twitter with the thumbnail (absolute URL) or the site default.
+- JSON-LD: `SoftwareApplication` on tools, `ItemList` on categories, `BreadcrumbList` on both, `WebSite` on home.
+- Internal linking: breadcrumbs, related tools, category links, footer categories, `/categories` hub.
+- Sitemap, robots.txt, real 404 via `not_found_handling: "404-page"`, 301s for renamed and deleted tools.
+- Content is static HTML; the island only enhances.
+- Known weakness at launch: seven categories with one tool each. The pages are real (description + tool) but thin until more tools arrive.
+
+## 8. Dev, build, deploy
+
+`astro.config.mjs` essentials:
+
+```js
+export default defineConfig({
+  site: 'https://tooldex.<account>.workers.dev', // set after first deploy
+  trailingSlash: 'never',
+  build: { format: 'file' },
+  adapter: cloudflare({ imageService: 'compile' }),
+  integrations: [react(), sitemap()],
+  server: { port: 4401 },
+  vite: { plugins: [tailwindcss()], server: { allowedHosts: ['.test'] } },
+});
+```
+
+`wrangler.jsonc`: `name: tooldex`, adapter entrypoint, `nodejs_compat`, assets `{ binding: ASSETS, directory: ./dist, not_found_handling: 404-page }`, observability on.
+
+Scripts: `dev`, `build` (`astro check && astro build`), `preview`, `deploy` (`npm run build && wrangler deploy`), `check`, `tool`, `test`.
+
+Local: `herd proxy tooldex http://localhost:4401 --secure` once, then `npm run dev` serves `https://tooldex.test`.
+
+Git: local only, personal identity (global config already correct). Commits at each step of §11.
+
+Deploy: `npx wrangler login` (interactive, done by the owner) → `npm run deploy` → `tooldex.<account>.workers.dev` → set `site` to that URL → deploy again.
+
+## 9. Starter-template hygiene
+
+Generic: `astro.config.mjs`, `wrangler.jsonc`, `BaseLayout.astro`, `global.css` + `@theme`, `src/site.ts`, `.claude/` (impeccable), README setup sections.
+Site-specific: `src/content*`, `src/pages/{tools,categories}`, `Directory.tsx`, `ToolCard.tsx`, `src/lib/*`, `scripts/tool.ts`, `PRODUCT.md`, `DESIGN.md`.
+
+Nothing is parameterised now; the split is a README section. Copy the repo and delete the second list when the second site arrives.
+
+## 10. Scaling ceilings
+
+Each is marked with a `ponytail:` comment where it lives in code.
+
+| What | Holds until | Then |
+|---|---|---|
+| Island gets the list inline as props | ~200 tools | Fetch `/tools.json` on mount (endpoint already exists). |
+| In-memory token search | ~5k tools / ~1.2 MB JSON | Prebuilt MiniSearch index, or D1 + server rendering. |
+| Unpaginated category pages | ~80 tools per category | Paginate with `paginate()`. |
+| Images committed to git (~60 KB per tool) | a few thousand tools | Masters in R2, derived files at build. |
+| Workers assets: 20k files, 25 MiB each | ~5k tools (≈3 files per tool incl. image variants) | Move image variants to R2 / Cloudflare Images. |
+| `_redirects`: 2,000 static rules | 2,000 renames + deletes | Bulk Redirects in Cloudflare, or prune rules older than a year. |
+| Full rebuild on every change | ~2k tools (minutes of sharp) | Astro's image cache already persists in `node_modules/.astro`; then incremental builds. |
+| Link check serial-ish (8 parallel) | ~1k links per run | Raise concurrency, cache results for 24 h. |
+| GitHub API anonymous (60 req/h) | ~50 adds per hour | Set `GITHUB_TOKEN` (picked up automatically). |
+
+## 11. Build order
+
+1. Scaffold, config, wrangler, git init. Build passes. **Commit.**
+2. Install impeccable project-local, run its init from this plan: `PRODUCT.md`, then design decisions in `DESIGN.md` and `global.css`. **Commit.**
+3. Content config, `categories.json`, `src/lib/data.ts`, layouts and all pages with the seven tools (bodies written from each README). **Commit.**
+4. `scripts/tool.ts` (`add`, `thumbs`, `mv`, `rm`, `check`) + tests; re-create the seven tools through `tool add` to prove it, then write bodies; run `thumbs`. **Commit.**
+5. Island, `match.ts` + test, `/tools.json`, SEO (JSON-LD, OG, 404, robots, sitemap), README + CLAUDE.md, impeccable audit/polish pass, Herd proxy check at `https://tooldex.test`. **Commit.**
+6. Stop. Owner runs `npx wrangler login`; then `npm run deploy`.
+
+## 12. Seed data
+
+Exactly seven, nothing else. The owner adds more with `tool add`.
+
+| Tool | Repo | Website | Other links |
+|---|---|---|---|
+| gstack | garrytan/gstack | — | — |
+| last30days | mvanhorn/last30days-skill | — | — |
+| Claude Ads | AgriciDaniel/claude-ads | https://claude-ads.md | — |
+| Archify | tt-a1i/archify | https://tt-a1i.github.io/archify/ | — |
+| No AI Slop | petergyang/no-ai-slop | — | Article (creatoreconomy.so) |
+| SkillSpector | NVIDIA/SkillSpector | — | Docs (docs.nvidia.com) |
+| The Agency | msitarzewski/agency-agents | https://agencyagents.app | — |
+
+## 13. Decisions (answers to the draft's open questions)
+
+1. **Niche:** AI agent tooling. Categories grouped by what the tool does, derived from the seeds (§2).
+2. **Domain:** workers.dev for now.
+3. **Seed:** the seven in §12 only.
+4. **Thumbnails:** mixed sources per §6; never GitHub's auto-generated card; designed fallback card last; manual file always wins. Icons: owner avatar for repo-only tools.
+5. **Visual:** light theme only. impeccable decides type, colour and layout; the draft's font, hue and emoji choices are void.
+6. **Submissions:** none.
+7. **Analytics:** none.
+8. **Schema:** no extras beyond `repo` + `website` + other `links`, at least one of repo or website required. `pricing` dropped (§2).
