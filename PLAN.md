@@ -4,7 +4,7 @@ A public directory of **AI agent tooling**: skills, plugins, subagents, MCP serv
 
 The per-tool workflow (add, edit, rename, delete, check) is a first-class feature. §6 specifies it.
 
-Status: approved 2026-09-26 with the answers in §13. Build follows §11. This file stays the source of truth.
+Status: approved 2026-09-26 with the answers in §13. Steps 1–5 of §11 are built; step 6 (`wrangler login`, deploy) waits for the owner. This file stays the source of truth and reflects what was built.
 
 ---
 
@@ -13,11 +13,11 @@ Status: approved 2026-09-26 with the answers in §13. Build follows §11. This f
 | Concern | Choice | Why |
 |---|---|---|
 | Framework | Astro 7, `output: 'static'` (default) | Every route prerendered. |
-| Adapter | `@astrojs/cloudflare` v14, `imageService: 'compile'` | Worker + static assets; sharp at build time. Assets are served without invoking the Worker, so the Worker idles until D1 is needed. |
+| Adapter | `@astrojs/cloudflare` v14, `imageService: 'compile'`, `session: false` | A fully static build deploys as an assets-only Worker (no Worker code); sharp runs at build time. Sessions are off so deploy doesn't provision an unused KV namespace. |
 | UI island | `@astrojs/react`, one island | Decided. |
 | Styling | Tailwind v4 via `@tailwindcss/vite`, tokens in CSS `@theme` | Same classes work in `.astro` and the React card. **Light theme only**: no dark mode, no toggle. |
-| Design | [impeccable](https://github.com/pbakaus/impeccable) installed project-local for Claude Code and committed | Drives type, colour, layout. `PRODUCT.md` + `DESIGN.md` at the repo root record its decisions. |
-| Fonts | Chosen by impeccable, self-hosted via `@fontsource*` | No Google Fonts request. |
+| Design | [impeccable](https://github.com/pbakaus/impeccable) v4.3.1, project-local in `.claude/`, committed | Owner chose the **Access to Tools** direction (Whole Earth Catalog: grey newsprint, heavy rules, halftone plates, Access boxes). `PRODUCT.md`, `DESIGN.md` and `.impeccable/surfaces/` record the decisions. |
+| Fonts | Libre Franklin (display/UI), Literata (review prose), Courier Prime (access data only), self-hosted via `@fontsource*` | No third-party font request. |
 | SEO plumbing | `@astrojs/sitemap` | Meta and JSON-LD hand-written. |
 | URLs | `trailingSlash: 'never'` + `build.format: 'file'` | Emits `tools/gstack.html`; Cloudflare's default `auto-trailing-slash` serves `/tools/gstack`. Dev and prod agree. |
 | Redirects | `public/_redirects` | Native to Workers static assets. Written by the rename/delete commands. |
@@ -38,8 +38,9 @@ src/content/
   tools/
     <slug>/
       index.md      # frontmatter + body copy
-      thumb.webp    # 1280x800, optional (fallback card when absent)
-      icon.png      # 128x128
+      thumb.webp       # ≤1600x840 (1.91:1, the og:image shape), optional
+      thumb.webp.json  # provenance sidecar for the thumbnail
+      icon.png         # 128x128, provenance in a PNG text chunk
   categories.json   # array of categories
 ```
 
@@ -80,7 +81,7 @@ z.object({
 })
 ```
 
-Presentation (colour, glyph) is decided by impeccable in `DESIGN.md`, not stored per category until the design needs it. Adding a category is one object in `categories.json`.
+The chosen design needs no per-category presentation fields (categories are typographic sections, not colour-coded). Adding a category is one object in `categories.json`.
 
 Categories derived from the seven seeds, grouped by what the tool does:
 
@@ -117,14 +118,14 @@ Nothing per tool is hardcoded outside its folder. `src/lib/data.ts` is the only 
 
 Components: `BaseLayout.astro` (head, canonical, OG/Twitter, JSON-LD, `<ClientRouter />`, header, footer), `ToolCard.tsx` (one card, rendered statically by Astro and by the island), `Thumb` (image or designed fallback card), `Directory.tsx` (island). `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
 
-The **fallback card** is HTML/CSS in the design system (tool name, icon, category), not a generated image. Tools without a thumbnail use the site default OG image for social shares.
+The **fallback** for tools without a thumbnail is a composed plate in HTML/CSS (halftoned icon, the name set large, the repo path), used on cards. Entry pages skip the plate in that case because the header already shows icon and name. Social shares fall back to the site default `public/og.png`.
 
 ## 5. Search and filter
 
 `Directory.tsx`, `client:load`.
 
 - **Data.** SSR'd with the full list as props while the list is small. The same shape is served at `/tools.json`; the island switches to fetching it once the inline payload grows past ~200 tools.
-- **State.** `q`, `category`, `sort` (featured | newest | name), mirrored to the URL with `history.replaceState`.
+- **State.** `q`, `section`, `order` (newest, the default featured-then-newest order, or A to Z), mirrored to the URL with `history.replaceState`. `/` focuses the search field.
 - **Matching** (`src/lib/match.ts`, tested): normalise (lowercase, strip diacritics); every token must appear in name, tagline, tags or category name; name-prefix hits rank first, then name-contains, then the rest.
 - Category chips with counts, result count, grid, empty state. "Show more" in pages of 48 once there are that many.
 
@@ -158,11 +159,11 @@ Source order. The first that yields an image wins; a file already in the folder 
 
 | Tool has | Thumbnail | Icon |
 |---|---|---|
-| a website | site `og:image`/`twitter:image` if ≥ 1000 px wide with aspect 1.3–2.2, else a Playwright screenshot (1280×800) | site's `apple-touch-icon` / `<link rel=icon>` / `/favicon.ico`, else the owner's avatar |
+| a website | site `og:image`/`twitter:image` if ≥ 640 px wide with aspect 1.3–2.2, else a Playwright screenshot | site's `apple-touch-icon` / `<link rel=icon>` / `/favicon.ico` (PNGs inside ICOs are extracted), else the owner's avatar |
 | a repo only | the repo's **custom** social preview (`repository-images.githubusercontent.com`), else the first large README image (badges excluded, same size/aspect gate) | owner's GitHub avatar |
 | nothing usable | none: the designed fallback card renders | owner's avatar |
 
-GitHub's auto-generated repo card (`opengraph.githubassets.com`) is never used. All images are normalised with sharp (thumb: 1280×800 cover, webp q80; icon: 128×128 png) and the frontmatter `thumbnail:`/`icon:` lines are written or removed to match.
+GitHub's auto-generated repo card (`opengraph.githubassets.com`) is never used. Animated sources use their most detailed frame; near-uniform images (blank frames, flat-colour icons) are rejected. All images are normalised with sharp (thumb: centre crop to 1.91:1, ≤1600 px wide, webp q82; icon: 128×128 png) and the frontmatter `thumbnail:`/`icon:` lines are written to match. Each image records its provenance (source URL and date) for impeccable's scan. `--force` refetches but keeps the existing file if nothing new is found.
 
 ### Edit
 
@@ -193,13 +194,13 @@ npm run tool check [--offline]
 
 `tool check` verifies, for every tool:
 - `index.md` exists in each folder, and no folder holds files other than `index.md`, `thumb.webp`, `icon.png` (orphans).
-- Referenced images exist; a missing thumbnail is reported as "uses fallback", not an error. A missing icon is an error.
+- Referenced images exist and carry provenance; a missing thumbnail is reported as "uses fallback", not an error. A missing icon is an error.
 - Body is not the `TODO` placeholder.
 - Every `_redirects` source is not a live page, and every target resolves to a live page or category.
 - Every category id referenced exists (also enforced by the schema).
 - Unless `--offline`: `repo`, `website` and `links` return < 400 (HEAD, falling back to GET; 8 in parallel; 10 s timeout).
 
-Exit code is non-zero on any error, so it can gate a deploy later.
+Exit code is non-zero on any error. `npm run build` runs `check --offline`, so unwritten bodies, orphans and broken redirects block a build. An unknown category also fails the build (Astro itself only logs it).
 
 ### Documentation
 
@@ -220,7 +221,8 @@ Exit code is non-zero on any error, so it can gate a deploy later.
 
 ```js
 export default defineConfig({
-  site: 'https://tooldex.<account>.workers.dev', // set after first deploy
+  site: 'https://tooldex.workers.dev', // placeholder: set to the real workers.dev URL after first deploy
+  session: false,
   trailingSlash: 'never',
   build: { format: 'file' },
   adapter: cloudflare({ imageService: 'compile' }),
@@ -232,9 +234,9 @@ export default defineConfig({
 
 `wrangler.jsonc`: `name: tooldex`, adapter entrypoint, `nodejs_compat`, assets `{ binding: ASSETS, directory: ./dist, not_found_handling: 404-page }`, observability on.
 
-Scripts: `dev`, `build` (`astro check && astro build`), `preview`, `deploy` (`npm run build && wrangler deploy`), `check`, `tool`, `test`.
+Scripts: `dev`, `build` (`astro check && tool check --offline && astro build`), `preview`, `deploy` (`npm run build && wrangler deploy`), `check`, `tool`, `test`.
 
-Local: `herd proxy tooldex http://localhost:4401 --secure` once, then `npm run dev` serves `https://tooldex.test`.
+Local: `herd proxy tooldex http://localhost:4401 --secure` once, then `npm run dev` serves `https://tooldex.test` (HMR works through the proxy). `npm run preview` runs the build in workerd; use it at `http://localhost:4401`, since its host check is separate from Vite's dev allowlist.
 
 Git: local only, personal identity (global config already correct). Commits at each step of §11.
 
@@ -256,8 +258,9 @@ Each is marked with a `ponytail:` comment where it lives in code.
 | Island gets the list inline as props | ~200 tools | Fetch `/tools.json` on mount (endpoint already exists). |
 | In-memory token search | ~5k tools / ~1.2 MB JSON | Prebuilt MiniSearch index, or D1 + server rendering. |
 | Unpaginated category pages | ~80 tools per category | Paginate with `paginate()`. |
+| Home renders every card in the HTML (48 shown, "Show more") | ~200 tools | Same switch as the inline index: fetch `/tools.json`, SSR only the first page. |
 | Images committed to git (~60 KB per tool) | a few thousand tools | Masters in R2, derived files at build. |
-| Workers assets: 20k files, 25 MiB each | ~5k tools (≈3 files per tool incl. image variants) | Move image variants to R2 / Cloudflare Images. |
+| Workers assets: 20k files, 25 MiB each | ~2.5k tools (≈7 built files per tool: page, card thumb, icon, 4 hero widths, OG) | Move image variants to R2 / Cloudflare Images. |
 | `_redirects`: 2,000 static rules | 2,000 renames + deletes | Bulk Redirects in Cloudflare, or prune rules older than a year. |
 | Full rebuild on every change | ~2k tools (minutes of sharp) | Astro's image cache already persists in `node_modules/.astro`; then incremental builds. |
 | Link check serial-ish (8 parallel) | ~1k links per run | Raise concurrency, cache results for 24 h. |

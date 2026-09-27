@@ -54,7 +54,7 @@ It prefills name, tagline, tags, links and a category guess from the GitHub API 
 
 **Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, image provenance, unwritten bodies, redirects, and that every link responds. Add `--offline` to skip the network.
 
-**Categories** live in `src/content/categories.json`. Adding one is one object (`id`, `name`, `description`, `keywords`, plus the presentation fields documented in `DESIGN.md`). `keywords` drive the category guess in `add`. A category with no tools renders no page.
+**Categories** live in `src/content/categories.json`. Adding one is one object (`id`, `name`, `description`, `keywords`). `keywords` drive the category guess in `add`. A category with no tools renders no page.
 
 ## Deploy
 
