@@ -44,7 +44,7 @@ export default function ToolCard({ tool, eager = false, lead = false }: { tool: 
   // The lead entry runs across the spread: plate over two columns, text in the third.
   if (lead)
     return (
-      <article className="entry rule-2 grid gap-x-10 pt-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+      <article className="entry grid gap-x-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <a href={href} tabIndex={-1} aria-hidden="true" className="block">
           <Plate tool={tool} eager={eager} />
         </a>

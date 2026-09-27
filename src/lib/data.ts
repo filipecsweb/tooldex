@@ -21,13 +21,14 @@ export async function getTools(): Promise<Tool[]> {
   );
 }
 
-/** Only categories that have at least one tool, in categories.json order. */
+/** Only categories that have at least one tool, A to Z by name (getCollection's order isn't stable). */
 export async function getCategories(tools?: Tool[]): Promise<Category[]> {
   const all = tools ?? (await getTools());
   const cats = await getCollection('categories');
   return cats
     .map((c) => ({ ...c, count: all.filter((t) => t.data.category.id === c.id).length }))
-    .filter((c) => c.count > 0);
+    .filter((c) => c.count > 0)
+    .sort((a, b) => a.data.name.localeCompare(b.data.name));
 }
 
 /** Same category scores 10, each shared tag scores 1. Top `limit` with any overlap. */

@@ -21,6 +21,6 @@ STORY: the visitor sees at once that this is a catalog of agent tools, scans ent
 
 FIRST VIEWPORT: full-width masthead: "tooldex" in Franklin black at display size on the left, the catalog statement and live entry/section counts on the right, a 4px rule under it. Directly below, one "Find" row: search field plus the section index (sections with counts) as the filter. Then the paste-up begins: three columns of entries, each a plate, a bold name, the tagline as the lead, and a boxed Access line, all visible above the fold at 1440px.
 
-FORM: Whole Earth Catalog "Access to Tools" (Impeccable's pick, rank 1 of 7 on the grounded list); seed key dbd5d781. Signature interaction: a plate "develops" from halftone to full colour on hover/focus and carries into the entry page via a view transition.
+FORM: Whole Earth Catalog "Access to Tools" (Impeccable's pick, rank 1 of 7 on the grounded list); seed key dbd5d781. Signature interaction: a plate "develops" from halftone to full colour on hover/focus; on its entry page it is shown developed, after the review.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

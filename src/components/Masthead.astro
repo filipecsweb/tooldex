@@ -8,6 +8,8 @@ const nav = [
   ['Sections', '/categories'],
 ] as const;
 const here = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
+// The page itself is "page"; a page inside the section (a section page under /categories) is "true".
+const current = (href: string) => (here === href ? 'page' : href !== '/' && here.startsWith(`${href}/`) ? 'true' : undefined);
 ---
 <header class="mx-auto max-w-[1320px] px-4 sm:px-6">
   {size === 'full' ? (
@@ -15,7 +17,7 @@ const here = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
       <div class="flex items-baseline justify-between gap-4 py-3 text-[0.9375rem]">
         <p class="font-semibold text-ink-2">{SITE.tagline}</p>
         <nav aria-label="Main" class="flex gap-5 font-bold">
-          {nav.map(([label, href]) => <a href={href} aria-current={here === href ? 'page' : undefined} class="no-underline hover:underline aria-[current=page]:underline">{label}</a>)}
+          {nav.map(([label, href]) => <a href={href} aria-current={current(href)} class="no-underline hover:underline aria-[current]:underline">{label}</a>)}
         </nav>
       </div>
       <div class="rule-2 grid items-end gap-x-10 gap-y-4 pb-6 pt-4 lg:grid-cols-12">
@@ -34,7 +36,7 @@ const here = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
     <div class="flex items-baseline justify-between gap-4 py-4">
       <a href="/" class="text-[2.125rem] font-black leading-none tracking-[-0.045em] text-ink no-underline">{SITE.name}</a>
       <nav aria-label="Main" class="flex gap-5 text-[0.9375rem] font-bold">
-        {nav.map(([label, href]) => <a href={href} aria-current={here === href ? 'page' : undefined} class="no-underline hover:underline aria-[current=page]:underline">{label}</a>)}
+        {nav.map(([label, href]) => <a href={href} aria-current={current(href)} class="no-underline hover:underline aria-[current]:underline">{label}</a>)}
       </nav>
     </div>
   )}

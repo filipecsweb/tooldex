@@ -40,12 +40,13 @@ const access: [string, string][] = [
   image={og}
   jsonLd={[
     toolLd(site, tool, category.data.name, og),
-    breadcrumbLd(site, [['Catalog', '/'], [category.data.name, `/categories/${category.id}`], [d.name, `/tools/${tool.id}`]]),
+    breadcrumbLd(site, [['Catalog', '/'], ['Sections', '/categories'], [category.data.name, `/categories/${category.id}`], [d.name, `/tools/${tool.id}`]]),
   ]}
 >
   <nav aria-label="Breadcrumb" class="pt-4 text-[0.9375rem]">
     <ol class="flex flex-wrap gap-x-2 text-ink-3">
       <li><a href="/" class="font-semibold text-ink no-underline hover:underline">Catalog</a> /</li>
+      <li><a href="/categories" class="font-semibold text-ink no-underline hover:underline">Sections</a> /</li>
       <li><a href={`/categories/${category.id}`} class="font-semibold text-ink no-underline hover:underline">{category.data.name}</a> /</li>
       <li aria-current="page" class="text-ink-2">{d.name}</li>
     </ol>
@@ -99,28 +100,26 @@ const access: [string, string][] = [
     </aside>
 
     <div class="lg:col-span-8">
+      <div class="review">
+        <Content />
+      </div>
+
       {d.thumbnail ? (
-        <figure>
-          <div class="plate" data-developed transition:name={`plate-${tool.id}`}>
+        <figure class="mt-8">
+          <div class="plate" data-developed>
             <Image
               src={d.thumbnail}
               widths={[640, 960, 1280, 1600]}
               sizes="(min-width: 1100px) 840px, 100vw"
               alt={`${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`}
               class="absolute inset-0 size-full object-cover object-top mix-blend-multiply"
-              loading="eager"
-              fetchpriority="high"
             />
           </div>
           {caption && <figcaption class="mt-2 text-[0.875rem] text-ink-3">{caption}</figcaption>}
         </figure>
       ) : (
-        <Plate tool={entry} developed eager quiet />
+        <div class="mt-8"><Plate tool={entry} developed quiet /></div>
       )}
-
-      <div class="review mt-10">
-        <Content />
-      </div>
     </div>
 
   </article>

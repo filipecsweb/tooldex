@@ -7,7 +7,7 @@ type PlateTool = Pick<IndexTool, 'slug' | 'name' | 'thumb' | 'icon' | 'ink' | 'i
 /** A tool's picture: its thumbnail printed as a halftone plate, or a composed plate when it has none. */
 export default function Plate({ tool, developed = false, eager = false, quiet = false }: { tool: PlateTool; developed?: boolean; eager?: boolean; quiet?: boolean }) {
   return (
-    <div className="plate" data-developed={developed || undefined} style={{ viewTransitionName: `plate-${tool.slug}` }}>
+    <div className="plate" data-developed={developed || undefined}>
       {tool.thumb ? (
         <Ink className="plate-full" src={tool.thumb.src} ink={tool.ink} width={tool.thumb.width} height={tool.thumb.height} eager={eager} />
       ) : (

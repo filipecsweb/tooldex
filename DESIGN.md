@@ -182,13 +182,15 @@ A three-ink newsprint palette: two papers, three ink strengths, and one spot blu
 
 One 1320px sheet, centred, with 1rem side gutters (1.5rem from 640px). The home masthead splits on a 12-column grid at 1024px: name in six columns, catalog statement and live counts in the other six. The Find row sits under it: search field over five fractions, the section index run over seven.
 
-Entries paste up in a grid of one, two (640px) and three (1024px) columns with 2.5rem column gaps and 3.5rem row gaps. In the unfiltered catalog and on every section page the first entry leads across the full row, plate over two columns and text in the third; on the home page a "How to read an entry" note closes the grid. Entry pages use 12 columns: header and review in eight, the Access box in four on the right, sticky from 1.5rem, spanning both rows. Below 1024px everything stacks in reading order, the Access box directly after the header.
+Entries paste up in a grid of one, two (640px) and three (1024px) columns with 2.5rem column gaps and 3.5rem row gaps. In the unfiltered catalog and on every section page the first entry leads across the full row, plate over two columns and text in the third; on the home page a "How to read an entry" note closes the grid. Entry pages use 12 columns: header, review and then the picture in eight, the Access box in four on the right, sticky from 1.5rem, spanning both rows. The explanation is the product, so the review comes before the picture. Below 1024px everything stacks in reading order, the Access box directly after the header.
+
+The first entry on a section rule sits directly on that 4px rule (0.75rem above its plate) and draws no 2px rule of its own, so a section never opens on a double rule. Section lists everywhere (index run, sections page, footer, 404, "Other sections") run A to Z by name; the footer's two columns read down, not across.
 
 Rhythm is set by rules, not boxes: a section starts on a 4px rule with a small pad above its heading (0.75 to 1rem); a block inside it starts on a 2px rule with 0.75rem above. Larger breaks (4 to 5rem) sit before "See also" and "Other sections". Pagination adds entries 48 at a time.
 
 ## Elevation & Depth
 
-Flat. There are no shadows anywhere, no tint washes, and no layering beyond the printed plate. Depth comes from printing: halftone ink multiplied over the colour original on a plate-grey bed. The only thing that moves in z is the plate's view transition, which carries a plate from its card into its entry page under the name `plate-<slug>`.
+Flat. There are no shadows anywhere, no tint washes, and no layering beyond the printed plate. Depth comes from printing: halftone ink multiplied over the colour original on a plate-grey bed. Navigation between pages is the router's plain cross-fade; nothing is carried across. (Plates used to fly from their card into the entry page; that ended when the entry-page picture moved below the review, where the flight would land off screen.)
 
 ### Named Rules
 **The Printed Not Lifted Rule.** Nothing floats. Separation is a rule, a 2 to 3px ink box, or a change of paper (paper to paper-2); never a shadow, blur or rounded card.

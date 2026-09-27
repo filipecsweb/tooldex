@@ -27,7 +27,6 @@
     "motion": [
       { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Plate develop: halftone fades out, colour fades in over 0.6s." },
       { "name": "state-fast", "value": "150ms", "purpose": "Colour and underline changes on buttons, the Access CTA and index items." },
-      { "name": "plate-view-transition", "value": "view-transition-name: plate-<slug>", "purpose": "Carries a plate from its card into its entry page (Astro ClientRouter)." },
       { "name": "reduced-motion", "value": "transition-duration: 0s; view transitions off", "purpose": "prefers-reduced-motion: reduce." }
     ],
     "breakpoints": [
