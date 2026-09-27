@@ -19,7 +19,7 @@ OWN-WORLD: grey newsprint ground, warm black ink, one Earth-blue spot colour for
 
 STORY: the visitor sees at once that this is a catalog of agent tools, scans entries by what they do, reads a plain review, and leaves through Access.
 
-FIRST VIEWPORT: full-width masthead: "tooldex" in Franklin black at display size on the left, the catalog statement and live entry/section counts on the right, a 4px rule under it. Directly below, one "Find" row: search field plus the section index (sections with counts) as the filter. Then the paste-up begins: three columns of entries, each a plate, a bold name, the tagline as the lead, and a boxed Access line, all visible above the fold at 1440px.
+FIRST VIEWPORT: full-width masthead: "tooldex" in Franklin black at display size on the left, the catalog statement and live entry/section counts on the right, a 4px rule under it. Directly below, one "Find" row: search field plus the section index (sections with counts) as the filter. Then the paste-up begins with the lead entry across the full row (plate over two columns; name, tagline, "When to use it" and Access line in the third), as DESIGN.md › Layout sets it; its plate and name start above the fold at 1440×900, and the three-column grid follows below. (Revised: three full entries above the fold cannot fit under the masthead and Find row at 900px tall, with or without the lead spread.)
 
 FORM: Whole Earth Catalog "Access to Tools" (Impeccable's pick, rank 1 of 7 on the grounded list); seed key dbd5d781. Signature interaction: a plate "develops" from halftone to full colour on hover/focus; on its entry page it is shown developed, after the review.
 
