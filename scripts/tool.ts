@@ -320,7 +320,7 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
     ...(repo && { repo: repoUrl(repo) }),
     ...(website && { website }),
     ...(links.length && { links }),
-    added: new Date().toISOString().slice(0, 10),
+    added: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), // listing time, so same-day entries still order
   };
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'index.md'), `---\n${YAML.stringify(data, { lineWidth: 0 }).trimEnd()}\n---\n\n${BODY_PLACEHOLDER}\n`);

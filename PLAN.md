@@ -146,7 +146,7 @@ npm run tool add <repo-or-website-url> [<second-url>]
 4. Website only: title, meta description and any GitHub repo link on the page.
 5. Category guess: scores each category's `keywords` against topics + description + README. Prints the ranking so the reviewer can overrule it.
 6. Slug from the repo or site name, kebab-case. Refuses to overwrite an existing folder.
-7. Writes `src/content/tools/<slug>/index.md` with prefilled frontmatter, `added: today`, and a body placeholder `TODO(tooldex): write the body.`, then runs `thumbs` for it.
+7. Writes `src/content/tools/<slug>/index.md` with prefilled frontmatter, `added:` the listing time as a UTC timestamp (entries listed before this carry only their day, and sort A to Z within it), and a body placeholder `TODO(tooldex): write the body.`, then runs `thumbs` for it.
 
 What is left for a human or agent: the body copy, the tagline polish, the tags, and the category if the guess is wrong.
 
