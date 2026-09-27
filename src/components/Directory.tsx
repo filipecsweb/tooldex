@@ -49,6 +49,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
+      if (e.ctrlKey || e.metaKey || e.altKey) return; // leave browser and OS shortcuts alone
       if (e.key === '/' && !/^(input|textarea|select)$/i.test(t.tagName) && !t.isContentEditable) {
         e.preventDefault();
         input.current?.focus();
@@ -92,7 +93,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
       <section aria-label="Find a tool" className="grid grid-cols-[minmax(0,1fr)] gap-5 pb-8 pt-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
         <div>
           <label htmlFor="find" className="block text-label font-extrabold">
-            Find a tool <span className="font-normal text-ink-3 pointer-coarse:hidden">(press /)</span>
+            Find a tool <span aria-hidden="true" className="font-normal text-ink-3 pointer-coarse:hidden">(press /)</span>
           </label>
           <input
             ref={input}
@@ -100,13 +101,20 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => {
+              // Enter or ↓ moves to the first result, past the section filters.
+              if (e.key !== 'Enter' && e.key !== 'ArrowDown') return;
+              const first = document.querySelector<HTMLElement>('#results a.group');
+              if (first) { e.preventDefault(); first.focus(); }
+            }}
+            aria-keyshortcuts="/"
             placeholder="diagrams, security, codex…"
             autoComplete="off"
             spellCheck={false}
             className="mt-2 w-full border-0 border-b-[3px] border-ink bg-transparent px-0 py-2 text-search font-semibold tracking-[-0.01em] outline-none focus-visible:border-spot focus-visible:outline-none"
           />
         </div>
-        <nav aria-label="Sections" className="self-end">
+        <div role="group" aria-label="Filter by section" className="self-end">
           <ul ref={run} className="index-run max-sm:-mx-4 max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:px-4 max-sm:pb-1 max-sm:[scrollbar-width:thin]">
             <li>
               <button type="button" aria-pressed={!section} onClick={() => setSection('')} className="index-item">
@@ -127,7 +135,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
               </li>
             ))}
           </ul>
-        </nav>
+        </div>
       </section>
 
       <div className="rule-4 flex items-baseline justify-between gap-4 pb-6 pt-3">
@@ -148,7 +156,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
       </div>
 
       {results.length ? (
-        <ul className="grid grid-cols-1 gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+        <ul id="results" className="grid grid-cols-1 gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
           {results.slice(0, limit).map((t, i) => (
             <li key={t.slug} className={spread && i === 0 ? 'sm:col-span-2 lg:col-span-3' : undefined}>
               <ToolCard tool={t} eager={i < 3} lead={spread && i === 0} />

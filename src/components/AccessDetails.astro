@@ -1,6 +1,7 @@
 ---
 // The Access box's definition list: links, section, tags and listed date.
 import AccessLabel from './AccessLabel';
+import { accessLabel } from '../lib/format';
 import type { Category, Tool } from '../lib/data';
 interface Props { tool: Tool; category: Category; class?: string }
 const { tool, category, class: className } = Astro.props;
@@ -16,7 +17,7 @@ const coarse = 'pointer-coarse:py-2';
   {access.map(([label, url]) => (
     <div>
       <dt class="font-bold">{label}</dt>
-      <dd class="font-mono [overflow-wrap:anywhere]"><a href={url} rel="noopener" class:list={['link', coarse]}><AccessLabel url={url} /></a></dd>
+      <dd class="font-mono [overflow-wrap:anywhere]"><a href={url} rel="noopener" aria-label={accessLabel(url)} class:list={['link', coarse]}><AccessLabel url={url} /></a></dd>
     </div>
   ))}
   <div>

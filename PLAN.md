@@ -102,7 +102,7 @@ Nothing per tool is hardcoded outside its folder. `src/lib/data.ts` is the only 
 
 - `getTools()` sorted (featured first, then newest).
 - `getCategories()` returns **only categories with at least one tool**, each with its count. Category pages, the categories hub, the home strip, the footer and the sitemap all use it, so an empty category renders nothing.
-- `relatedTools(tool)` ranks other tools by same category (+10) plus shared tags (+1 each), top 6 with score > 0.
+- `relatedTools(tool)` ranks other tools by same category (+10) plus shared topic tags (+1 each), top 6 with score > 0. Kind and harness tags (`skill`, `mcp`, `claude-code`, `codex`…) don't count: nearly every tool has them, so they made unrelated tools "related". Fewer, or none, is fine.
 - Site-wide counts come from these arrays.
 
 ## 4. Routes and layouts

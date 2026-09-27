@@ -31,9 +31,12 @@ export async function getCategories(tools?: Tool[]): Promise<Category[]> {
     .sort((a, b) => a.data.name.localeCompare(b.data.name));
 }
 
-/** Same category scores 10, each shared tag scores 1. Top `limit` with any overlap. */
+/** Tags that say what a tool is or where it runs (CLAUDE.md › Tags), not what it does. */
+const GENERIC_TAGS = new Set(['skill', 'plugin', 'subagents', 'mcp', 'cli', 'claude-code', 'codex', 'cursor', 'gemini-cli', 'opencode', 'copilot', 'windsurf']);
+
+/** Same category scores 10, each shared topic tag scores 1. Top `limit` with any overlap; fewer is fine. */
 export function relatedTools(tool: Tool, all: Tool[], limit = 6): Tool[] {
-  const tags = new Set(tool.data.tags);
+  const tags = new Set(tool.data.tags.filter((x) => !GENERIC_TAGS.has(x)));
   return all
     .filter((t) => t.id !== tool.id)
     .map((t) => ({

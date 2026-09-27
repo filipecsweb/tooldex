@@ -1,4 +1,5 @@
 import type { IndexTool } from '../lib/tool-index';
+import { accessLabel } from '../lib/format';
 import AccessLabel from './AccessLabel';
 import ArrowOut from './ArrowOut';
 import Plate from './Plate';
@@ -24,7 +25,8 @@ export default function ToolCard({ tool, eager = false, lead = false, filed = tr
       <div className="mt-auto pt-4">
         <p className="flex items-baseline gap-2 border-2 border-ink px-2.5 py-1.5 font-mono text-label">
           <span className="font-sans text-count font-[850] uppercase tracking-[0.06em] text-spot">Access</span>
-          <a href={tool.url} rel="noopener" className="link min-w-0 [overflow-wrap:anywhere]">
+          {/* The label keeps the visible URL whole (its segments are separate boxes) and names the tool. */}
+          <a href={tool.url} rel="noopener" aria-label={`Visit ${tool.name} at ${accessLabel(tool.url)}`} className="link min-w-0 [overflow-wrap:anywhere]">
             <AccessLabel url={tool.url} />
             <ArrowOut className="ml-1 inline align-baseline" />
           </a>
