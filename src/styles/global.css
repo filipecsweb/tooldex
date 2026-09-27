@@ -120,6 +120,18 @@
     width: 24cqw;
     height: 24cqw;
   }
+  /* On an entry page the H1 already carries the name: the plate is the portrait and its source. */
+  .plate-composed[data-quiet] {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+  .plate-composed[data-quiet] .plate-source {
+    justify-self: stretch;
+  }
+  .plate-composed[data-quiet] .plate-icon {
+    width: 32cqw;
+    height: 32cqw;
+  }
   .plate-name {
     font-weight: 900;
     /* --len is the longest word; ~0.55em per character at this weight. */

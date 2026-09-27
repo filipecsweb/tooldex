@@ -6,7 +6,7 @@ export default function AccessLabel({ url }: { url: string }) {
   return (
     <>
       {parts.map((p, i) => (
-        <span key={i}>
+        <span key={i} className="whitespace-nowrap">
           {i > 0 && '/'}
           {i > 0 && <wbr />}
           {p}

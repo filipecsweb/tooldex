@@ -107,7 +107,7 @@ const access: [string, string][] = [
               widths={[640, 960, 1280, 1600]}
               sizes="(min-width: 1100px) 840px, 100vw"
               alt={`${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`}
-              class="absolute inset-0 size-full object-cover object-top"
+              class="absolute inset-0 size-full object-cover object-top mix-blend-multiply"
               loading="eager"
               fetchpriority="high"
             />
@@ -115,7 +115,7 @@ const access: [string, string][] = [
           {caption && <figcaption class="mt-2 text-[0.875rem] text-ink-3">{caption}</figcaption>}
         </figure>
       ) : (
-        <Plate tool={entry} developed eager />
+        <Plate tool={entry} developed eager quiet />
       )}
 
       <div class="review mt-10">

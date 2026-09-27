@@ -18,6 +18,11 @@ export default function ToolCard({ tool, eager = false, lead = false }: { tool: 
   const details = (
     <>
       <p className={`mt-2 font-serif leading-[1.5] text-ink-2 ${lead ? 'text-[1.25rem]' : 'text-[1.0625rem]'}`}>{tool.tagline}</p>
+      {lead && tool.whenToUse && (
+        <p className="mt-4 font-serif text-[1.0625rem] leading-[1.55]">
+          <strong className="font-sans text-[0.94em] font-[800]">When to use it:</strong> {tool.whenToUse}
+        </p>
+      )}
       <div className="mt-auto pt-4">
         <p className="flex items-baseline gap-2 border-2 border-ink px-2.5 py-1.5 font-mono text-[0.9375rem]">
           <span className="font-sans text-[0.8125rem] font-[850] uppercase tracking-[0.06em] text-spot">Access</span>

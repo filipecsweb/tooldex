@@ -15,6 +15,8 @@ export type IndexTool = {
   url: string;
   /** "owner/repo" for repos, the host for websites. Set on composed plates. */
   source: string;
+  /** The body's "When to use it" paragraph, plain text, for the lead entry. */
+  whenToUse: string | null;
   thumb: { src: string; width: number; height: number } | null;
   icon: string | null;
   /** Halftone plates (null until scripts/plates.ts has run). */
@@ -38,6 +40,7 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
         categoryName: names.get(t.data.category.id) ?? t.data.category.id,
         tags: t.data.tags,
         url: primaryUrl(t),
+        whenToUse: whenToUse(t.body ?? ''),
         source: t.data.repo ? new URL(t.data.repo).pathname.slice(1) : new URL(t.data.website!).hostname,
         thumb: thumb
           ? { src: thumb.src, width: Number(thumb.attributes.width), height: Number(thumb.attributes.height) }
@@ -48,4 +51,16 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
       };
     }),
   );
+}
+
+/** "**When to use it:** you run paid media…" -> "you run paid media…" (markdown stripped). */
+function whenToUse(body: string): string | null {
+  const para = body.split(/\n\s*\n/).find((p) => /^\*\*When to use it:?\*\*/i.test(p.trim()));
+  if (!para) return null;
+  return para
+    .trim()
+    .replace(/^\*\*When to use it:?\*\*:?\s*/i, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*_`]/g, '')
+    .replace(/\s+/g, ' ');
 }

@@ -47,7 +47,7 @@ const site = Astro.site!;
 
   <h2 class="sr-only">Entries</h2>
   <ul class="rule-4 grid grid-cols-1 gap-x-10 gap-y-14 pt-8 sm:grid-cols-2 lg:grid-cols-3">
-    {entries.map((t, i) => <li><ToolCard tool={t} eager={i < 3} /></li>)}
+    {entries.map((t, i) => <li class={i === 0 ? 'sm:col-span-2 lg:col-span-3' : undefined}><ToolCard tool={t} eager={i < 3} lead={i === 0} /></li>)}
   </ul>
 
   {others.length > 0 && (

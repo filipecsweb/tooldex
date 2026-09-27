@@ -96,8 +96,11 @@ test('halftone: white prints nothing, black prints most of each cell, mid-grey a
   assert.ok(Math.abs(ink(128) - 0.5) < 0.1);
 });
 
-test('toneMap lifts dark images more than light ones', async () => {
+test('toneMap stretches the 2nd-98th percentile to full ink-to-paper range', async () => {
   const { toneMap } = await import('./lib.ts');
-  assert.ok(toneMap(new Uint8Array(10).fill(10))[0] > 100); // dark image: black lifts to mid-grey
-  assert.ok(toneMap(new Uint8Array([10, 250, 250, 250]))[0] < 60); // light image: text stays dark
+  const dark = new Uint8Array(100).map((_, i) => 10 + Math.floor(i / 2)); // 10..59
+  const out = toneMap(dark);
+  assert.equal(out[0], 0); // darkest prints solid
+  assert.equal(out[99], 255); // lightest is bare paper
+  assert.ok(out[50] > 60 && out[50] < 200);
 });

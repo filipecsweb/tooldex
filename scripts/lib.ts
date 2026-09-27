@@ -245,11 +245,19 @@ export function halftone(gray: Uint8Array, w: number, h: number, cell: number, a
   return out;
 }
 
-/** Tone curve for printing on newsprint: lift shadows hard on dark images so they read as mid-greys. */
+/**
+ * Levels for printing on newsprint: the 2nd percentile goes to solid ink, the 98th to bare paper,
+ * then a mild gamma. Dark screenshots keep real blacks; pale images gain contrast.
+ */
 export function toneMap(gray: Uint8Array): Uint8Array {
-  let sum = 0;
-  for (const g of gray) sum += g;
-  const lift = sum / gray.length / 255 < 0.4 ? 0.4 : 0.12;
-  const lut = Array.from({ length: 256 }, (_, g) => Math.round(255 * (lift + (1 - lift) * (g / 255) ** 0.85)));
+  const hist = new Array(256).fill(0);
+  for (const g of gray) hist[g]++;
+  const at = (q: number) => {
+    let n = 0;
+    for (let v = 0; v < 256; v++) if ((n += hist[v]) >= q * gray.length) return v;
+    return 255;
+  };
+  const lo = at(0.02), hi = Math.max(at(0.98), lo + 1);
+  const lut = Array.from({ length: 256 }, (_, g) => Math.round(255 * Math.min(1, Math.max(0, (g - lo) / (hi - lo))) ** 0.9));
   return gray.map((g) => lut[g]);
 }
