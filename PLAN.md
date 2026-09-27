@@ -23,6 +23,7 @@ Status: approved 2026-09-26 with the answers in §13. Steps 1–5 of §11 are bu
 | Redirects | `public/_redirects` | Native to Workers static assets. Written by the rename/delete commands. |
 | Tool scripts | `scripts/tool.ts`, run by plain `node` (Node 24 strips TS) | One file, subcommands `add`, `thumbs`, `mv`, `rm`, `check`. |
 | Screenshots | `playwright` (dev dep, Chromium only) + sharp | Local only, never in the Worker. |
+| Halftone plates | `scripts/plates.ts` (sharp + a small AM-screen routine) → `src/generated/plates/` (gitignored) | The design prints every image as a real halftone; derived files regenerate before dev/build and after tool commands. |
 | YAML | `yaml` (dev dep) | Scripts read and rewrite frontmatter. |
 | Wrangler | `wrangler@4` dev dep | No global install. |
 | Tests | `node --test` | Zero deps. Pure logic only: search matcher, category guess, homepage classifier. |
@@ -262,6 +263,7 @@ Each is marked with a `ponytail:` comment where it lives in code.
 | Images committed to git (~60 KB per tool) | a few thousand tools | Masters in R2, derived files at build. |
 | Workers assets: 20k files, 25 MiB each | ~2.5k tools (≈7 built files per tool: page, card thumb, icon, 4 hero widths, OG) | Move image variants to R2 / Cloudflare Images. |
 | `_redirects`: 2,000 static rules | 2,000 renames + deletes | Bulk Redirects in Cloudflare, or prune rules older than a year. |
+| Halftone generation (≈0.1 s per tool, skipped when up to date) | ~5k tools on a clean checkout | Cache plates in CI or move them to R2 with the images. |
 | Full rebuild on every change | ~2k tools (minutes of sharp) | Astro's image cache already persists in `node_modules/.astro`; then incremental builds. |
 | Link check serial-ish (8 parallel) | ~1k links per run | Raise concurrency, cache results for 24 h. |
 | GitHub API anonymous (60 req/h) | ~50 adds per hour | Set `GITHUB_TOKEN` (picked up automatically). |

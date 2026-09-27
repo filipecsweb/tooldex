@@ -17,8 +17,8 @@ npm run dev                       # https://tooldex.test (or http://localhost:44
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Dev server on port 4401. |
-| `npm run build` | Type/schema check, offline tool check, then build to `dist/`. |
+| `npm run dev` | Generates halftone plates, then the dev server on port 4401. |
+| `npm run build` | Generates plates, type/schema check, offline tool check, then build to `dist/`. |
 | `npm run preview` | Serve the build locally in workerd. |
 | `npm run deploy` | Build and `wrangler deploy`. Needs `npx wrangler login` once. |
 | `npm run check` | Schema check plus full tool check, including live links. |
@@ -53,6 +53,8 @@ It prefills name, tagline, tags, links and a category guess from the GitHub API 
 **Delete**: `npm run tool -- rm <slug>`. Removes the folder and 301s the old URL to its category (or `/` if the category is now empty).
 
 **Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, image provenance, unwritten bodies, redirects, and that every link responds. Add `--offline` to skip the network.
+
+**Halftone plates**: the catalog prints every thumbnail and icon as a halftone. `scripts/plates.ts` derives them into `src/generated/plates/` (gitignored). They regenerate automatically before `dev` and `build` and after `thumbs`, `mv` and `rm`, so there is nothing to maintain by hand.
 
 **Categories** live in `src/content/categories.json`. Adding one is one object (`id`, `name`, `description`, `keywords`). `keywords` drive the category guess in `add`. A category with no tools renders no page.
 

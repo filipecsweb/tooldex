@@ -18,6 +18,8 @@ Tools are data, not code. Each tool is `src/content/tools/<slug>/` containing `i
 - Delete: `npm run tool -- rm <slug>` (removes folder + images, adds a 301)
 - Validate everything: `npm run check` (or `npm run tool -- check --offline` to skip link checks)
 
+Halftone plates in `src/generated/plates/` are derived from each tool's images and regenerate on their own (before dev/build and after `thumbs`/`mv`/`rm`); never edit or commit them.
+
 Never rename or delete tool folders by hand; use `mv` and `rm` so redirects stay correct. `public/_redirects` may be edited by hand; `check` validates it.
 
 ### After `add`, finish the entry
