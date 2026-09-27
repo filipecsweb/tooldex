@@ -182,8 +182,8 @@
   .index-count { font-size: 0.8125rem; font-weight: 500; color: var(--color-ink-3); }
 
   /* Links inside content take the spot colour; navigation and headings stay ink. */
-  .link { color: var(--color-spot); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--color-spot) 45%, transparent); }
-  .link:hover { color: var(--color-spot-deep); text-decoration-color: currentColor; }
+  .link, .review a { color: var(--color-spot); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--color-spot) 45%, transparent); }
+  .link:hover, .review a:hover { color: var(--color-spot-deep); text-decoration-color: currentColor; }
 
   /* Review prose: the catalog's reading voice. Run-in heads ("When to use it:") set in Franklin. */
   .review {
@@ -198,8 +198,6 @@
     font-weight: 800;
     font-size: 0.94em;
   }
-  .review a { color: var(--color-spot); text-decoration: underline; }
-  .review a:hover { color: var(--color-spot-deep); }
 }
 
 @media (prefers-reduced-motion: reduce) {

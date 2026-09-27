@@ -31,8 +31,8 @@ const site = Astro.site!;
 >
   <nav aria-label="Breadcrumb" class="pt-4 text-[0.9375rem]">
     <ol class="flex flex-wrap gap-x-2 text-ink-3">
-      <li><a href="/" class="link font-semibold">Catalog</a> /</li>
-      <li><a href="/categories" class="link font-semibold">Sections</a> /</li>
+      <li><a href="/" class="font-semibold text-ink no-underline hover:underline">Catalog</a> /</li>
+      <li><a href="/categories" class="font-semibold text-ink no-underline hover:underline">Sections</a> /</li>
       <li aria-current="page" class="text-ink-2">{category.data.name}</li>
     </ol>
   </nav>

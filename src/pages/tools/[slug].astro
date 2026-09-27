@@ -45,8 +45,8 @@ const access: [string, string][] = [
 >
   <nav aria-label="Breadcrumb" class="pt-4 text-[0.9375rem]">
     <ol class="flex flex-wrap gap-x-2 text-ink-3">
-      <li><a href="/" class="link font-semibold">Catalog</a> /</li>
-      <li><a href={`/categories/${category.id}`} class="link font-semibold">{category.data.name}</a> /</li>
+      <li><a href="/" class="font-semibold text-ink no-underline hover:underline">Catalog</a> /</li>
+      <li><a href={`/categories/${category.id}`} class="font-semibold text-ink no-underline hover:underline">{category.data.name}</a> /</li>
       <li aria-current="page" class="text-ink-2">{d.name}</li>
     </ol>
   </nav>

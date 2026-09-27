@@ -128,7 +128,7 @@
     ],
     "rules": [
       { "name": "The One Spot Rule", "body": "Spot blue marks what the reader can act on to leave or move: content links, the Access label, focus and caret, the Access button's hover. Navigation, headings, entry names and index items stay ink and underline instead.", "section": "colors" },
-      { "name": "The Link Ink Rule", "body": "Links inside content are spot with a 45%-spot underline (`color-mix(in oklab, spot 45%, transparent)`, 1.5px, offset 0.2em), deepening to spot-deep with a full underline on hover. Navigation links (masthead, footer sections, entry names) are ink with no underline at rest and a plain underline on hover or when current.", "section": "colors" },
+      { "name": "The Link Ink Rule", "body": "Links inside content are spot with a 45%-spot underline (`color-mix(in oklab, spot 45%, transparent)`, 1.5px, offset 0.2em), deepening to spot-deep with a full underline on hover. Navigation links (masthead, breadcrumbs, footer sections, entry names) are ink with no underline at rest and a plain underline on hover or when current.", "section": "colors" },
       { "name": "The Typewriter Rule", "body": "Courier Prime is only for access data: URLs (shown as host/path, breaking only after a slash), repository paths, and tags. It never sets prose, headings, counts, dates or UI labels.", "section": "typography" },
       { "name": "The Weight Carries It Rule", "body": "Names and heads are Franklin at 850 to 900 with tight negative tracking; there is no light or regular display. Reading text is never Franklin.", "section": "typography" },
       { "name": "The Printed Not Lifted Rule", "body": "Nothing floats. Separation is a rule, a 2 to 3px ink box, or a change of paper (paper to paper-2); never a shadow, blur or rounded card.", "section": "elevation" },
@@ -139,7 +139,7 @@
       "Do print every picture as a plate on paper-2 and let it develop to colour only on hover, focus, or its own entry page.",
       "Do give every tool without a thumbnail the composed plate: halftoned icon, name set large on cards, source in Courier on a 2px rule; the quiet band on its entry page.",
       "Do end every entry in an Access line or Access box, with the URL in Courier as host/path.",
-      "Do keep spot blue for content links, the Access label, focus, caret and the Access button's hover.",
+      "Do keep spot blue for content links, the Access label, focus (ring and search underline), caret and the Access button's hover.",
       "Do set reading text in Literata at a 66ch measure; set names and heads in Franklin 850 to 900 with negative tracking."
     ],
     "donts": [

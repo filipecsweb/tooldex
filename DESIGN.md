@@ -152,7 +152,7 @@ A three-ink newsprint palette: two papers, three ink strengths, and one spot blu
 ### Named Rules
 **The One Spot Rule.** Spot blue marks what the reader can act on to leave or move: content links, the Access label, focus and caret, the Access button's hover. Navigation, headings, entry names and index items stay ink and underline instead.
 
-**The Link Ink Rule.** Links inside content are spot with a 45%-spot underline (`color-mix(in oklab, spot 45%, transparent)`, 1.5px, offset 0.2em), deepening to spot-deep with a full underline on hover. Navigation links (masthead, footer sections, entry names) are ink with no underline at rest and a plain underline on hover or when current.
+**The Link Ink Rule.** Links inside content are spot with a 45%-spot underline (`color-mix(in oklab, spot 45%, transparent)`, 1.5px, offset 0.2em), deepening to spot-deep with a full underline on hover. Navigation links (masthead, breadcrumbs, footer sections, entry names) are ink with no underline at rest and a plain underline on hover or when current.
 
 ## Typography
 
@@ -165,7 +165,7 @@ A three-ink newsprint palette: two papers, three ink strengths, and one spot blu
 ### Hierarchy
 - **Display** (900, clamp(3.75rem, 13vw, 6rem), 0.82, -0.045em): the "tooldex" masthead on the home page only.
 - **Headline** (900, clamp(2.75rem, 7vw, 5.25rem), 0.9, -0.04em): page H1s: tool name, section name, "Sections", "Not in the catalog".
-- **Title** (850, 1.75rem, 1.02, -0.03em): entry names on cards; the lead entry scales to clamp(1.75rem, 3vw, 2.75rem). Section heads such as "See also" and "Other sections" use the same size at 900. Section rows on the sections page use clamp(1.75rem, 3.5vw, 2.5rem) at 900.
+- **Title** (850, 1.75rem, 1.02, -0.03em): entry names on cards; the lead entry scales to clamp(1.75rem, 3vw, 2.75rem). Section heads such as "See also" and "Other sections" use the same size at 900. Section rows on the sections page use clamp(1.75rem, 3.5vw, 2.5rem) at 900. Smaller heads: the "How to read an entry" note at 1.375rem 850, "See also" names at 1.25rem 800.
 - **Lead** (Literata 400, clamp(1.25rem, 2.2vw, 1.5rem), 1.4, max 40ch): the tagline under an entry-page H1. On cards the tagline is body-sm in ink-2 (1.25rem on the lead entry).
 - **Body** (Literata 400, 1.1875rem, 1.62, max 66ch): the review. Run-in heads ("When to use it:", "Caveats:") are Franklin 800 at 0.94em, inline.
 - **Body-sm** (Literata 400, 1.0625rem, 1.5): taglines on cards, section descriptions, notes.
@@ -214,7 +214,7 @@ For tools without a thumbnail.
 - **Quiet variant (entry page):** the H1 already carries the name, so the plate drops its fixed aspect and becomes a band: the icon at clamp(7rem, 22%, 11rem) on the left, the source line set on its rule beside it, aligned to the bottom. No name.
 
 ### Access
-- **Access line (cards):** a 2px ink box, 0.375rem by 0.625rem, holding the spot "Access" label and the URL in Courier as a spot link with an outbound arrow drawn to Franklin's stroke weight. Below it, "Filed under" plus the section link in ink-3.
+- **Access line (cards):** a 2px ink box, 0.375rem by 0.625rem, holding the spot "Access" label and the URL in Courier as a spot link with an outbound arrow drawn to Franklin's stroke weight. Below it, "Filed under" in ink-3 plus the section as a spot link at 600.
 - **Access box (entry page):** a 3px ink box, 1.25rem padding, sticky on desktop. "Access" heads it in spot capitals. Then the primary action: a full-width solid ink bar (Franklin 800, 1.0625rem, paper text, 0.75rem by 1rem) reading "Visit the website" or "View the repository" with the outbound arrow, turning spot on hover (0.15s). Below, a definition list: Website, Repository and other links in Courier; Filed under; Tags in Courier linking to a search; Listed date in ink-2.
 
 ### Buttons
@@ -230,7 +230,7 @@ Borderless except a 3px ink underline; Franklin 600 at 1.625rem, -0.01em. On foc
 A typeset run of section names with counts that doubles as the filter (buttons with `aria-pressed` on home; links elsewhere, `aria-current` where applicable). Items wrap with 0.35rem by 1.5rem gaps at 1.0625rem Franklin 700 in ink-2, counts at 0.8125rem 500 in ink-3. Hover: ink text over a 3px ink-3 underline. Current: ink text over a 3px ink underline. Empty sections drop to ink-3 at 500. It is reused on 404 and as "Other sections".
 
 ### Navigation
-Masthead: full on home (tagline and nav above a 2px rule, then the display name and statement, then a 4px rule), compact everywhere else (Franklin 900 name at 2.125rem left, nav right, 4px rule). Nav links are Franklin 700 ink, underlined on hover and when current. Breadcrumbs use spot links at 600 with ink-3 slashes. The footer repeats the name, a Literata note and the section list with counts.
+Masthead: full on home (tagline and nav above a 2px rule, then the display name and statement, then a 4px rule), compact everywhere else (Franklin 900 name at 2.125rem left, nav right, 4px rule). Nav links are Franklin 700 ink, underlined on hover and when current. Breadcrumbs are ink links at 600, underlined on hover, with ink-3 slashes. The footer repeats the name, a Literata note and the section list with counts.
 
 ## Do's and Don'ts
 
@@ -239,7 +239,7 @@ Masthead: full on home (tagline and nav above a 2px rule, then the display name 
 - **Do** print every picture as a plate on paper-2 and let it develop to colour only on hover, focus, or its own entry page.
 - **Do** give every tool without a thumbnail the composed plate: halftoned icon, name set large on cards, source in Courier on a 2px rule; the quiet band on its entry page.
 - **Do** end every entry in an Access line or Access box, with the URL in Courier as host/path.
-- **Do** keep spot blue for content links, the Access label, focus, caret and the Access button's hover.
+- **Do** keep spot blue for content links, the Access label, focus (ring and search underline), caret and the Access button's hover.
 - **Do** set reading text in Literata at a 66ch measure; set names and heads in Franklin 850 to 900 with negative tracking.
 
 ### Don't:
