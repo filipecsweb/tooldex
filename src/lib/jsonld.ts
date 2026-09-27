@@ -1,6 +1,5 @@
 // schema.org builders. URLs are absolute, built from Astro.site.
 import type { Tool } from './data';
-import { primaryUrl } from './data';
 import { SITE } from '../site';
 
 const abs = (path: string, site: URL) => new URL(path, site).href;
@@ -30,7 +29,6 @@ export const toolLd = (site: URL, t: Tool, categoryName: string, image?: string)
   applicationSubCategory: categoryName,
   keywords: t.data.tags.join(', '),
   ...(image && { image: abs(image, site) }),
-  downloadUrl: primaryUrl(t),
 });
 
 export const itemListLd = (site: URL, tools: Tool[]) => ({

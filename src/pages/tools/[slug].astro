@@ -27,12 +27,14 @@ const caption = captionFor(provenance[`/src/content/tools/${tool.id}/thumb.webp.
 const { Content } = await render(tool);
 const og = d.thumbnail ? (await getImage({ src: d.thumbnail, width: 1200, height: 630, fit: 'cover', format: 'png' })).src : undefined;
 const site = Astro.site!;
+const pictureAlt = `${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`;
 
 ---
 <Base
   title={`${d.name}: ${category.data.name} tool for AI agents`}
   description={d.tagline}
   image={og}
+  imageAlt={og ? pictureAlt : undefined}
   jsonLd={[
     toolLd(site, tool, category.data.name, og),
     breadcrumbLd(site, [['Catalog', '/'], ['Sections', '/categories'], [category.data.name, `/categories/${category.id}`], [d.name, `/tools/${tool.id}`]]),
@@ -83,7 +85,7 @@ const site = Astro.site!;
               src={d.thumbnail}
               widths={[640, 960, 1280, 1600]}
               sizes="(min-width: 1100px) 840px, 100vw"
-              alt={`${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`}
+              alt={pictureAlt}
               class="absolute inset-0 size-full object-cover object-top mix-blend-multiply"
             />
           </div>

@@ -13,10 +13,11 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  imageAlt?: string;
   jsonLd?: Record<string, unknown>[];
   noindex?: boolean;
 }
-const { title, description, image, jsonLd, noindex } = Astro.props;
+const { title, description, image, imageAlt, jsonLd, noindex } = Astro.props;
 const sections = await getCategories();
 ---
 <!doctype html>
@@ -28,7 +29,7 @@ const sections = await getCategories();
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={franklin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={literata} as="font" type="font/woff2" crossorigin />
-    <Seo title={title} description={description} image={image} jsonLd={jsonLd} noindex={noindex} />
+    <Seo title={title} description={description} image={image} imageAlt={imageAlt} jsonLd={jsonLd} noindex={noindex} />
     <ClientRouter />
   </head>
   <body>
