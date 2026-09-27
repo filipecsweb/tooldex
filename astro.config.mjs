@@ -16,6 +16,9 @@ export default defineConfig({
   integrations: [react(), sitemap()],
   server: { port: 4401 },
   vite: {
+    // Dev gets its own dep cache: `astro check`/`build` re-optimise into the default
+    // node_modules/.vite and delete chunks a running dev server still imports (500s).
+    cacheDir: process.argv.includes('dev') ? 'node_modules/.vite-dev' : undefined,
     plugins: [tailwindcss()],
     server: { allowedHosts: ['.test'] },
   },

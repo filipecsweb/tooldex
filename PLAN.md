@@ -229,9 +229,15 @@ export default defineConfig({
   adapter: cloudflare({ imageService: 'compile' }),
   integrations: [react(), sitemap()],
   server: { port: 4401 },
-  vite: { plugins: [tailwindcss()], server: { allowedHosts: ['.test'] } },
+  vite: {
+    cacheDir: process.argv.includes('dev') ? 'node_modules/.vite-dev' : undefined,
+    plugins: [tailwindcss()],
+    server: { allowedHosts: ['.test'] },
+  },
 });
 ```
+
+Dev keeps its own Vite dep cache: `astro check` and `astro build` re-optimise deps into the default `node_modules/.vite/` and would delete chunks a running dev server still imports, so every page 500s until a restart.
 
 `wrangler.jsonc`: `name: tooldex`, pinned personal `account_id`, adapter entrypoint, `nodejs_compat`, assets `{ binding: ASSETS, directory: ./dist, not_found_handling: 404-page }`, observability on.
 
