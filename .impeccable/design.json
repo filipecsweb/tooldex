@@ -19,7 +19,12 @@
       "lead": { "displayName": "Lead", "purpose": "Tagline under an entry-page H1, max 40ch." },
       "body": { "displayName": "Review", "purpose": "Review prose at 66ch; run-in heads in Franklin 800 at 0.94em." },
       "body-sm": { "displayName": "Small Reading", "purpose": "Card taglines, section descriptions, notes." },
-      "label": { "displayName": "Label", "purpose": "Navigation, field labels, summaries, dt terms, index items." },
+      "title-lead": { "displayName": "Lead Entry Title", "purpose": "The lead entry name across the spread." },
+      "wordmark": { "displayName": "Wordmark", "purpose": "The compact masthead and footer name." },
+      "note": { "displayName": "Note Head", "purpose": "\"How to read an entry\" and the empty-search message." },
+      "search": { "displayName": "Search Field", "purpose": "Text typed into the Find field." },
+      "label": { "displayName": "Label", "purpose": "Navigation, field labels, summaries, dt terms, captions, \"Filed under\", index items." },
+      "count": { "displayName": "Count", "purpose": "Counts beside section names in the index run and footer." },
       "access-label": { "displayName": "Access Label", "purpose": "The spot-blue uppercase \"Access\" heading; 0.8125rem/850/0.06em on the card line." },
       "data": { "displayName": "Access Data", "purpose": "Courier Prime only for URLs, repository paths, tags and the plate source line." }
     },

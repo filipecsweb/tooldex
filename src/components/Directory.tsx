@@ -74,7 +74,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
   const spread = !query && !section && order === 'newest';
 
   const chip = (active: boolean) =>
-    `inline-flex items-baseline gap-1.5 border-2 px-3 py-1.5 text-[0.9375rem] font-bold transition-colors duration-150 ${
+    `inline-flex items-baseline gap-1.5 border-2 px-3 py-1.5 text-label font-bold transition-colors duration-150 ${
       active ? 'border-ink bg-ink text-paper' : 'border-ink bg-transparent text-ink hover:bg-paper-2'
     }`;
 
@@ -82,7 +82,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     <div>
       <section aria-label="Find a tool" className="grid gap-5 pb-8 pt-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
         <div>
-          <label htmlFor="find" className="block text-[0.9375rem] font-extrabold">
+          <label htmlFor="find" className="block text-label font-extrabold">
             Find a tool <span className="font-normal text-ink-3">(press /)</span>
           </label>
           <input
@@ -94,7 +94,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
             placeholder="diagrams, security, codex…"
             autoComplete="off"
             spellCheck={false}
-            className="mt-2 w-full border-0 border-b-[3px] border-ink bg-transparent px-0 py-2 text-[1.625rem] font-semibold tracking-[-0.01em] outline-none focus-visible:border-spot focus-visible:outline-none"
+            className="mt-2 w-full border-0 border-b-[3px] border-ink bg-transparent px-0 py-2 text-search font-semibold tracking-[-0.01em] outline-none focus-visible:border-spot focus-visible:outline-none"
           />
         </div>
         <nav aria-label="Sections" className="self-end">
@@ -122,10 +122,10 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
       </section>
 
       <div className="rule-4 flex items-baseline justify-between gap-4 pb-6 pt-3">
-        <p aria-live="polite" className="text-[0.9375rem] font-bold">
+        <p aria-live="polite" className="text-label font-bold">
           {summary}
         </p>
-        <label className="flex items-baseline gap-2 text-[0.9375rem] text-ink-2">
+        <label className="flex items-baseline gap-2 text-label text-ink-2">
           Order
           <select
             value={order}
@@ -147,8 +147,8 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
           ))}
           {spread && (
             <li className="rule-2 pt-3">
-              <h3 className="text-[1.375rem] font-[850] leading-tight tracking-[-0.02em]">How to read an entry</h3>
-              <div className="mt-3 space-y-3 font-serif text-[1.0625rem] leading-[1.55] text-ink-2">
+              <h3 className="text-note">How to read an entry</h3>
+              <div className="mt-3 space-y-3 font-serif text-body-sm leading-[1.55] text-ink-2">
                 <p>Every entry is written by tooldex: what the tool does, when you would reach for it, and the caveats worth knowing first.</p>
                 <p>The Access line goes to the tool's own website or repository. That page stays the source of truth for installation, versions and everything that changes week to week.</p>
               </div>
@@ -157,8 +157,8 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
         </ul>
       ) : (
         <div className="max-w-[60ch] border-2 border-ink p-6">
-          <p className="text-[1.375rem] font-extrabold">Nothing in the catalog matches “{query}”{sectionName ? ` in ${sectionName}` : ''}.</p>
-          <p className="mt-2 font-serif text-[1.0625rem] text-ink-2">
+          <p className="text-note font-extrabold">Nothing in the catalog matches “{query}”{sectionName ? ` in ${sectionName}` : ''}.</p>
+          <p className="mt-2 font-serif text-body-sm text-ink-2">
             Try a broader word, a harness name like “codex”, or clear the search to browse every section.
           </p>
           <button type="button" onClick={() => { setQ(''); setSection(''); input.current?.focus(); }} className={`${chip(true)} mt-4`}>

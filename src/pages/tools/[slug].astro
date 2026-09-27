@@ -43,7 +43,7 @@ const access: [string, string][] = [
     breadcrumbLd(site, [['Catalog', '/'], ['Sections', '/categories'], [category.data.name, `/categories/${category.id}`], [d.name, `/tools/${tool.id}`]]),
   ]}
 >
-  <nav aria-label="Breadcrumb" class="pt-4 text-[0.9375rem]">
+  <nav aria-label="Breadcrumb" class="pt-4 text-label">
     <ol class="flex flex-wrap gap-x-2 text-ink-3">
       <li><a href="/" class="font-semibold text-ink no-underline hover:underline">Catalog</a> /</li>
       <li><a href="/categories" class="font-semibold text-ink no-underline hover:underline">Sections</a> /</li>
@@ -56,23 +56,23 @@ const access: [string, string][] = [
     <header class="lg:col-span-8">
       <div class="flex items-center gap-4">
         {d.icon && d.thumbnail && <Image src={d.icon} width={64} height={64} alt="" class="size-14 border-2 border-ink bg-paper-2 object-cover" />}
-        <h1 class="text-[clamp(2.75rem,7vw,5.25rem)] font-black leading-[0.9] tracking-[-0.04em]">{d.name}</h1>
+        <h1 class="text-headline">{d.name}</h1>
       </div>
-      <p class="mt-5 max-w-[40ch] font-serif text-[clamp(1.25rem,2.2vw,1.5rem)] leading-[1.4] text-ink-2">{d.tagline}</p>
+      <p class="mt-5 max-w-[40ch] font-serif text-lead text-ink-2">{d.tagline}</p>
     </header>
 
     <aside class="lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:row-start-1">
       <div class="border-[3px] border-ink p-5 lg:sticky lg:top-6">
-        <h2 class="text-[0.9375rem] font-black uppercase tracking-[0.08em] text-spot">Access</h2>
+        <h2 class="text-label font-black uppercase tracking-[0.08em] text-spot">Access</h2>
         <a
           href={primaryUrl(tool)}
           rel="noopener"
-          class="mt-3 flex items-center justify-between gap-3 bg-ink px-4 py-3 text-[1.0625rem] font-extrabold text-paper no-underline transition-colors duration-150 hover:bg-spot"
+          class="mt-3 flex items-center justify-between gap-3 bg-ink px-4 py-3 text-body-sm font-extrabold text-paper no-underline transition-colors duration-150 hover:bg-spot"
         >
           {ctaLabel(Boolean(d.website))}
           <ArrowOut />
         </a>
-        <dl class="mt-5 grid gap-y-3 text-[0.9375rem]">
+        <dl class="mt-5 grid gap-y-3 text-label">
           {access.map(([label, url]) => (
             <div>
               <dt class="font-bold">{label}</dt>
@@ -115,7 +115,7 @@ const access: [string, string][] = [
               class="absolute inset-0 size-full object-cover object-top mix-blend-multiply"
             />
           </div>
-          {caption && <figcaption class="mt-2 text-[0.875rem] text-ink-3">{caption}</figcaption>}
+          {caption && <figcaption class="mt-2 text-label text-ink-3">{caption}</figcaption>}
         </figure>
       ) : (
         <div class="mt-8"><Plate tool={entry} developed quiet /></div>
@@ -126,7 +126,7 @@ const access: [string, string][] = [
 
   {related.length > 0 && (
     <section aria-labelledby="see-also" class="rule-4 mt-16 pt-4">
-      <h2 id="see-also" class="text-[1.75rem] font-black tracking-[-0.03em]">See also</h2>
+      <h2 id="see-also" class="text-title font-black">See also</h2>
       <ul class="mt-5 grid gap-x-10 gap-y-5 md:grid-cols-2">
         {related.map((r) => (
           <li class="rule-2 pt-3">
@@ -134,7 +134,7 @@ const access: [string, string][] = [
               {r.icon && <Ink src={r.icon} ink={r.iconInk} width={48} height={48} className="size-12 shrink-0 border-2 border-ink bg-paper-2" />}
               <span>
                 <span class="block text-[1.25rem] font-extrabold leading-tight group-hover:underline">{r.name}</span>
-                <span class="mt-1 block font-serif text-[1rem] leading-snug text-ink-2">{r.tagline}</span>
+                <span class="mt-1 block font-serif text-body-sm leading-snug text-ink-2">{r.tagline}</span>
               </span>
             </a>
           </li>

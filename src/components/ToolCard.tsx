@@ -8,30 +8,28 @@ export default function ToolCard({ tool, eager = false, lead = false }: { tool: 
   const href = `/tools/${tool.slug}`;
   const name = (
     <h3
-      className={`font-[850] leading-[1.02] tracking-[-0.03em] group-hover:underline group-focus-visible:underline ${
-        lead ? 'text-[clamp(1.75rem,3vw,2.75rem)]' : 'text-[1.75rem]'
-      }`}
+      className={`group-hover:underline group-focus-visible:underline ${lead ? 'text-title-lead' : 'text-title'}`}
     >
       {tool.name}
     </h3>
   );
   const details = (
     <>
-      <p className={`mt-2 font-serif leading-[1.5] text-ink-2 ${lead ? 'text-[1.25rem]' : 'text-[1.0625rem]'}`}>{tool.tagline}</p>
+      <p className={`mt-2 font-serif text-ink-2 ${lead ? 'text-[1.25rem] leading-normal' : 'text-body-sm'}`}>{tool.tagline}</p>
       {lead && tool.whenToUse && (
-        <p className="mt-4 font-serif text-[1.0625rem] leading-[1.55]">
+        <p className="mt-4 font-serif text-body-sm leading-[1.55]">
           <strong className="font-sans text-[0.94em] font-[800]">When to use it:</strong> {tool.whenToUse}
         </p>
       )}
       <div className="mt-auto pt-4">
-        <p className="flex items-baseline gap-2 border-2 border-ink px-2.5 py-1.5 font-mono text-[0.9375rem]">
-          <span className="font-sans text-[0.8125rem] font-[850] uppercase tracking-[0.06em] text-spot">Access</span>
+        <p className="flex items-baseline gap-2 border-2 border-ink px-2.5 py-1.5 font-mono text-label">
+          <span className="font-sans text-count font-[850] uppercase tracking-[0.06em] text-spot">Access</span>
           <a href={tool.url} rel="noopener" className="link min-w-0 [overflow-wrap:anywhere]">
             <AccessLabel url={tool.url} />
             <ArrowOut className="ml-1 inline align-baseline" />
           </a>
         </p>
-        <p className="mt-2 text-[0.875rem] text-ink-3">
+        <p className="mt-2 text-label text-ink-3">
           Filed under{' '}
           <a href={`/categories/${tool.category}`} className="link font-semibold">
             {tool.categoryName}

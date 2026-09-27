@@ -1,7 +1,6 @@
 @import "@fontsource-variable/libre-franklin";
 @import "@fontsource-variable/literata";
 @import "@fontsource/courier-prime/400.css";
-@import "@fontsource/courier-prime/700.css";
 @import "tailwindcss";
 
 /* Access to Tools: grey newsprint, warm black ink, one Earth-blue spot colour. */
@@ -17,6 +16,46 @@
   --font-sans: "Libre Franklin Variable", "Franklin Gothic Medium", "Arial Narrow", sans-serif;
   --font-serif: "Literata Variable", Georgia, serif;
   --font-mono: "Courier Prime", "Courier New", monospace;
+
+  /* Type roles (DESIGN.md › Typography). Each sets size, leading, tracking and weight together. */
+  --text-display: clamp(3.75rem, 13vw, 6rem);
+  --text-display--line-height: 0.82;
+  --text-display--letter-spacing: -0.045em;
+  --text-display--font-weight: 900;
+  --text-headline: clamp(2.75rem, 7vw, 5.25rem);
+  --text-headline--line-height: 0.9;
+  --text-headline--letter-spacing: -0.04em;
+  --text-headline--font-weight: 900;
+  --text-wordmark: 2.125rem;
+  --text-wordmark--line-height: 1;
+  --text-wordmark--letter-spacing: -0.045em;
+  --text-wordmark--font-weight: 900;
+  --text-title: 1.75rem;
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.03em;
+  --text-title--font-weight: 850;
+  --text-title-lead: clamp(1.75rem, 3vw, 2.75rem);
+  --text-title-lead--line-height: 1.02;
+  --text-title-lead--letter-spacing: -0.03em;
+  --text-title-lead--font-weight: 850;
+  --text-note: 1.375rem;
+  --text-note--line-height: 1.25;
+  --text-note--letter-spacing: -0.02em;
+  --text-note--font-weight: 850;
+  --text-search: 1.625rem;
+  --text-search--line-height: 1.5;
+  --text-lead: clamp(1.25rem, 2.2vw, 1.5rem);
+  --text-lead--line-height: 1.4;
+  --text-body: 1.1875rem;
+  --text-body--line-height: 1.62;
+  --text-body-sm: 1.0625rem;
+  --text-body-sm--line-height: 1.5;
+  --text-label: 0.9375rem;
+  --text-label--line-height: 1.5;
+  --text-count: 0.8125rem;
+  --text-count--line-height: 1.5;
+
+  --container-sheet: 1320px;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -162,7 +201,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem 1.5rem;
-    font-size: 1.0625rem;
+    font-size: var(--text-body-sm);
   }
   .index-item {
     display: inline-flex;
@@ -179,7 +218,7 @@
   .index-item:hover { color: var(--color-ink); border-bottom-color: var(--color-ink-3); }
   .index-item:is([aria-pressed="true"], [aria-current]) { color: var(--color-ink); border-bottom-color: var(--color-ink); }
   .index-item[data-empty] { color: var(--color-ink-3); font-weight: 500; }
-  .index-count { font-size: 0.8125rem; font-weight: 500; color: var(--color-ink-3); }
+  .index-count { font-size: var(--text-count); font-weight: 500; color: var(--color-ink-3); }
 
   /* Links inside content take the spot colour; navigation and headings stay ink. */
   .link, .review a { color: var(--color-spot); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--color-spot) 45%, transparent); }
@@ -188,8 +227,8 @@
   /* Review prose: the catalog's reading voice. Run-in heads ("When to use it:") set in Franklin. */
   .review {
     font-family: var(--font-serif);
-    font-size: 1.1875rem;
-    line-height: 1.62;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
     max-width: 66ch;
   }
   .review p { margin: 0 0 1.05em; }

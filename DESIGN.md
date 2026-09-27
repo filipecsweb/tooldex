@@ -28,6 +28,30 @@ typography:
     fontWeight: 850
     lineHeight: 1.02
     letterSpacing: "-0.03em"
+  title-lead:
+    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
+    fontSize: "clamp(1.75rem, 3vw, 2.75rem)"
+    fontWeight: 850
+    lineHeight: 1.02
+    letterSpacing: "-0.03em"
+  wordmark:
+    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
+    fontSize: "2.125rem"
+    fontWeight: 900
+    lineHeight: 1
+    letterSpacing: "-0.045em"
+  note:
+    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 850
+    lineHeight: 1.25
+    letterSpacing: "-0.02em"
+  search:
+    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
+    fontSize: "1.625rem"
+    fontWeight: 600
+    lineHeight: 1.5
+    letterSpacing: "-0.01em"
   lead:
     fontFamily: "Literata Variable, Georgia, serif"
     fontSize: "clamp(1.25rem, 2.2vw, 1.5rem)"
@@ -47,7 +71,12 @@ typography:
     fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 700
-    lineHeight: 1.4
+    lineHeight: 1.5
+  count:
+    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
+    fontSize: "0.8125rem"
+    fontWeight: 500
+    lineHeight: 1.5
   access-label:
     fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
     fontSize: "0.9375rem"
@@ -158,18 +187,21 @@ A three-ink newsprint palette: two papers, three ink strengths, and one spot blu
 
 **Display Font:** Libre Franklin Variable (with Franklin Gothic Medium, Arial Narrow)
 **Body Font:** Literata Variable (with Georgia)
-**Label/Mono Font:** Courier Prime (with Courier New), 400 and 700
+**Label/Mono Font:** Courier Prime (with Courier New), 400 only (the only weight access data uses)
 
 **Character:** A black-weight grotesque that shouts like a catalog masthead, set against a patient book serif that does all the reading. Courier is the typewritten access data, nothing else. All numerals are tabular.
 
 ### Hierarchy
+Every role below is a `--text-<role>` token in `@theme` (`src/styles/global.css`) carrying size, leading, tracking and weight together, used as `text-<role>`: display, headline, wordmark, title, title-lead, note, search, lead, body, body-sm, label, count. The sheet width is `--container-sheet` (`max-w-sheet`). New sizes join the ramp as tokens, never as one-off literals.
+
 - **Display** (900, clamp(3.75rem, 13vw, 6rem), 0.82, -0.045em): the "tooldex" masthead on the home page only.
 - **Headline** (900, clamp(2.75rem, 7vw, 5.25rem), 0.9, -0.04em): page H1s: tool name, section name, "Sections", "Not in the catalog".
 - **Title** (850, 1.75rem, 1.02, -0.03em): entry names on cards; the lead entry scales to clamp(1.75rem, 3vw, 2.75rem). Section heads such as "See also" and "Other sections" use the same size at 900. Section rows on the sections page use clamp(1.75rem, 3.5vw, 2.5rem) at 900. Smaller heads: the "How to read an entry" note at 1.375rem 850, "See also" names at 1.25rem 800.
 - **Lead** (Literata 400, clamp(1.25rem, 2.2vw, 1.5rem), 1.4, max 40ch): the tagline under an entry-page H1. On cards the tagline is body-sm in ink-2 (1.25rem on the lead entry).
 - **Body** (Literata 400, 1.1875rem, 1.62, max 66ch): the review. Run-in heads ("When to use it:", "Caveats:") are Franklin 800 at 0.94em, inline.
 - **Body-sm** (Literata 400, 1.0625rem, 1.5): taglines on cards, section descriptions, notes.
-- **Label** (Franklin 600 to 800, 0.9375rem): navigation, field labels, result summaries, `dt` terms, index items (1.0625rem, 700).
+- **Label** (Franklin 600 to 800, 0.9375rem): navigation, field labels, result summaries, `dt` terms, captions and the card's "Filed under" line; index items (1.0625rem, 700).
+- **Count** (Franklin 500, 0.8125rem, ink-3): counts beside section names in the index run and the footer.
 - **Access label** (Franklin 900, 0.9375rem, uppercase, 0.08em): the word "Access" heading the Access box, in spot. On the card's Access line it runs at 0.8125rem, 850, 0.06em.
 - **Data** (Courier Prime 400, 0.9375rem): URLs, repository paths, tags, and the plate source line.
 
