@@ -3,6 +3,25 @@
 @import "@fontsource/courier-prime/400.css";
 @import "tailwindcss";
 
+/* Local faces sized to the web fonts' metrics (from their files via @capsizecss/unpack), so text
+   set before the fonts arrive takes the same space and nothing reflows on the swap. */
+@font-face {
+  font-family: "Libre Franklin Fallback";
+  src: local("Arial"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 102.06%;
+  ascent-override: 94.65%;
+  descent-override: 24.1%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Literata Fallback";
+  src: local("Georgia"), local("Gelasio");
+  size-adjust: 107.67%;
+  ascent-override: 109.31%;
+  descent-override: 28.61%;
+  line-gap-override: 0%;
+}
+
 /* Access to Tools: grey newsprint, warm black ink, one Earth-blue spot colour. */
 @theme {
   --color-paper: #e9eae7;
@@ -13,8 +32,8 @@
   --color-spot: #1f55a6;
   --color-spot-deep: #163f7d;
 
-  --font-sans: "Libre Franklin Variable", "Franklin Gothic Medium", "Arial Narrow", sans-serif;
-  --font-serif: "Literata Variable", Georgia, serif;
+  --font-sans: "Libre Franklin Variable", "Libre Franklin Fallback", "Franklin Gothic Medium", "Arial Narrow", sans-serif;
+  --font-serif: "Literata Variable", "Literata Fallback", Georgia, serif;
   --font-mono: "Courier Prime", "Courier New", monospace;
 
   /* Type roles (DESIGN.md › Typography). Each sets size, leading, tracking and weight together. */
@@ -242,6 +261,10 @@
     font-size: 0.94em;
   }
 }
+
+/* A filtered URL (?q=, ?section=) is rendered unfiltered on the server; hold the list until the
+   island has applied the filter, so it doesn't paint the whole catalog and then collapse. */
+[data-filtering] #results { visibility: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

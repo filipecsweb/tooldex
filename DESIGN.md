@@ -187,6 +187,8 @@ A three-ink newsprint palette: two papers, three ink strengths, and one spot blu
 
 **Display Font:** Libre Franklin Variable (with Franklin Gothic Medium, Arial Narrow)
 **Body Font:** Literata Variable (with Georgia)
+
+The Franklin and Literata latin files are preloaded, and each family falls back first to a local face (Arial, Georgia) resized to its metrics with `size-adjust` and ascent/descent overrides, so the swap moves nothing. The lead entry's plate is fetched at high priority; a colour original hidden under its halftone at low.
 **Label/Mono Font:** Courier Prime (with Courier New), 400 only (the only weight access data uses)
 
 **Character:** A black-weight grotesque that shouts like a catalog masthead, set against a patient book serif that does all the reading. Courier is the typewritten access data, nothing else. All numerals are tabular.
@@ -238,7 +240,7 @@ Square everywhere (0 radius): buttons, fields, boxes, plates, icon frames. Borde
 
 ### Plates (signature)
 Every picture is a plate: a 1600:840 frame on plate grey, clipped, with the image anchored to its top.
-- **How the material is made:** `scripts/plates.ts` runs before dev and build. Each thumbnail (at 840px, cropped to the card aspect keeping the top) and each icon (at 240px, uncropped) is flattened on white, greyscaled, tone-mapped for newsprint (2nd percentile to solid ink, 98th to bare paper, gamma 0.9), blurred to half a cell, then screened as an amplitude-modulated halftone: 5px cells on a 45-degree screen, dot area tracking tone. Dots are printed in the ink colour (22, 21, 15) as alpha, saved as a 16-colour PNG carrying a "Derived, not generated" provenance note.
+- **How the material is made:** `scripts/plates.ts` runs before dev and build. Each thumbnail (at 840px, cropped to the card aspect keeping the top) and each icon (at 240px, uncropped) is flattened on white, greyscaled, tone-mapped for newsprint (2nd percentile to solid ink, 98th to bare paper, gamma 0.9; an image whose mean tone is under 0.4, such as a dark-UI screenshot, has its darkest tone lifted off solid ink by the shortfall, so it prints as an open screen instead of a black slab), blurred to half a cell, then screened as an amplitude-modulated halftone: 5px cells on a 45-degree screen, dot area tracking tone. Dots are printed in the ink colour (22, 21, 15) as alpha, saved as a 4-colour PNG (the screen needs no more; 16 cost 2.4 times the bytes) carrying a "Derived, not generated" provenance note.
 - **How it sits:** the colour original is multiplied into the paper beneath; the halftone plate sits on top. While a plate exists, the colour original is hidden.
 - **Developing:** on hover of the entry, or hover or focus of the link that wraps the plate, the halftone fades out and the colour comes up (opacity, 0.6s, `cubic-bezier(0.16, 1, 0.3, 1)`; instant under reduced motion). On entry pages the picture is already developed: a thumbnailed entry shows its colour image multiplied into the paper with no halftone; a composed plate is marked developed.
 

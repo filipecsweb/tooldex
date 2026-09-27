@@ -30,13 +30,15 @@ async function plate(src: string, out: string, width: number, cell: number) {
   const alpha = halftone(new Uint8Array(mapped), width, height, cell);
   const rgba = Buffer.alloc(width * height * 4);
   for (let i = 0; i < alpha.length; i++) rgba.set([...INK, alpha[i]], i * 4);
-  const png = await sharp(rgba, { raw: { width, height, channels: 4 } }).png({ palette: true, colours: 16, effort: 8 }).toBuffer();
+  const png = await sharp(rgba, { raw: { width, height, channels: 4 } }).png({ palette: true, colours: 4, effort: 8 }).toBuffer();
   const note = `Derived, not generated: 45-degree halftone of ${src.slice(ROOT.length)} by scripts/plates.ts.`;
   writeFileSync(out, pngWithText(png, PROVENANCE_KEY, note));
 }
 
 export async function makePlates(only?: string[], force = false) {
   mkdirSync(OUT, { recursive: true });
+  // A change to how plates are made (this file or the screen in lib.ts) stales every plate.
+  const made = Math.max(...['plates.ts', 'lib.ts'].map((f) => statSync(join(ROOT, 'scripts', f)).mtimeMs));
   const slugs = readdirSync(TOOLS, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
   const wanted = new Set<string>();
   for (const slug of slugs) {
@@ -46,7 +48,7 @@ export async function makePlates(only?: string[], force = false) {
       if (!existsSync(src)) continue;
       wanted.add(out);
       if (only && !only.includes(slug)) continue;
-      if (!force && existsSync(out) && statSync(out).mtimeMs >= statSync(src).mtimeMs) continue;
+      if (!force && existsSync(out) && statSync(out).mtimeMs >= Math.max(statSync(src).mtimeMs, made)) continue;
       await plate(src, out, job.width, job.cell);
     }
   }

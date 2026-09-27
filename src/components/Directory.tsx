@@ -26,6 +26,11 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     setReady(true);
   }, []);
 
+  // The list now shows the URL's filter; release the hold set by the inline script in index.astro.
+  useEffect(() => {
+    if (ready) delete document.documentElement.dataset.filtering;
+  }, [ready]);
+
   // On phones the run scrolls sideways; bring the chosen section into view (horizontally only).
   useEffect(() => {
     const ul = run.current;
@@ -58,8 +63,6 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
   }, []);
-
-  useEffect(() => setLimit(PAGE), [q, section, order]);
 
   const matched = useMemo(() => match(tools, q), [tools, q]);
   const counts = useMemo(() => {
@@ -100,7 +103,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
             id="find"
             type="search"
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => { setQ(e.target.value); setLimit(PAGE); }}
             onKeyDown={(e) => {
               // Enter or ↓ moves to the first result, past the section filters.
               if (e.key !== 'Enter' && e.key !== 'ArrowDown') return;
@@ -117,7 +120,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
         <div role="group" aria-label="Filter by section" className="self-end">
           <ul ref={run} className="index-run max-sm:-mx-4 max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:px-4 max-sm:pb-1 max-sm:[scrollbar-width:thin]">
             <li>
-              <button type="button" aria-pressed={!section} onClick={() => setSection('')} className="index-item">
+              <button type="button" aria-pressed={!section} onClick={() => { setSection(''); setLimit(PAGE); }} className="index-item">
                 All sections <span className="index-count">{matched.length}</span>
               </button>
             </li>
@@ -126,7 +129,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
                 <button
                   type="button"
                   aria-pressed={section === s.id}
-                  onClick={() => setSection(section === s.id ? '' : s.id)}
+                  onClick={() => { setSection(section === s.id ? '' : s.id); setLimit(PAGE); }}
                   className="index-item"
                   data-empty={!counts.get(s.id) || undefined}
                 >
@@ -146,7 +149,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
           Order
           <select
             value={order}
-            onChange={(e) => setOrder(e.target.value as Order)}
+            onChange={(e) => { setOrder(e.target.value as Order); setLimit(PAGE); }}
             className="border-b-2 border-ink bg-transparent py-0.5 font-bold text-ink"
           >
             <option value="newest">Newest first</option>
@@ -178,7 +181,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
           <p className="mt-2 font-serif text-body-sm text-ink-2">
             Try a broader word, a harness name like “codex”, or clear the search to browse every section.
           </p>
-          <button type="button" onClick={() => { setQ(''); setSection(''); input.current?.focus(); }} className={`${chip(true)} mt-4`}>
+          <button type="button" onClick={() => { setQ(''); setSection(''); setLimit(PAGE); input.current?.focus(); }} className={`${chip(true)} mt-4`}>
             Clear the search
           </button>
         </div>

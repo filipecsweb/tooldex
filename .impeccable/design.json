@@ -45,10 +45,10 @@
         { "source": "thumb.webp", "width": 840, "cell": 5, "crop": "card aspect 1600:840, keep top" },
         { "source": "icon.png", "width": 240, "cell": 5, "crop": "none" }
       ],
-      "toneMap": "2nd percentile to solid ink, 98th to bare paper, gamma 0.9; blurred to cell/2",
+      "toneMap": "2nd percentile to solid ink, 98th to bare paper, gamma 0.9; mean tone under 0.4 lifts the darkest tone off solid ink by the shortfall; blurred to cell/2",
       "screen": "amplitude-modulated, 45-degree, dot area tracks tone",
       "inkColor": "rgb(22, 21, 15) = --color-ink, as alpha",
-      "output": "16-colour PNG with a 'Derived, not generated' provenance text chunk",
+      "output": "4-colour PNG with a 'Derived, not generated' provenance text chunk",
       "compositing": "colour original mix-blend-mode: multiply beneath; halftone on top; colour hidden while a plate exists",
       "develops": "on .entry hover, wrapping link hover/focus-visible, or .plate[data-developed] (entry pages)"
     }

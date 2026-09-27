@@ -5,6 +5,9 @@ import Seo from '../components/Seo.astro';
 import Masthead from '../components/Masthead.astro';
 import { getCategories } from '../lib/data';
 import { SITE } from '../site';
+// The two faces every page sets first; preloading them keeps the fallback swap from shifting the layout.
+import franklin from '@fontsource-variable/libre-franklin/files/libre-franklin-latin-wght-normal.woff2?url';
+import literata from '@fontsource-variable/literata/files/literata-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -23,6 +26,8 @@ const sections = await getCategories();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#e9eae7" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={franklin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={literata} as="font" type="font/woff2" crossorigin />
     <Seo title={title} description={description} image={image} jsonLd={jsonLd} noindex={noindex} />
     <ClientRouter />
   </head>

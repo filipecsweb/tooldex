@@ -250,7 +250,9 @@ export function halftone(gray: Uint8Array, w: number, h: number, cell: number, a
 
 /**
  * Levels for printing on newsprint: the 2nd percentile goes to solid ink, the 98th to bare paper,
- * then a mild gamma. Dark screenshots keep real blacks; pale images gain contrast.
+ * then a mild gamma. Pale images gain contrast. A mostly dark image (a dark-UI screenshot, mean
+ * tone under 0.4) would print as a solid slab, so its darkest tone is lifted off solid ink by
+ * however far the mean falls short of 0.4: its shadows print as an open screen, its lights stay paper.
  */
 export function toneMap(gray: Uint8Array): Uint8Array {
   const hist = new Array(256).fill(0);
@@ -261,6 +263,10 @@ export function toneMap(gray: Uint8Array): Uint8Array {
     return 255;
   };
   const lo = at(0.02), hi = Math.max(at(0.98), lo + 1);
-  const lut = Array.from({ length: 256 }, (_, g) => Math.round(255 * Math.min(1, Math.max(0, (g - lo) / (hi - lo))) ** 0.9));
+  const tone = Array.from({ length: 256 }, (_, g) => Math.min(1, Math.max(0, (g - lo) / (hi - lo))) ** 0.9);
+  let mean = 0;
+  for (let v = 0; v < 256; v++) mean += hist[v] * tone[v];
+  const floor = Math.max(0, 0.4 - mean / gray.length);
+  const lut = tone.map((t) => Math.round(255 * (floor + (1 - floor) * t)));
   return gray.map((g) => lut[g]);
 }

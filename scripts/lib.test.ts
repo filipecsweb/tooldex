@@ -105,6 +105,14 @@ test('toneMap stretches the 2nd-98th percentile to full ink-to-paper range', asy
   assert.ok(out[50] > 60 && out[50] < 200);
 });
 
+test('toneMap lifts a mostly dark image off solid ink and keeps its lights as paper', async () => {
+  const { toneMap } = await import('./lib.ts');
+  const ui = new Uint8Array(100).map((_, i) => (i < 90 ? 5 : 250)); // dark UI, a little white text
+  const out = toneMap(ui);
+  assert.ok(out[0] > 60 && out[0] < 110); // background prints as an open screen, not a slab
+  assert.equal(out[99], 255);
+});
+
 test('botChallenged only excuses a Cloudflare challenge', () => {
   assert.equal(botChallenged(403, new Headers({ 'cf-mitigated': 'challenge' })), true);
   assert.equal(botChallenged(403, new Headers()), false);

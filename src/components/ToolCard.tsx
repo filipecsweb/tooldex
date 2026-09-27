@@ -48,7 +48,7 @@ export default function ToolCard({ tool, eager = false, lead = false, filed = tr
     return (
       <article className="entry grid grid-cols-[minmax(0,1fr)] gap-x-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <a href={href} tabIndex={-1} aria-hidden="true" className="block">
-          <Plate tool={tool} eager={eager} />
+          <Plate tool={tool} eager={eager} priority />
         </a>
         <div className="flex flex-col pt-4 lg:pt-0">
           <a href={href} className="group block text-ink no-underline">{name}</a>

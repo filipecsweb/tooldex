@@ -50,7 +50,7 @@ const site = Astro.site!;
   <article class="grid grid-cols-[minmax(0,1fr)] gap-x-12 gap-y-8 pt-6 lg:grid-cols-12">
     <header class="lg:col-span-8">
       <div class="flex min-w-0 items-center gap-4">
-        {d.icon && d.thumbnail && <Image src={d.icon} width={64} height={64} alt="" class="size-14 border-2 border-ink bg-paper-2 object-cover" />}
+        {d.icon && d.thumbnail && <Image src={d.icon} width={64} height={64} alt="" loading="eager" class="size-14 border-2 border-ink bg-paper-2 object-cover" />}
         <h1 class="min-w-0 text-headline">{d.name}</h1>
       </div>
       <p class="mt-5 max-w-[40ch] font-serif text-lead text-ink-2">{d.tagline}</p>

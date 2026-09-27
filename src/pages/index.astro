@@ -15,5 +15,12 @@ const sections = categories.map((c) => ({ id: c.id, name: c.data.name, count: c.
 <Base jsonLd={[websiteLd(Astro.site!)]}>
   <Masthead slot="masthead" size="full" entries={tools.length} sections={categories.length} />
   <h2 class="sr-only">Catalog</h2>
+  <script is:inline data-astro-rerun>
+    // Cleared by the directory once it has read the URL; the timeout is a safety net if it never hydrates.
+    if (location.search) {
+      document.documentElement.dataset.filtering = '';
+      setTimeout(() => delete document.documentElement.dataset.filtering, 3000);
+    }
+  </script>
   <Directory client:load tools={index} sections={sections} />
 </Base>
