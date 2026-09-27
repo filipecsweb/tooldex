@@ -239,7 +239,7 @@ Scripts: `dev`, `build` (`astro check && tool check --offline && astro build`), 
 
 Local: `herd proxy tooldex http://localhost:4401 --secure` once, then `npm run dev` serves `https://tooldex.test` (HMR works through the proxy). `npm run preview` runs the build in workerd; use it at `http://localhost:4401`, since its host check is separate from Vite's dev allowlist.
 
-Git: private GitHub repo `filipecsweb/tooldex` (origin), personal identity and personal gh account only. Commits at each step of §11.
+Git: public GitHub repo `filipecsweb/tooldex` (origin), personal gh account only, commits under the GitHub noreply email. Code is MIT; write-ups and data under `src/content/` are all rights reserved (see `LICENSE`). Commits at each step of §11.
 
 Deploy: confirm `npx wrangler whoami` is the personal login and matches the `account_id` pinned in `wrangler.jsonc`, then `npm run deploy` (tests are separate: run `npm test` and `npm run check` first).
 

@@ -73,3 +73,7 @@ If the site moves to a custom domain, update `site` in `astro.config.mjs` and th
 
 Generic, reusable for the next site: `astro.config.mjs`, `wrangler.jsonc`, `src/layouts/`, `src/styles/`, `src/site.ts`, `.claude/` (impeccable), the Setup and Deploy sections above.
 Site-specific: `src/content*`, `src/pages/tools`, `src/pages/categories`, `src/components/`, `src/lib/`, `scripts/`, `PRODUCT.md`, `DESIGN.md`.
+
+## Licence
+
+The code is MIT licensed (Copyright Filipe Seabra). The write-ups and curated data under `src/content/` are all rights reserved: read them here, but don't republish or adapt them without permission. Thumbnails, icons and logos of listed tools belong to their owners and are shown only to identify the tools. The vendored impeccable skill in `.claude/` is Apache-2.0. [LICENSE](LICENSE) has the details.
