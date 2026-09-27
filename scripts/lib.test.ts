@@ -84,3 +84,20 @@ test('pngWithText writes, replaces and reads a provenance chunk', async () => {
   assert.equal(pngText(twice, 'impeccable:prompt'), 'second');
   assert.equal((await sharp(twice).metadata()).width, 2); // still a valid PNG
 });
+
+test('halftone: white prints nothing, black prints most of each cell, mid-grey about half', async () => {
+  const { halftone } = await import('./lib.ts');
+  const ink = (v: number) => {
+    const a = halftone(new Uint8Array(60 * 60).fill(v), 60, 60, 6);
+    return a.reduce((s, x) => s + x, 0) / (a.length * 255);
+  };
+  assert.ok(ink(255) < 0.01);
+  assert.ok(ink(0) > 0.7);
+  assert.ok(Math.abs(ink(128) - 0.5) < 0.1);
+});
+
+test('toneMap lifts dark images more than light ones', async () => {
+  const { toneMap } = await import('./lib.ts');
+  assert.ok(toneMap(new Uint8Array(10).fill(10))[0] > 100); // dark image: black lifts to mid-grey
+  assert.ok(toneMap(new Uint8Array([10, 250, 250, 250]))[0] < 60); // light image: text stays dark
+});

@@ -11,6 +11,7 @@ import {
   guessCategory, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
   readmeH1, readmeImages, repoUrl, serializeRedirects, slugify, type Repo,
 } from './lib.ts';
+import { makePlates } from './plates.ts';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const TOOLS = join(ROOT, 'src/content/tools');
@@ -327,6 +328,7 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
   console.log(`Created src/content/tools/${slug}/index.md`);
   console.log(`  category: ${category}   (ranking: ${ranking.slice(0, 3).map((r) => `${r.id} ${r.score}`).join(', ')})`);
   await thumbs(slug, false);
+  await makePlates([slug]);
   console.log(`\nLeft for you: write the body, tighten the tagline (no counts or versions), review tags and category.`);
 }
 
@@ -434,9 +436,11 @@ const [cmd, ...args] = positionals;
 
 try {
   if (cmd === 'add') await add(args, values);
-  else if (cmd === 'thumbs') for (const s of args.length ? args : slugs()) await thumbs(s, values.force);
-  else if (cmd === 'mv') mv(args[0], args[1]);
-  else if (cmd === 'rm') rm(args[0]);
+  else if (cmd === 'thumbs') {
+    for (const s of args.length ? args : slugs()) await thumbs(s, values.force);
+    await makePlates(args.length ? args : undefined);
+  } else if (cmd === 'mv') { mv(args[0], args[1]); await makePlates(); }
+  else if (cmd === 'rm') { rm(args[0]); await makePlates(); }
   else if (cmd === 'check') await check(values.offline);
   else {
     console.log(`Usage:

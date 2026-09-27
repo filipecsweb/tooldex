@@ -31,8 +31,8 @@ const site = Astro.site!;
 >
   <nav aria-label="Breadcrumb" class="pt-4 text-[0.9375rem]">
     <ol class="flex flex-wrap gap-x-2 text-ink-3">
-      <li><a href="/" class="font-semibold text-ink-2 underline decoration-ink-3 hover:text-spot">Catalog</a> /</li>
-      <li><a href="/categories" class="font-semibold text-ink-2 underline decoration-ink-3 hover:text-spot">Sections</a> /</li>
+      <li><a href="/" class="link font-semibold">Catalog</a> /</li>
+      <li><a href="/categories" class="link font-semibold">Sections</a> /</li>
       <li aria-current="page" class="text-ink-2">{category.data.name}</li>
     </ol>
   </nav>
@@ -41,7 +41,7 @@ const site = Astro.site!;
     <h1 class="text-[clamp(2.75rem,7vw,5.25rem)] font-black leading-[0.9] tracking-[-0.04em] lg:col-span-7">{category.data.name}</h1>
     <div class="lg:col-span-5">
       <p class="max-w-[52ch] font-serif text-[1.1875rem] leading-[1.5]">{category.data.description}</p>
-      <p class="mt-3 font-mono text-[0.9375rem] text-ink-2">{tools.length} {tools.length === 1 ? 'entry' : 'entries'}</p>
+      <p class="mt-3 text-[0.9375rem] font-semibold text-ink-2">{tools.length} {tools.length === 1 ? 'entry' : 'entries'}</p>
     </div>
   </header>
 
@@ -53,13 +53,9 @@ const site = Astro.site!;
   {others.length > 0 && (
     <section aria-labelledby="other-sections" class="rule-4 mt-20 pt-4">
       <h2 id="other-sections" class="text-[1.75rem] font-black tracking-[-0.03em]">Other sections</h2>
-      <ul class="mt-4 flex flex-wrap gap-2">
+      <ul class="index-run mt-4">
         {others.map((c) => (
-          <li>
-            <a href={`/categories/${c.id}`} class="inline-flex items-baseline gap-1.5 border-2 border-ink px-3 py-1.5 text-[0.9375rem] font-bold text-ink no-underline hover:bg-paper-2">
-              {c.data.name} <span class="font-mono text-[0.8125rem] font-normal">{c.count}</span>
-            </a>
-          </li>
+          <li><a href={`/categories/${c.id}`} class="index-item">{c.data.name} <span class="index-count">{c.count}</span></a></li>
         ))}
       </ul>
     </section>

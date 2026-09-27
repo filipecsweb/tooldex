@@ -3,9 +3,12 @@ import { Image, getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArrowOut from '../../components/ArrowOut';
+import AccessLabel from '../../components/AccessLabel';
+import Ink from '../../components/Ink';
+import Plate from '../../components/Plate';
 import { getCategories, getTools, primaryUrl, relatedTools, type Tool } from '../../lib/data';
 import { toIndex } from '../../lib/tool-index';
-import { accessLabel, ctaLabel } from '../../lib/format';
+import { captionFor, ctaLabel } from '../../lib/format';
 import { breadcrumbLd, toolLd } from '../../lib/jsonld';
 
 export async function getStaticPaths() {
@@ -17,7 +20,10 @@ const { tool, all } = Astro.props as { tool: Tool; all: Tool[] };
 const d = tool.data;
 const categories = await getCategories(all);
 const category = categories.find((c) => c.id === d.category.id)!;
+const [entry] = await toIndex([tool], categories);
 const related = await toIndex(relatedTools(tool, all), categories);
+const provenance = import.meta.glob<{ prompt: string }>('/src/content/tools/*/thumb.webp.json', { eager: true, import: 'default' });
+const caption = captionFor(provenance[`/src/content/tools/${tool.id}/thumb.webp.json`]?.prompt);
 const { Content } = await render(tool);
 const og = d.thumbnail ? (await getImage({ src: d.thumbnail, width: 1200, height: 630, fit: 'cover', format: 'png' })).src : undefined;
 const site = Astro.site!;
@@ -39,8 +45,8 @@ const access: [string, string][] = [
 >
   <nav aria-label="Breadcrumb" class="pt-4 text-[0.9375rem]">
     <ol class="flex flex-wrap gap-x-2 text-ink-3">
-      <li><a href="/" class="font-semibold text-ink-2 underline decoration-ink-3 hover:text-spot">Catalog</a> /</li>
-      <li><a href={`/categories/${category.id}`} class="font-semibold text-ink-2 underline decoration-ink-3 hover:text-spot">{category.data.name}</a> /</li>
+      <li><a href="/" class="link font-semibold">Catalog</a> /</li>
+      <li><a href={`/categories/${category.id}`} class="link font-semibold">{category.data.name}</a> /</li>
       <li aria-current="page" class="text-ink-2">{d.name}</li>
     </ol>
   </nav>
@@ -48,7 +54,7 @@ const access: [string, string][] = [
   <article class="grid gap-x-12 gap-y-8 pt-6 lg:grid-cols-12">
     <header class="lg:col-span-8">
       <div class="flex items-center gap-4">
-        {d.icon && <Image src={d.icon} width={64} height={64} alt="" class="size-14 border-2 border-ink bg-paper-2 object-cover" />}
+        {d.icon && d.thumbnail && <Image src={d.icon} width={64} height={64} alt="" class="size-14 border-2 border-ink bg-paper-2 object-cover" />}
         <h1 class="text-[clamp(2.75rem,7vw,5.25rem)] font-black leading-[0.9] tracking-[-0.04em]">{d.name}</h1>
       </div>
       <p class="mt-5 max-w-[40ch] font-serif text-[clamp(1.25rem,2.2vw,1.5rem)] leading-[1.4] text-ink-2">{d.tagline}</p>
@@ -69,45 +75,50 @@ const access: [string, string][] = [
           {access.map(([label, url]) => (
             <div>
               <dt class="font-bold">{label}</dt>
-              <dd class="font-mono break-all"><a href={url} rel="noopener" class="text-ink underline decoration-ink-3 hover:text-spot">{accessLabel(url)}</a></dd>
+              <dd class="font-mono [overflow-wrap:anywhere]"><a href={url} rel="noopener" class="link"><AccessLabel url={url} /></a></dd>
             </div>
           ))}
           <div>
             <dt class="font-bold">Filed under</dt>
-            <dd><a href={`/categories/${category.id}`} class="text-ink underline decoration-ink-3 hover:text-spot">{category.data.name}</a></dd>
+            <dd><a href={`/categories/${category.id}`} class="link">{category.data.name}</a></dd>
           </div>
           {d.tags.length > 0 && (
             <div>
               <dt class="font-bold">Tags</dt>
               <dd class="mt-1 flex flex-wrap gap-x-3 gap-y-1 font-mono">
-                {d.tags.map((tag) => <a href={`/?q=${encodeURIComponent(tag)}`} class="text-ink-2 underline decoration-ink-3 hover:text-spot">{tag}</a>)}
+                {d.tags.map((tag) => <a href={`/?q=${encodeURIComponent(tag)}`} class="link">{tag}</a>)}
               </dd>
             </div>
           )}
           <div>
             <dt class="font-bold">Listed</dt>
-            <dd class="font-mono text-ink-2"><time datetime={d.added.toISOString().slice(0, 10)}>{d.added.toISOString().slice(0, 10)}</time></dd>
+            <dd class="text-ink-2"><time datetime={d.added.toISOString().slice(0, 10)}>{d.added.toISOString().slice(0, 10)}</time></dd>
           </div>
         </dl>
       </div>
     </aside>
 
     <div class="lg:col-span-8">
-      {d.thumbnail && (
-        <div class="plate" data-developed transition:name={`plate-${tool.id}`}>
-          <Image
-            src={d.thumbnail}
-            widths={[640, 960, 1280, 1600]}
-            sizes="(min-width: 1100px) 840px, 100vw"
-            alt={`${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`}
-            class="plate-img"
-            loading="eager"
-            fetchpriority="high"
-          />
-        </div>
+      {d.thumbnail ? (
+        <figure>
+          <div class="plate" data-developed transition:name={`plate-${tool.id}`}>
+            <Image
+              src={d.thumbnail}
+              widths={[640, 960, 1280, 1600]}
+              sizes="(min-width: 1100px) 840px, 100vw"
+              alt={`${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`}
+              class="absolute inset-0 size-full object-cover object-top"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+          {caption && <figcaption class="mt-2 text-[0.875rem] text-ink-3">{caption}</figcaption>}
+        </figure>
+      ) : (
+        <Plate tool={entry} developed eager />
       )}
 
-      <div class={`review ${d.thumbnail ? 'mt-10' : ''}`}>
+      <div class="review mt-10">
         <Content />
       </div>
     </div>
@@ -121,7 +132,7 @@ const access: [string, string][] = [
         {related.map((r) => (
           <li class="rule-2 pt-3">
             <a href={`/tools/${r.slug}`} class="group flex gap-4 text-ink no-underline">
-              {r.icon && <img src={r.icon} width="48" height="48" alt="" loading="lazy" class="size-12 shrink-0 border-2 border-ink object-cover grayscale mix-blend-multiply group-hover:grayscale-0" />}
+              {r.icon && <Ink src={r.icon} ink={r.iconInk} width={48} height={48} className="size-12 shrink-0 border-2 border-ink bg-paper-2" />}
               <span>
                 <span class="block text-[1.25rem] font-extrabold leading-tight group-hover:underline">{r.name}</span>
                 <span class="mt-1 block font-serif text-[1rem] leading-snug text-ink-2">{r.tagline}</span>

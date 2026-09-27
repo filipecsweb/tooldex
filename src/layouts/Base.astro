@@ -46,7 +46,7 @@ const sections = await getCategories();
             {sections.map((s) => (
               <li class="flex items-baseline justify-between gap-3 border-b border-ink/25 pb-1.5">
                 <a href={`/categories/${s.id}`} class="font-semibold text-ink no-underline hover:underline">{s.data.name}</a>
-                <span class="font-mono text-[0.875rem] text-ink-3">{s.count}</span>
+                <span class="text-[0.875rem] text-ink-3">{s.count}</span>
               </li>
             ))}
           </ul>

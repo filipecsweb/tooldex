@@ -3,6 +3,7 @@
 import { getImage } from 'astro:assets';
 import type { Category, Tool } from './data';
 import { primaryUrl } from './data';
+import { inkFor } from './plates';
 
 export type IndexTool = {
   slug: string;
@@ -16,6 +17,9 @@ export type IndexTool = {
   source: string;
   thumb: { src: string; width: number; height: number } | null;
   icon: string | null;
+  /** Halftone plates (null until scripts/plates.ts has run). */
+  ink: string | null;
+  iconInk: string | null;
 };
 
 export async function toIndex(tools: Tool[], categories: Category[]): Promise<IndexTool[]> {
@@ -39,6 +43,8 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
           ? { src: thumb.src, width: Number(thumb.attributes.width), height: Number(thumb.attributes.height) }
           : null,
         icon: icon?.src ?? null,
+        ink: thumb ? inkFor(t.id, 'thumb') : null,
+        iconInk: icon ? inkFor(t.id, 'icon') : null,
       };
     }),
   );

@@ -26,7 +26,7 @@ const here = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
           <p class="max-w-[52ch] font-serif text-[1.1875rem] leading-[1.5]">
             A catalog of agent tooling: skills, plugins, subagents, MCP servers and CLIs for Claude Code, Codex and the rest. Each entry says what the tool does, when to reach for it, and where to get it.
           </p>
-          <p class="mt-3 font-mono text-[0.9375rem] text-ink-2">{entries} {entries === 1 ? 'entry' : 'entries'} in {sections} {sections === 1 ? 'section' : 'sections'}</p>
+          <p class="mt-3 text-[0.9375rem] font-semibold text-ink-2">{entries} {entries === 1 ? 'entry' : 'entries'} in {sections} {sections === 1 ? 'section' : 'sections'}</p>
         </div>
       </div>
     </>

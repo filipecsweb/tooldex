@@ -8,3 +8,18 @@ export function accessLabel(url: string): string {
 
 /** What the primary button says. */
 export const ctaLabel = (hasWebsite: boolean) => (hasWebsite ? 'Visit the website' : 'View the repository');
+
+/** Caption for an entry's plate, from the thumbnail's provenance note written by scripts/tool.ts. */
+export function captionFor(provenance: string | undefined): string | null {
+  if (!provenance) return null;
+  if (provenance.startsWith('Supplied by hand')) return null;
+  const from = provenance.match(/^Sourced, not generated: ([^(]+) \(/)?.[1]?.trim();
+  return (
+    {
+      'website og:image': "The project's own preview image",
+      'website screenshot': "The project's website",
+      'repo social preview': "The repository's social preview",
+      'README image': "From the project's README",
+    }[from ?? ''] ?? null
+  );
+}

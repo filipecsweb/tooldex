@@ -220,3 +220,36 @@ function pngChunks(png: Uint8Array) {
   }
   return out;
 }
+
+// ---------- halftone ----------
+
+/**
+ * Amplitude-modulated halftone screen. `gray` is 0 (black) to 255 (white), already tone-mapped and
+ * blurred to about half a cell. Returns ink alpha per pixel: dot area in each cell tracks its tone.
+ */
+export function halftone(gray: Uint8Array, w: number, h: number, cell: number, angle = Math.PI / 4): Uint8Array {
+  const out = new Uint8Array(w * h);
+  const cos = Math.cos(angle), sin = Math.sin(angle);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const u = x * cos + y * sin, v = -x * sin + y * cos;
+      const cu = (Math.floor(u / cell) + 0.5) * cell, cv = (Math.floor(v / cell) + 0.5) * cell;
+      const sx = Math.min(w - 1, Math.max(0, Math.round(cu * cos - cv * sin)));
+      const sy = Math.min(h - 1, Math.max(0, Math.round(cu * sin + cv * cos)));
+      const cover = 1 - gray[sy * w + sx] / 255;
+      const r = cell * Math.sqrt(cover / Math.PI);
+      const a = Math.min(1, Math.max(0, r - Math.hypot(u - cu, v - cv) + 0.5));
+      out[y * w + x] = Math.round(a * 255);
+    }
+  }
+  return out;
+}
+
+/** Tone curve for printing on newsprint: lift shadows hard on dark images so they read as mid-greys. */
+export function toneMap(gray: Uint8Array): Uint8Array {
+  let sum = 0;
+  for (const g of gray) sum += g;
+  const lift = sum / gray.length / 255 < 0.4 ? 0.4 : 0.12;
+  const lut = Array.from({ length: 256 }, (_, g) => Math.round(255 * (lift + (1 - lift) * (g / 255) ** 0.85)));
+  return gray.map((g) => lut[g]);
+}

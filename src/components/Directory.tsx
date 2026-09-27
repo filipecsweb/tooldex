@@ -69,6 +69,10 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
       ? `All ${tools.length} ${tools.length === 1 ? 'entry' : 'entries'}`
       : `${results.length} of ${tools.length} entries${query ? ` for “${query}”` : ''}${sectionName ? ` in ${sectionName}` : ''}`;
 
+  // The unfiltered catalog reads as a spread: the first entry leads across two columns,
+  // and a note on how to read the catalog closes the grid.
+  const spread = !query && !section && order === 'newest';
+
   const chip = (active: boolean) =>
     `inline-flex items-baseline gap-1.5 border-2 px-3 py-1.5 text-[0.9375rem] font-bold transition-colors duration-150 ${
       active ? 'border-ink bg-ink text-paper' : 'border-ink bg-transparent text-ink hover:bg-paper-2'
@@ -93,21 +97,27 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
             className="mt-2 w-full border-0 border-b-[3px] border-ink bg-transparent px-0 py-2 text-[1.625rem] font-semibold tracking-[-0.01em] outline-none focus-visible:border-spot focus-visible:outline-none"
           />
         </div>
-        <nav aria-label="Sections" className="flex flex-wrap content-end gap-2">
-          <button type="button" aria-pressed={!section} onClick={() => setSection('')} className={chip(!section)}>
-            All <span className="font-mono text-[0.8125rem] font-normal">{matched.length}</span>
-          </button>
-          {sections.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              aria-pressed={section === s.id}
-              onClick={() => setSection(section === s.id ? '' : s.id)}
-              className={`${chip(section === s.id)} ${!counts.get(s.id) && section !== s.id ? 'opacity-45' : ''}`}
-            >
-              {s.name} <span className="font-mono text-[0.8125rem] font-normal">{counts.get(s.id) ?? 0}</span>
-            </button>
-          ))}
+        <nav aria-label="Sections" className="self-end">
+          <ul className="index-run">
+            <li>
+              <button type="button" aria-pressed={!section} onClick={() => setSection('')} className="index-item">
+                All sections <span className="index-count">{matched.length}</span>
+              </button>
+            </li>
+            {sections.map((s) => (
+              <li key={s.id}>
+                <button
+                  type="button"
+                  aria-pressed={section === s.id}
+                  onClick={() => setSection(section === s.id ? '' : s.id)}
+                  className="index-item"
+                  data-empty={!counts.get(s.id) || undefined}
+                >
+                  {s.name} <span className="index-count">{counts.get(s.id) ?? 0}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </nav>
       </section>
 
@@ -120,7 +130,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
           <select
             value={order}
             onChange={(e) => setOrder(e.target.value as Order)}
-            className="border-b-2 border-ink bg-transparent py-0.5 font-bold text-ink outline-none focus-visible:border-spot"
+            className="border-b-2 border-ink bg-transparent py-0.5 font-bold text-ink"
           >
             <option value="newest">Newest first</option>
             <option value="name">A to Z</option>
@@ -131,10 +141,19 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
       {results.length ? (
         <ul className="grid grid-cols-1 gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
           {results.slice(0, limit).map((t, i) => (
-            <li key={t.slug}>
-              <ToolCard tool={t} eager={i < 3} />
+            <li key={t.slug} className={spread && i === 0 ? 'sm:col-span-2 lg:col-span-3' : undefined}>
+              <ToolCard tool={t} eager={i < 3} lead={spread && i === 0} />
             </li>
           ))}
+          {spread && (
+            <li className="rule-2 pt-3">
+              <h3 className="text-[1.375rem] font-[850] leading-tight tracking-[-0.02em]">How to read an entry</h3>
+              <div className="mt-3 space-y-3 font-serif text-[1.0625rem] leading-[1.55] text-ink-2">
+                <p>Every entry is written by tooldex: what the tool does, when you would reach for it, and the caveats worth knowing first.</p>
+                <p>The Access line goes to the tool's own website or repository. That page stays the source of truth for installation, versions and everything that changes week to week.</p>
+              </div>
+            </li>
+          )}
         </ul>
       ) : (
         <div className="max-w-[60ch] border-2 border-ink p-6">

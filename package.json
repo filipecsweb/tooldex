@@ -7,7 +7,9 @@
     "node": ">=24"
   },
   "scripts": {
+    "predev": "node scripts/plates.ts",
     "dev": "astro dev",
+    "prebuild": "node scripts/plates.ts",
     "build": "astro check && node scripts/tool.ts check --offline && astro build",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy",
