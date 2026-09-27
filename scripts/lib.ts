@@ -112,6 +112,9 @@ export function readmeImages(md: string, repo: Repo, branch = 'HEAD'): string[] 
 /** A thumbnail candidate must be big and roughly landscape-card shaped. */
 export const goodThumb = (w: number, h: number) => w >= 640 && w / h >= 1.3 && w / h <= 2.2;
 
+/** A link check blocked by a Cloudflare bot challenge: the page is up, we just can't verify it. */
+export const botChallenged = (status: number, headers: Headers) => status === 403 && headers.get('cf-mitigated') === 'challenge';
+
 /** Centered crop box with the target aspect ratio. */
 export function cropBox(w: number, h: number, aspect = THUMB.width / THUMB.height) {
   if (w / h > aspect) {

@@ -40,5 +40,41 @@
     "name": "Agent teams",
     "description": "Rosters of specialist subagents and personas you install as a set, so one harness can act as a whole team of experts.",
     "keywords": ["agents", "subagents", "personas", "team", "roster", "agency", "multi-agent", "specialists", "roles"]
+  },
+  {
+    "id": "infrastructure",
+    "name": "Models & infrastructure",
+    "description": "The plumbing under your agents: gateways, routers and proxies that decide which model answers, keep requests flowing when a provider fails, and track what it all costs.",
+    "keywords": ["ai-gateway", "gateway", "llm-gateway", "router", "model-routing", "proxy", "openai-compatible", "providers", "fallback", "rate-limit", "inference"]
+  },
+  {
+    "id": "media",
+    "name": "Media generation",
+    "description": "Tools for making images, video, audio and 3D with generative models, from node-graph pipelines to generators your agent can call.",
+    "keywords": ["image-generation", "video-generation", "audio-generation", "stable-diffusion", "diffusion", "text-to-image", "comfyui", "flux", "generative-art"]
+  },
+  {
+    "id": "careers",
+    "name": "Careers & job search",
+    "description": "Agent workflows for finding work: sorting job postings, tailoring CVs and cover letters, and preparing for interviews.",
+    "keywords": ["job-search", "job-application", "career", "cv", "resume", "cover-letter", "interview-preparation", "hiring"]
+  },
+  {
+    "id": "productivity",
+    "name": "Desktop & productivity",
+    "description": "Everyday desktop tools with AI built in: launchers, clipboard and snippet managers, and the small utilities that sit between you and your work.",
+    "keywords": ["productivity", "launcher", "macos", "windows", "desktop", "clipboard", "hotkeys", "snippets", "raycast", "spotlight"]
+  },
+  {
+    "id": "data",
+    "name": "Data extraction",
+    "description": "Tools that pull structured data out of the web and out of documents: scrapers and crawlers, OCR and document parsers, and monitors that watch pages for changes.",
+    "keywords": ["scraping", "web-scraping", "crawler", "crawling", "data-extraction", "ocr", "document-parsing", "pdf-extractor", "change-detection", "web-monitoring"]
+  },
+  {
+    "id": "sales",
+    "name": "Sales & CRM",
+    "description": "Agent tooling for selling: CRMs that keep themselves up to date, contact and company research, and pipeline work handed to agents.",
+    "keywords": ["crm", "sales", "pipeline", "leads", "lead-generation", "enrichment", "prospecting", "outreach", "deals"]
   }
 ]

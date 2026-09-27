@@ -199,7 +199,7 @@ npm run tool check [--offline]
 - Body is not the `TODO` placeholder.
 - Every `_redirects` source is not a live page, and every target resolves to a live page or category.
 - Every category id referenced exists (also enforced by the schema).
-- Unless `--offline`: `repo`, `website` and `links` return < 400 (HEAD, falling back to GET; 8 in parallel; 10 s timeout).
+- Unless `--offline`: `repo`, `website` and `links` return < 400 (HEAD, falling back to GET; 8 in parallel; 10 s timeout). A 403 carrying Cloudflare's `cf-mitigated: challenge` is a note ("behind a bot challenge, not verified"), not an error: the site is up but refuses scripts.
 
 Exit code is non-zero on any error. `npm run build` runs `check --offline`, so unwritten bodies, orphans and broken redirects block a build. An unknown category also fails the build (Astro itself only logs it).
 

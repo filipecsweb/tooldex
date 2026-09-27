@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  classifyHomepage, cropBox, goodThumb, guessCategory, normalizeRedirects, parseGithubRepo,
+  botChallenged, classifyHomepage, cropBox, goodThumb, guessCategory, normalizeRedirects, parseGithubRepo,
   parseRedirects, pickName, pngFromIco, pngText, pngWithText, readmeImages, slugify,
 } from './lib.ts';
 
@@ -103,4 +103,10 @@ test('toneMap stretches the 2nd-98th percentile to full ink-to-paper range', asy
   assert.equal(out[0], 0); // darkest prints solid
   assert.equal(out[99], 255); // lightest is bare paper
   assert.ok(out[50] > 60 && out[50] < 200);
+});
+
+test('botChallenged only excuses a Cloudflare challenge', () => {
+  assert.equal(botChallenged(403, new Headers({ 'cf-mitigated': 'challenge' })), true);
+  assert.equal(botChallenged(403, new Headers()), false);
+  assert.equal(botChallenged(404, new Headers({ 'cf-mitigated': 'challenge' })), false);
 });

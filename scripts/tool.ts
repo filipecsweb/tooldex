@@ -7,7 +7,7 @@ import { parseArgs } from 'node:util';
 import sharp, { type Sharp } from 'sharp';
 import YAML from 'yaml';
 import {
-  BODY_PLACEHOLDER, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
+  BODY_PLACEHOLDER, botChallenged, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
   guessCategory, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
   readmeH1, readmeImages, repoUrl, serializeRedirects, slugify, type Repo,
 } from './lib.ts';
@@ -405,7 +405,8 @@ async function check(offline: boolean) {
         try {
           const res = await get(u, { headers: { accept: 'text/html,*/*' } }, 10000);
           await res.body?.cancel();
-          if (res.status >= 400) errors.push(`tools/${urls.get(u)}: ${u} returned ${res.status}`);
+          if (botChallenged(res.status, res.headers)) notes.push(`tools/${urls.get(u)}: ${u} is behind a bot challenge, not verified`);
+          else if (res.status >= 400) errors.push(`tools/${urls.get(u)}: ${u} returned ${res.status}`);
           else if (new URL(res.url).hostname === 'github.com' && res.url.replace(/\/$/, '').toLowerCase() !== u.replace(/\/$/, '').toLowerCase())
             notes.push(`tools/${urls.get(u)}: ${u} now redirects to ${res.url}`);
         } catch (err) {
