@@ -6,6 +6,7 @@ import ToolCard from './ToolCard';
 type Section = { id: string; name: string; count: number };
 type Order = 'newest' | 'name';
 const PAGE = 48;
+const SLASH_OFF = 'tooldex:slash-off'; // localStorage: the reader turned the "/" shortcut off
 
 /** The catalog's finding aid: search, section index and order, mirrored to the URL. */
 export default function Directory({ tools, sections }: { tools: IndexTool[]; sections: Section[] }) {
@@ -14,6 +15,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
   const [order, setOrder] = useState<Order>('newest');
   const [limit, setLimit] = useState(PAGE);
   const [ready, setReady] = useState(false);
+  const [slash, setSlash] = useState(true);
   const input = useRef<HTMLInputElement>(null);
   const run = useRef<HTMLUListElement>(null);
 
@@ -50,8 +52,17 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     history.replaceState(history.state, '', qs ? `?${qs}` : location.pathname);
   }, [q, section, order, ready]);
 
-  // "/" jumps to the search field, as on most catalogs and code hosts.
+  // "/" jumps to the search field, as on most catalogs and code hosts. A one-character shortcut
+  // can be triggered by speech input or a stray key, so it can be turned off (WCAG 2.1.4).
   useEffect(() => {
+    try { setSlash(localStorage.getItem(SLASH_OFF) === null); } catch { /* storage blocked: keep it on */ }
+  }, []);
+  const toggleSlash = () => {
+    try { slash ? localStorage.setItem(SLASH_OFF, '1') : localStorage.removeItem(SLASH_OFF); } catch { /* this visit only */ }
+    setSlash(!slash);
+  };
+  useEffect(() => {
+    if (!slash) return;
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
       if (e.ctrlKey || e.metaKey || e.altKey) return; // leave browser and OS shortcuts alone
@@ -62,7 +73,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     };
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
-  }, []);
+  }, [slash]);
 
   const matched = useMemo(() => match(tools, q), [tools, q]);
   const counts = useMemo(() => {
@@ -95,9 +106,14 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     <div>
       <section aria-label="Find a tool" className="grid grid-cols-[minmax(0,1fr)] gap-5 pb-8 pt-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
         <div>
-          <label htmlFor="find" className="block text-label font-extrabold">
-            Find a tool <span aria-hidden="true" className="font-normal text-ink-3 pointer-coarse:hidden">(press /)</span>
-          </label>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+            <label htmlFor="find" className="text-label font-extrabold">
+              Find a tool{slash && <span aria-hidden="true" className="font-normal text-ink-3 pointer-coarse:hidden"> (press /)</span>}
+            </label>
+            <button type="button" onClick={toggleSlash} className="text-count text-ink-3 underline decoration-1 underline-offset-2 hover:text-ink pointer-coarse:py-2">
+              {slash ? 'Turn off the / shortcut' : 'Turn on the / shortcut'}
+            </button>
+          </div>
           <input
             ref={input}
             id="find"
@@ -110,7 +126,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
               const first = document.querySelector<HTMLElement>('#results a.group');
               if (first) { e.preventDefault(); first.focus(); }
             }}
-            aria-keyshortcuts="/"
+            aria-keyshortcuts={slash ? '/' : undefined}
             placeholder="diagrams, security, codex…"
             autoComplete="off"
             spellCheck={false}
