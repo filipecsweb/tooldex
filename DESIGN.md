@@ -206,7 +206,7 @@ Every role below is a `--text-<role>` token in `@theme` (`src/styles/global.css`
 - **Data** (Courier Prime 400, 0.9375rem): URLs, repository paths, tags, and the plate source line.
 
 ### Named Rules
-**The Typewriter Rule.** Courier Prime is only for access data: URLs (shown as host/path, breaking only after a slash), repository paths, and tags. It never sets prose, headings, counts, dates or UI labels.
+**The Typewriter Rule.** Courier Prime is only for access data: URLs (shown as host/path, breaking after a slash; a segment wider than its line wraps inside itself), repository paths, and tags. It never sets prose, headings, counts, dates or UI labels.
 
 **The Weight Carries It Rule.** Names and heads are Franklin at 850 to 900 with tight negative tracking; there is no light or regular display. Reading text is never Franklin.
 
@@ -214,7 +214,7 @@ Every role below is a `--text-<role>` token in `@theme` (`src/styles/global.css`
 
 One 1320px sheet, centred, with 1rem side gutters (1.5rem from 640px). The home masthead splits on a 12-column grid at 1024px: name in six columns, catalog statement and live counts in the other six. The Find row sits under it: search field over five fractions, the section index run over seven.
 
-Entries paste up in a grid of one, two (640px) and three (1024px) columns with 2.5rem column gaps and 3.5rem row gaps. In the unfiltered catalog and on every section page the first entry leads across the full row, plate over two columns and text in the third; on the home page a "How to read an entry" note closes the grid. Entry pages use 12 columns: header, review and then the picture in eight, the Access box in four on the right, sticky from 1.5rem, spanning both rows. The explanation is the product, so the review comes before the picture. Below 1024px everything stacks in reading order, the Access box directly after the header.
+Entries paste up in a grid of one, two (640px) and three (1024px) columns with 2.5rem column gaps and 3.5rem row gaps. In the unfiltered catalog and on every section page the first entry leads across the full row, plate over two columns and text in the third; on the home page a "How to read an entry" note closes the grid. Entry pages use 12 columns: header, review and then the picture in eight, the Access box in four on the right, sticky from 1.5rem, spanning both rows. The explanation is the product, so the review comes before the picture. Below 1024px everything stacks in reading order: the header, then the Access box holding only its label and button, then the review and the picture, then the rest of the Access list (links, section, tags, date) as a block on a 2px rule headed "Details". The review starts on the first phone screen. Every grid declares `minmax(0, 1fr)` columns so a long URL or name can never widen the page; headings break a word wider than their column.
 
 The first entry on a section rule sits directly on that 4px rule (0.75rem above its plate) and draws no 2px rule of its own, so a section never opens on a double rule. Section lists everywhere (index run, sections page, footer, 404, "Other sections") run A to Z by name; the footer's two columns read down, not across.
 
@@ -261,9 +261,11 @@ For tools without a thumbnail.
 Borderless except a 3px ink underline; Franklin 600 at 1.625rem, -0.01em. On focus the underline turns spot and no outline is drawn. The caret is spot; the placeholder ink-3. Its label is Franklin 800 with a light "(press /)" hint; "/" focuses it from anywhere.
 
 ### Section index run
-A typeset run of section names with counts that doubles as the filter (buttons with `aria-pressed` on home; links elsewhere, `aria-current` where applicable). Items wrap with 0.35rem by 1.5rem gaps at 1.0625rem Franklin 700 in ink-2, counts at 0.8125rem 500 in ink-3. Hover: ink text over a 3px ink-3 underline. Current: ink text over a 3px ink underline. Empty sections drop to ink-3 at 500. It is reused as "Other sections". The 404 page does not repeat it (the footer already lists every section); it offers a search field instead, pre-filled from the dead address.
+A typeset run of section names with counts that doubles as the filter (buttons with `aria-pressed` on home; links elsewhere, `aria-current` where applicable). Items wrap as whole names (never inside one) with 0.35rem by 1.5rem gaps; on phones (below 640px) the home filter run is a single line that scrolls sideways, bleeding to the screen edge, so the first screen reaches the entries, and the chosen section scrolls into view at 1.0625rem Franklin 700 in ink-2, counts at 0.8125rem 500 in ink-3. Hover: ink text over a 3px ink-3 underline. Current: ink text over a 3px ink underline. Empty sections drop to ink-3 at 500. It is reused as "Other sections". The 404 page does not repeat it (the footer already lists every section); it offers a search field instead, pre-filled from the dead address.
 
 ### Navigation
+On touch screens (`pointer: coarse`) small text links (nav, breadcrumbs, Access list links and tags) get 0.5rem of vertical hit padding without changing the layout, and tag rows open to 0.75rem gaps.
+
 Masthead: full on home (tagline and nav above a 2px rule, then the display name and statement, then a 4px rule), compact everywhere else (Franklin 900 name at 2.125rem left, nav right, 4px rule). Nav links are Franklin 700 ink, underlined on hover and when current. Breadcrumbs are ink links at 600, underlined on hover, with ink-3 slashes. The footer repeats the name, a Literata note and the section list with counts.
 
 ## Do's and Don'ts

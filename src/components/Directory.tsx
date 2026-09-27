@@ -15,6 +15,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
   const [limit, setLimit] = useState(PAGE);
   const [ready, setReady] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+  const run = useRef<HTMLUListElement>(null);
 
   // Read state from the URL once, after hydration (the server render has no URL query).
   useEffect(() => {
@@ -24,6 +25,14 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     setOrder(p.get('order') === 'name' ? 'name' : 'newest');
     setReady(true);
   }, []);
+
+  // On phones the run scrolls sideways; bring the chosen section into view (horizontally only).
+  useEffect(() => {
+    const ul = run.current;
+    const b = ul?.querySelector('[aria-pressed="true"]');
+    if (!ul || !b || !section || ul.scrollWidth <= ul.clientWidth) return;
+    ul.scrollLeft += b.getBoundingClientRect().left - ul.getBoundingClientRect().left - 16;
+  }, [section, ready]);
 
   // Mirror state to the URL so a filtered view can be shared and survives back/forward.
   useEffect(() => {
@@ -80,7 +89,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
 
   return (
     <div>
-      <section aria-label="Find a tool" className="grid gap-5 pb-8 pt-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
+      <section aria-label="Find a tool" className="grid grid-cols-[minmax(0,1fr)] gap-5 pb-8 pt-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
         <div>
           <label htmlFor="find" className="block text-label font-extrabold">
             Find a tool <span className="font-normal text-ink-3 pointer-coarse:hidden">(press /)</span>
@@ -98,7 +107,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
           />
         </div>
         <nav aria-label="Sections" className="self-end">
-          <ul className="index-run">
+          <ul ref={run} className="index-run max-sm:-mx-4 max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:px-4 max-sm:pb-1 max-sm:[scrollbar-width:thin]">
             <li>
               <button type="button" aria-pressed={!section} onClick={() => setSection('')} className="index-item">
                 All sections <span className="index-count">{matched.length}</span>

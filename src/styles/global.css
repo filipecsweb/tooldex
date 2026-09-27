@@ -94,6 +94,8 @@
   }
   h1, h2, h3 {
     text-wrap: balance;
+    /* A one-word name ("changedetection.io") wider than its column breaks rather than overflowing. */
+    overflow-wrap: break-word;
   }
 }
 
@@ -203,6 +205,7 @@
     gap: 0.35rem 1.5rem;
     font-size: var(--text-body-sm);
   }
+  .index-run > li { flex-shrink: 0; }
   .index-item {
     display: inline-flex;
     align-items: baseline;
@@ -210,6 +213,7 @@
     padding-block: 0.15rem;
     border-bottom: 3px solid transparent;
     font-weight: 700;
+    white-space: nowrap;
     color: var(--color-ink-2);
     text-decoration: none;
     cursor: pointer;

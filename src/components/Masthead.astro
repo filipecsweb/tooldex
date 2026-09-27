@@ -14,10 +14,10 @@ const current = (href: string) => (here === href ? 'page' : href !== '/' && here
 <header class="mx-auto max-w-sheet px-4 sm:px-6">
   {size === 'full' ? (
     <>
-      <div class="flex items-baseline justify-between gap-4 py-3 text-label">
+      <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3 text-label">
         <p class="font-semibold text-ink-2">{SITE.tagline}</p>
         <nav aria-label="Main" class="flex gap-5 font-bold">
-          {nav.map(([label, href]) => <a href={href} aria-current={current(href)} class="no-underline hover:underline aria-[current]:underline">{label}</a>)}
+          {nav.map(([label, href]) => <a href={href} aria-current={current(href)} class="no-underline hover:underline aria-[current]:underline pointer-coarse:py-2">{label}</a>)}
         </nav>
       </div>
       <div class="rule-2 grid items-end gap-x-10 gap-y-4 pb-6 pt-4 lg:grid-cols-12">
@@ -33,10 +33,10 @@ const current = (href: string) => (here === href ? 'page' : href !== '/' && here
       </div>
     </>
   ) : (
-    <div class="flex items-baseline justify-between gap-4 py-4">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-4">
       <a href="/" class="text-wordmark text-ink no-underline">{SITE.name}</a>
       <nav aria-label="Main" class="flex gap-5 text-label font-bold">
-        {nav.map(([label, href]) => <a href={href} aria-current={current(href)} class="no-underline hover:underline aria-[current]:underline">{label}</a>)}
+        {nav.map(([label, href]) => <a href={href} aria-current={current(href)} class="no-underline hover:underline aria-[current]:underline pointer-coarse:py-2">{label}</a>)}
       </nav>
     </div>
   )}
