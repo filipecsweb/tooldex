@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCategories, getTools } from '../../lib/data';
+import { breadcrumbLd } from '../../lib/jsonld';
+
+const tools = await getTools();
+const categories = await getCategories(tools);
+const names = (id: string) => tools.filter((t) => t.data.category.id === id).slice(0, 4).map((t) => t.data.name);
+---
+<Base
+  title="Sections"
+  description="Every section of the tooldex catalog: agent tooling grouped by the job it does."
+  jsonLd={[breadcrumbLd(Astro.site!, [['Catalog', '/'], ['Sections', '/categories']])]}
+>
+  <header class="pb-8 pt-8">
+    <h1 class="text-[clamp(2.75rem,7vw,5.25rem)] font-black leading-[0.9] tracking-[-0.04em]">Sections</h1>
+    <p class="mt-4 max-w-[52ch] font-serif text-[1.1875rem] leading-[1.5]">The catalog grouped by the job a tool does, not by which harness it runs in.</p>
+  </header>
+  <ol class="rule-4">
+    {categories.map((c) => (
+      <li class="border-b-2 border-ink">
+        <a href={`/categories/${c.id}`} class="group grid gap-x-10 gap-y-2 py-6 text-ink no-underline md:grid-cols-12">
+          <h2 class="text-[clamp(1.75rem,3.5vw,2.5rem)] font-black leading-none tracking-[-0.035em] group-hover:underline md:col-span-4">{c.data.name}</h2>
+          <p class="font-serif text-[1.0625rem] leading-[1.5] text-ink-2 md:col-span-6">
+            {c.data.description}
+            <span class="mt-2 block font-sans text-[0.9375rem] font-semibold text-ink">{names(c.id).join(', ')}{c.count > 4 ? ', …' : ''}</span>
+          </p>
+          <p class="font-mono text-[0.9375rem] text-ink-2 md:col-span-2 md:text-right">{c.count} {c.count === 1 ? 'entry' : 'entries'}</p>
+        </a>
+      </li>
+    ))}
+  </ol>
+</Base>

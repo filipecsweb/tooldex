@@ -4,10 +4,10 @@ import { existsSync, readdirSync, readFileSync, rmSync, renameSync, writeFileSyn
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import sharp from 'sharp';
+import sharp, { type Sharp } from 'sharp';
 import YAML from 'yaml';
 import {
-  BODY_PLACEHOLDER, ICON_SIZE, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
+  BODY_PLACEHOLDER, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
   guessCategory, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
   readmeH1, readmeImages, repoUrl, serializeRedirects, slugify, type Repo,
 } from './lib.ts';
@@ -32,7 +32,7 @@ function readTool(slug: string): Entry {
 }
 
 function writeTool(e: Entry) {
-  writeFileSync(join(e.dir, 'index.md'), `---\n${e.doc.toString({ lineWidth: 0 }).trimEnd()}\n---\n${e.body}`);
+  writeFileSync(join(e.dir, 'index.md'), `---\n${e.doc.toString({ lineWidth: 0, flowCollectionPadding: false }).trimEnd()}\n---\n${e.body}`);
 }
 
 const slugs = () =>
@@ -104,6 +104,9 @@ const meta = (page: string, ...keys: string[]) => {
 
 // ---------- images ----------
 
+/** Nearly uniform pixels: a blank frame or a flat colour, not a picture. */
+const flat = async (img: Sharp) => Math.max(...(await img.clone().stats()).channels.map((c) => c.stdev)) < 3;
+
 async function toThumb(buf: Uint8Array) {
   const { width = 0, height = 0, pages = 1 } = await sharp(buf, { density: 200 }).metadata();
   if (!goodThumb(width, height)) return null;
@@ -114,8 +117,8 @@ async function toThumb(buf: Uint8Array) {
     const { entropy } = await sharp(buf, { page: p }).stats();
     if (entropy > best) { best = entropy; page = p; }
   }
-  if (best < 2) return null; // blank or near-blank image
   const img = sharp(buf, { density: 200, page });
+  if (await flat(img)) return null;
   return img
     .extract(cropBox(width, height))
     .resize({ width: Math.min(THUMB.width, width) })
@@ -128,21 +131,32 @@ async function toIcon(buf: Uint8Array) {
   const img = sharp(png ?? buf, { density: 300 });
   const { width = 0, height = 0 } = await img.metadata();
   if (Math.min(width, height) < 48) return null;
-  // A flat single-colour square (some apple-touch-icons) is not an icon.
-  if ((await img.clone().stats()).entropy < 1) return null;
+  if (await flat(img)) return null; // a single-colour square (some apple-touch-icons) is not an icon
   return img.resize(ICON_SIZE, ICON_SIZE, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
 }
 
-async function firstOk<T>(label: string, tries: [string, () => Promise<T | null | undefined>][]): Promise<{ from: string; value: T } | null> {
+type Hit = { buf: Buffer; src: string };
+
+async function firstOk(label: string, tries: [string, () => Promise<Hit | null | undefined>][]): Promise<(Hit & { from: string }) | null> {
   for (const [from, fn] of tries) {
     try {
-      const value = await fn();
-      if (value) return { from, value };
+      const hit = await fn();
+      if (hit) return { from, ...hit };
     } catch (e) {
       console.log(`    ${label}: ${from} failed (${(e as Error).message})`);
     }
   }
   return null;
+}
+
+const today = () => new Date().toISOString().slice(0, 10);
+const provenance = (from: string, src: string) =>
+  `Sourced, not generated: ${from} (${src}), fetched ${today()} by scripts/tool.ts and resized.`;
+const HAND = `Supplied by hand; recorded ${today()} by scripts/tool.ts.`;
+
+function writeThumb(path: string, buf: Buffer, note: string) {
+  writeFileSync(path, buf);
+  writeFileSync(`${path}.json`, JSON.stringify({ prompt: note, createdAt: new Date().toISOString() }, null, 2) + '\n');
 }
 
 async function screenshot(url: string) {
@@ -182,52 +196,60 @@ async function thumbs(slug: string, force: boolean) {
 
   // Thumbnail
   if (existsSync(thumbPath) && !force) {
+    if (!existsSync(`${thumbPath}.json`)) writeThumb(thumbPath, readFileSync(thumbPath), HAND);
     console.log('    thumb: kept existing file');
   } else {
-    const tries: [string, () => Promise<Buffer | null>][] = [];
+    const tries: [string, () => Promise<Hit | null>][] = [];
+    const as = (src: string) => async (buf: Buffer | null) => (buf ? { buf, src } : null);
     if (e.data.website) {
       tries.push(['website og:image', async () => {
-        const src = site && meta(site.text, 'og:image', 'twitter:image', 'og:image:url');
-        return src ? toThumb(await bytes(new URL(src, site!.url).href)) : null;
+        const og = site && meta(site.text, 'og:image', 'twitter:image', 'og:image:url');
+        if (!og) return null;
+        const src = new URL(og, site!.url).href;
+        return as(src)(await toThumb(await bytes(src)));
       }]);
-      tries.push(['website screenshot', async () => toThumb(await screenshot(e.data.website))]);
+      tries.push(['website screenshot', async () => as(e.data.website)(await toThumb(await screenshot(e.data.website)))]);
     } else if (repo) {
       tries.push(['repo social preview', async () => {
         const page = await html(repoUrl(repo));
         const src = meta(page.text, 'og:image');
         // GitHub's auto-generated card is the same for every repo; only a custom upload counts.
-        return src && src.includes('repository-images.githubusercontent.com') ? toThumb(await bytes(src)) : null;
+        return src && src.includes('repository-images.githubusercontent.com') ? as(src)(await toThumb(await bytes(src))) : null;
       }]);
       tries.push(['README image', async () => {
         const md = (await gh(`repos/${repo.owner}/${repo.name}/readme`, 'application/vnd.github.raw')) as string;
         for (const src of readmeImages(md, repo).slice(0, 6)) {
           const out = await toThumb(await bytes(src)).catch(() => null);
-          if (out) return out;
+          if (out) return { buf: out, src };
         }
         return null;
       }]);
     }
     const hit = await firstOk('thumb', tries);
     if (hit) {
-      writeFileSync(thumbPath, hit.value);
+      writeThumb(thumbPath, hit.buf, provenance(hit.from, hit.src));
       console.log(`    thumb: ${hit.from}`);
+    } else if (existsSync(thumbPath)) {
+      console.log('    thumb: no new source found, kept the existing file (delete it by hand to use the fallback card)');
     } else {
-      rmSync(thumbPath, { force: true });
       console.log('    thumb: none usable, the fallback card will render');
     }
   }
 
   // Icon
   if (existsSync(iconPath) && !force) {
+    const buf = readFileSync(iconPath);
+    if (!pngText(buf, PROVENANCE_KEY)) writeFileSync(iconPath, pngWithText(buf, PROVENANCE_KEY, HAND));
     console.log('    icon: kept existing file');
   } else {
-    const tries: [string, () => Promise<Buffer | null>][] = [];
-    if (site) for (const src of iconCandidates(site.text, site.url)) tries.push([`site icon ${src}`, async () => toIcon(await bytes(src))]);
-    if (repo) tries.push(['owner avatar', async () => toIcon(await bytes(`https://github.com/${repo.owner}.png?size=256`))]);
+    const tries: [string, () => Promise<Hit | null>][] = [];
+    const icon = async (src: string) => { const buf = await toIcon(await bytes(src)); return buf ? { buf, src } : null; };
+    if (site) for (const src of iconCandidates(site.text, site.url)) tries.push(['site icon', () => icon(src)]);
+    if (repo) tries.push(['GitHub owner avatar', () => icon(`https://github.com/${repo.owner}.png?size=256`)]);
     const hit = await firstOk('icon', tries);
     if (hit) {
-      writeFileSync(iconPath, hit.value);
-      console.log(`    icon: ${hit.from}`);
+      writeFileSync(iconPath, pngWithText(hit.buf, PROVENANCE_KEY, provenance(hit.from, hit.src)));
+      console.log(`    icon: ${hit.from} ${hit.src}`);
     } else {
       console.log('    icon: none found. Add src/content/tools/' + slug + '/icon.png by hand');
     }
@@ -341,7 +363,7 @@ async function check(offline: boolean) {
     const where = `tools/${slug}`;
     if (slug !== slugify(slug)) errors.push(`${where}: folder name is not a clean slug`);
     const files = readdirSync(join(TOOLS, slug));
-    for (const f of files) if (!TOOL_FILES.has(f)) errors.push(`${where}/${f}: orphaned file (only index.md, thumb.webp, icon.png belong here)`);
+    for (const f of files) if (!TOOL_FILES.has(f)) errors.push(`${where}/${f}: orphaned file (only ${[...TOOL_FILES].join(', ')} belong here)`);
     if (!files.includes('index.md')) { errors.push(`${where}: missing index.md`); continue; }
     let e: Entry;
     try { e = readTool(slug); } catch (err) { errors.push(`${where}: ${(err as Error).message}`); continue; }
@@ -354,6 +376,9 @@ async function check(offline: boolean) {
       if (d[key] && !has) errors.push(`${where}: ${key} is set but ${file} is missing`);
       if (has && d[key] !== `./${file}`) errors.push(`${where}: ${file} exists but ${key} is not "./${file}"`);
     }
+    if (files.includes('thumb.webp') && !files.includes('thumb.webp.json')) errors.push(`${where}: thumb.webp has no provenance sidecar (run npm run tool -- thumbs ${slug})`);
+    if (files.includes('thumb.webp.json') && !files.includes('thumb.webp')) errors.push(`${where}/thumb.webp.json: orphaned sidecar`);
+    if (files.includes('icon.png') && !pngText(readFileSync(join(TOOLS, slug, 'icon.png')), PROVENANCE_KEY)) errors.push(`${where}: icon.png has no provenance (run npm run tool -- thumbs ${slug})`);
     if (!files.includes('icon.png')) errors.push(`${where}: no icon (run npm run tool -- thumbs ${slug})`);
     if (!files.includes('thumb.webp')) notes.push(`${where}: no thumbnail, uses the fallback card`);
     for (const u of [d.repo, d.website, ...(d.links ?? []).map((l: any) => l.url)]) if (u) urls.set(u, slug);

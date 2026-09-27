@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCategories } from '../lib/data';
+const categories = await getCategories();
+---
+<Base title="Not in the catalog" noindex>
+  <section class="max-w-[60ch] pb-10 pt-12">
+    <h1 class="text-[clamp(2.75rem,7vw,5.25rem)] font-black leading-[0.9] tracking-[-0.04em]">Not in the catalog</h1>
+    <p class="mt-5 font-serif text-[1.1875rem] leading-[1.5]">
+      There is no page at this address. The tool may have been renamed or removed. Search the <a href="/" class="text-spot underline">whole catalog</a>, or start from a section.
+    </p>
+  </section>
+  <ul class="rule-4 flex flex-wrap gap-2 pt-6">
+    {categories.map((c) => (
+      <li>
+        <a href={`/categories/${c.id}`} class="inline-flex items-baseline gap-1.5 border-2 border-ink px-3 py-1.5 text-[0.9375rem] font-bold text-ink no-underline hover:bg-paper-2">
+          {c.data.name} <span class="font-mono text-[0.8125rem] font-normal">{c.count}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>

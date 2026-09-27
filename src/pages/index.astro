@@ -1,7 +1,19 @@
 ---
-import '../styles/global.css';
+import Base from '../layouts/Base.astro';
+import Masthead from '../components/Masthead.astro';
+import Directory from '../components/Directory';
+import { getCategories, getTools } from '../lib/data';
+import { toIndex } from '../lib/tool-index';
+import { websiteLd } from '../lib/jsonld';
+
+const tools = await getTools();
+const categories = await getCategories(tools);
+// ponytail: the full index is inlined as island props; switch to fetching /tools.json past ~200 tools.
+const index = await toIndex(tools, categories);
+const sections = categories.map((c) => ({ id: c.id, name: c.data.name, count: c.count }));
 ---
-<html lang="en">
-  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>tooldex</title></head>
-  <body><h1 class="text-3xl p-8">tooldex</h1></body>
-</html>
+<Base jsonLd={[websiteLd(Astro.site!)]}>
+  <Masthead slot="masthead" size="full" entries={tools.length} sections={categories.length} />
+  <h2 class="sr-only">Catalog</h2>
+  <Directory client:load tools={index} sections={sections} />
+</Base>

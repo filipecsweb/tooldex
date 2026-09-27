@@ -1,8 +1,11 @@
 // Pure helpers for scripts/tool.ts. No I/O here, so it is easy to test.
+import { crc32 } from 'node:zlib';
 
 export const THUMB = { width: 1600, height: 840 }; // ~1.91:1, the og:image shape
 export const ICON_SIZE = 128;
-export const TOOL_FILES = new Set(['index.md', 'thumb.webp', 'icon.png']);
+export const TOOL_FILES = new Set(['index.md', 'thumb.webp', 'thumb.webp.json', 'icon.png']);
+/** Key impeccable's provenance scanner reads (PNG tEXt chunk; WebP uses a .json sidecar). */
+export const PROVENANCE_KEY = 'impeccable:prompt';
 export const BODY_PLACEHOLDER = 'TODO(tooldex): write the body.';
 
 export type Repo = { owner: string; name: string };
@@ -174,4 +177,46 @@ export function pngFromIco(buf: Uint8Array): Uint8Array | null {
     if (isPng && off + len <= buf.length && (!best || size > best.size)) best = { size, off, len };
   }
   return best ? buf.subarray(best.off, best.off + best.len) : null;
+}
+
+// ---------- PNG text chunks (provenance) ----------
+
+/** Return the PNG with a tEXt chunk `key\0text` inserted before IEND (replacing an existing one for `key`). */
+export function pngWithText(png: Uint8Array, key: string, text: string): Uint8Array {
+  const chunks = pngChunks(png).filter((c) => !(c.type === 'tEXt' && c.text?.key === key));
+  const data = new TextEncoder().encode(`${key}\0${text.replace(/[^\x20-\x7e\n]/g, '?')}`);
+  const head = new Uint8Array(8);
+  const dv = new DataView(head.buffer);
+  dv.setUint32(0, data.length);
+  head.set(new TextEncoder().encode('tEXt'), 4);
+  const crc = new Uint8Array(4);
+  new DataView(crc.buffer).setUint32(0, crc32(Buffer.concat([head.subarray(4), data])));
+  const text_ = Buffer.concat([head, data, crc]);
+  const parts = chunks.map((c) => png.subarray(c.start, c.end));
+  const iend = parts.pop()!;
+  return Buffer.concat([png.subarray(0, 8), ...parts, text_, iend]);
+}
+
+/** Text of a tEXt chunk, if present. */
+export const pngText = (png: Uint8Array, key: string) =>
+  pngChunks(png).find((c) => c.type === 'tEXt' && c.text?.key === key)?.text?.value;
+
+function pngChunks(png: Uint8Array) {
+  const dv = new DataView(png.buffer, png.byteOffset, png.byteLength);
+  const out: { type: string; start: number; end: number; text?: { key: string; value: string } }[] = [];
+  for (let i = 8; i + 12 <= png.length; ) {
+    const len = dv.getUint32(i);
+    const type = String.fromCharCode(...png.subarray(i + 4, i + 8));
+    const end = i + 12 + len;
+    const chunk: (typeof out)[number] = { type, start: i, end };
+    if (type === 'tEXt') {
+      const body = Buffer.from(png.subarray(i + 8, i + 8 + len)).toString('latin1');
+      const z = body.indexOf('\0');
+      chunk.text = { key: body.slice(0, z), value: body.slice(z + 1) };
+    }
+    out.push(chunk);
+    i = end;
+    if (type === 'IEND') break;
+  }
+  return out;
 }

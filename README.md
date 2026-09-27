@@ -27,7 +27,7 @@ npm run dev                       # https://tooldex.test (or http://localhost:44
 
 ## Managing tools
 
-Each tool is one folder: `src/content/tools/<slug>/` with `index.md` (frontmatter + write-up), `thumb.webp` (optional) and `icon.png`. The folder name is the slug and the URL, `/tools/<slug>`. Nothing about a tool lives anywhere else: counts, category pages, related tools and the search index all derive from these folders.
+Each tool is one folder: `src/content/tools/<slug>/` with `index.md` (frontmatter + write-up), `thumb.webp` (optional) plus its provenance sidecar `thumb.webp.json`, and `icon.png` (provenance embedded in the file). The folder name is the slug and the URL, `/tools/<slug>`. Nothing about a tool lives anywhere else: counts, category pages, related tools and the search index all derive from these folders.
 
 **Add**
 
@@ -46,13 +46,13 @@ It prefills name, tagline, tags, links and a category guess from the GitHub API 
 
 **Edit**: edit `index.md`. Mistakes (bad URL, unknown category, missing image, no repo and no website) fail `npm run check` and `npm run build`.
 
-**Refresh images**: `npm run tool -- thumbs <slug> --force`. To use your own image, drop `thumb.webp` (≈1.91:1, e.g. 1600×840) or `icon.png` (square) into the folder and run `npm run tool -- thumbs <slug>`; existing files always win unless `--force`.
+**Refresh images**: `npm run tool -- thumbs <slug> --force` refetches; if no new source is found it keeps the existing file. To use your own image, drop `thumb.webp` (≈1.91:1, e.g. 1600×840) or `icon.png` (square) into the folder and run `npm run tool -- thumbs <slug>`: existing files win unless `--force`, and the command records them as supplied by hand. To drop a bad thumbnail in favour of the fallback card, delete `thumb.webp` and `thumb.webp.json`.
 
 **Rename**: `npm run tool -- mv <old> <new>`. Moves the folder and adds a 301 in `public/_redirects`.
 
 **Delete**: `npm run tool -- rm <slug>`. Removes the folder and 301s the old URL to its category (or `/` if the category is now empty).
 
-**Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, unwritten bodies, redirects, and that every link responds. Add `--offline` to skip the network.
+**Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, image provenance, unwritten bodies, redirects, and that every link responds. Add `--offline` to skip the network.
 
 **Categories** live in `src/content/categories.json`. Adding one is one object (`id`, `name`, `description`, `keywords`, plus the presentation fields documented in `DESIGN.md`). `keywords` drive the category guess in `add`. A category with no tools renders no page.
 

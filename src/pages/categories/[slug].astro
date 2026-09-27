@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import ToolCard from '../../components/ToolCard';
+import { getCategories, getTools, type Category, type Tool } from '../../lib/data';
+import { toIndex } from '../../lib/tool-index';
+import { breadcrumbLd, itemListLd } from '../../lib/jsonld';
+
+// Only categories with at least one tool get a page (getCategories filters empty ones).
+export async function getStaticPaths() {
+  const tools = await getTools();
+  const categories = await getCategories(tools);
+  return categories.map((category) => ({
+    params: { slug: category.id },
+    props: { category, categories, tools: tools.filter((t) => t.data.category.id === category.id) },
+  }));
+}
+
+const { category, categories, tools } = Astro.props as { category: Category; categories: Category[]; tools: Tool[] };
+// ponytail: unpaginated; paginate() past ~80 tools per category.
+const entries = await toIndex(tools, categories);
+const others = categories.filter((c) => c.id !== category.id);
+const site = Astro.site!;
+---
+<Base
+  title={`${category.data.name} tools for AI agents`}
+  description={category.data.description}
+  jsonLd={[
+    breadcrumbLd(site, [['Catalog', '/'], ['Sections', '/categories'], [category.data.name, `/categories/${category.id}`]]),
+    itemListLd(site, tools),
+  ]}
+>
+  <nav aria-label="Breadcrumb" class="pt-4 text-[0.9375rem]">
+    <ol class="flex flex-wrap gap-x-2 text-ink-3">
+      <li><a href="/" class="font-semibold text-ink-2 underline decoration-ink-3 hover:text-spot">Catalog</a> /</li>
+      <li><a href="/categories" class="font-semibold text-ink-2 underline decoration-ink-3 hover:text-spot">Sections</a> /</li>
+      <li aria-current="page" class="text-ink-2">{category.data.name}</li>
+    </ol>
+  </nav>
+
+  <header class="grid items-end gap-x-12 gap-y-4 pb-8 pt-6 lg:grid-cols-12">
+    <h1 class="text-[clamp(2.75rem,7vw,5.25rem)] font-black leading-[0.9] tracking-[-0.04em] lg:col-span-7">{category.data.name}</h1>
+    <div class="lg:col-span-5">
+      <p class="max-w-[52ch] font-serif text-[1.1875rem] leading-[1.5]">{category.data.description}</p>
+      <p class="mt-3 font-mono text-[0.9375rem] text-ink-2">{tools.length} {tools.length === 1 ? 'entry' : 'entries'}</p>
+    </div>
+  </header>
+
+  <h2 class="sr-only">Entries</h2>
+  <ul class="rule-4 grid grid-cols-1 gap-x-10 gap-y-14 pt-8 sm:grid-cols-2 lg:grid-cols-3">
+    {entries.map((t, i) => <li><ToolCard tool={t} eager={i < 3} /></li>)}
+  </ul>
+
+  {others.length > 0 && (
+    <section aria-labelledby="other-sections" class="rule-4 mt-20 pt-4">
+      <h2 id="other-sections" class="text-[1.75rem] font-black tracking-[-0.03em]">Other sections</h2>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {others.map((c) => (
+          <li>
+            <a href={`/categories/${c.id}`} class="inline-flex items-baseline gap-1.5 border-2 border-ink px-3 py-1.5 text-[0.9375rem] font-bold text-ink no-underline hover:bg-paper-2">
+              {c.data.name} <span class="font-mono text-[0.8125rem] font-normal">{c.count}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Base>

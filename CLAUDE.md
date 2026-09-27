@@ -8,7 +8,7 @@ Directory of AI agent tooling. Astro 7 static site on a Cloudflare Worker. Read 
 
 ## Managing tools
 
-Tools are data, not code. Each tool is `src/content/tools/<slug>/` containing `index.md`, optional `thumb.webp`, and `icon.png`. Never put tool-specific facts anywhere else (no hardcoded names, counts or lists in pages or components).
+Tools are data, not code. Each tool is `src/content/tools/<slug>/` containing `index.md`, optional `thumb.webp` + `thumb.webp.json` (provenance sidecar), and `icon.png` (provenance in a PNG text chunk). Never put tool-specific facts anywhere else (no hardcoded names, counts or lists in pages or components).
 
 ### Commands (always pass `--` after `npm run tool`)
 
@@ -52,4 +52,4 @@ Rules:
 - Repo only: the repo's custom social preview (never GitHub's auto-generated card), else the first large README image. Icon: the owner's avatar.
 - Nothing usable: no `thumb.webp`; the site renders a designed fallback card. That is fine, not an error.
 
-Check any new thumbnail visually: a blank, logo-only or misleading image should be replaced by hand or deleted (then `thumbs` again).
+Every image records where it came from (impeccable's provenance scan: `.claude/skills/impeccable/scripts/impeccable embed-prompt --scan src/content/tools public`); `thumbs` writes it, `check` enforces it. Check any new thumbnail visually: a blank, logo-only or misleading image should be replaced by hand (drop in a file, run `thumbs <slug>`) or deleted together with its `.json` sidecar.

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   classifyHomepage, cropBox, goodThumb, guessCategory, normalizeRedirects, parseGithubRepo,
-  parseRedirects, pickName, pngFromIco, readmeImages, slugify,
+  parseRedirects, pickName, pngFromIco, pngText, pngWithText, readmeImages, slugify,
 } from './lib.ts';
 
 test('parseGithubRepo', () => {
@@ -74,4 +74,13 @@ test('pngFromIco extracts the largest embedded PNG', () => {
   ico.set(png, 22);
   assert.deepEqual([...pngFromIco(ico)!], png);
   assert.equal(pngFromIco(new Uint8Array([1, 2, 3])), null);
+});
+
+test('pngWithText writes, replaces and reads a provenance chunk', async () => {
+  const { default: sharp } = await import('sharp');
+  const png = await sharp({ create: { width: 2, height: 2, channels: 3, background: '#000' } }).png().toBuffer();
+  const once = pngWithText(png, 'impeccable:prompt', 'first');
+  const twice = pngWithText(once, 'impeccable:prompt', 'second');
+  assert.equal(pngText(twice, 'impeccable:prompt'), 'second');
+  assert.equal((await sharp(twice).metadata()).width, 2); // still a valid PNG
 });

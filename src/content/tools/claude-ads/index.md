@@ -5,9 +5,9 @@ category: marketing
 tags: [skill, plugin, claude-code, advertising, ppc, google-ads, meta-ads]
 repo: https://github.com/AgriciDaniel/claude-ads
 website: https://claude-ads.md
-thumbnail: ./thumb.webp
 icon: ./icon.png
 added: 2026-09-26
+thumbnail: ./thumb.webp
 ---
 
 Claude Ads turns Claude Code into an assistant for paid advertising work. Point it at exports or authorised reads from your ad accounts, across the major search, social, video and retail platforms, and it produces audits with dated evidence and stated confidence, campaign and budget plans, creative briefs, experiment designs and client-ready reports.

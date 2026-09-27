@@ -1,0 +1,135 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ArrowOut from '../../components/ArrowOut';
+import { getCategories, getTools, primaryUrl, relatedTools, type Tool } from '../../lib/data';
+import { toIndex } from '../../lib/tool-index';
+import { accessLabel, ctaLabel } from '../../lib/format';
+import { breadcrumbLd, toolLd } from '../../lib/jsonld';
+
+export async function getStaticPaths() {
+  const tools = await getTools();
+  return tools.map((tool) => ({ params: { slug: tool.id }, props: { tool, all: tools } }));
+}
+
+const { tool, all } = Astro.props as { tool: Tool; all: Tool[] };
+const d = tool.data;
+const categories = await getCategories(all);
+const category = categories.find((c) => c.id === d.category.id)!;
+const related = await toIndex(relatedTools(tool, all), categories);
+const { Content } = await render(tool);
+const og = d.thumbnail ? (await getImage({ src: d.thumbnail, width: 1200, height: 630, fit: 'cover', format: 'png' })).src : undefined;
+const site = Astro.site!;
+
+const access: [string, string][] = [
+  ...(d.website ? [['Website', d.website] as [string, string]] : []),
+  ...(d.repo ? [['Repository', d.repo] as [string, string]] : []),
+  ...d.links.map((l) => [l.label, l.url] as [string, string]),
+];
+---
+<Base
+  title={`${d.name}: ${d.tagline}`}
+  description={d.tagline}
+  image={og}
+  jsonLd={[
+    toolLd(site, tool, category.data.name, og),
+    breadcrumbLd(site, [['Catalog', '/'], [category.data.name, `/categories/${category.id}`], [d.name, `/tools/${tool.id}`]]),
+  ]}
+>
+  <nav aria-label="Breadcrumb" class="pt-4 text-[0.9375rem]">
+    <ol class="flex flex-wrap gap-x-2 text-ink-3">
+      <li><a href="/" class="font-semibold text-ink-2 underline decoration-ink-3 hover:text-spot">Catalog</a> /</li>
+      <li><a href={`/categories/${category.id}`} class="font-semibold text-ink-2 underline decoration-ink-3 hover:text-spot">{category.data.name}</a> /</li>
+      <li aria-current="page" class="text-ink-2">{d.name}</li>
+    </ol>
+  </nav>
+
+  <article class="grid gap-x-12 gap-y-8 pt-6 lg:grid-cols-12">
+    <header class="lg:col-span-8">
+      <div class="flex items-center gap-4">
+        {d.icon && <Image src={d.icon} width={64} height={64} alt="" class="size-14 border-2 border-ink bg-paper-2 object-cover" />}
+        <h1 class="text-[clamp(2.75rem,7vw,5.25rem)] font-black leading-[0.9] tracking-[-0.04em]">{d.name}</h1>
+      </div>
+      <p class="mt-5 max-w-[40ch] font-serif text-[clamp(1.25rem,2.2vw,1.5rem)] leading-[1.4] text-ink-2">{d.tagline}</p>
+    </header>
+
+    <aside class="lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:row-start-1">
+      <div class="border-[3px] border-ink p-5 lg:sticky lg:top-6">
+        <h2 class="text-[0.9375rem] font-black uppercase tracking-[0.08em] text-spot">Access</h2>
+        <a
+          href={primaryUrl(tool)}
+          rel="noopener"
+          class="mt-3 flex items-center justify-between gap-3 bg-ink px-4 py-3 text-[1.0625rem] font-extrabold text-paper no-underline transition-colors duration-150 hover:bg-spot"
+        >
+          {ctaLabel(Boolean(d.website))}
+          <ArrowOut />
+        </a>
+        <dl class="mt-5 grid gap-y-3 text-[0.9375rem]">
+          {access.map(([label, url]) => (
+            <div>
+              <dt class="font-bold">{label}</dt>
+              <dd class="font-mono break-all"><a href={url} rel="noopener" class="text-ink underline decoration-ink-3 hover:text-spot">{accessLabel(url)}</a></dd>
+            </div>
+          ))}
+          <div>
+            <dt class="font-bold">Filed under</dt>
+            <dd><a href={`/categories/${category.id}`} class="text-ink underline decoration-ink-3 hover:text-spot">{category.data.name}</a></dd>
+          </div>
+          {d.tags.length > 0 && (
+            <div>
+              <dt class="font-bold">Tags</dt>
+              <dd class="mt-1 flex flex-wrap gap-x-3 gap-y-1 font-mono">
+                {d.tags.map((tag) => <a href={`/?q=${encodeURIComponent(tag)}`} class="text-ink-2 underline decoration-ink-3 hover:text-spot">{tag}</a>)}
+              </dd>
+            </div>
+          )}
+          <div>
+            <dt class="font-bold">Listed</dt>
+            <dd class="font-mono text-ink-2"><time datetime={d.added.toISOString().slice(0, 10)}>{d.added.toISOString().slice(0, 10)}</time></dd>
+          </div>
+        </dl>
+      </div>
+    </aside>
+
+    <div class="lg:col-span-8">
+      {d.thumbnail && (
+        <div class="plate" data-developed transition:name={`plate-${tool.id}`}>
+          <Image
+            src={d.thumbnail}
+            widths={[640, 960, 1280, 1600]}
+            sizes="(min-width: 1100px) 840px, 100vw"
+            alt={`${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`}
+            class="plate-img"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      )}
+
+      <div class={`review ${d.thumbnail ? 'mt-10' : ''}`}>
+        <Content />
+      </div>
+    </div>
+
+  </article>
+
+  {related.length > 0 && (
+    <section aria-labelledby="see-also" class="rule-4 mt-16 pt-4">
+      <h2 id="see-also" class="text-[1.75rem] font-black tracking-[-0.03em]">See also</h2>
+      <ul class="mt-5 grid gap-x-10 gap-y-5 md:grid-cols-2">
+        {related.map((r) => (
+          <li class="rule-2 pt-3">
+            <a href={`/tools/${r.slug}`} class="group flex gap-4 text-ink no-underline">
+              {r.icon && <img src={r.icon} width="48" height="48" alt="" loading="lazy" class="size-12 shrink-0 border-2 border-ink object-cover grayscale mix-blend-multiply group-hover:grayscale-0" />}
+              <span>
+                <span class="block text-[1.25rem] font-extrabold leading-tight group-hover:underline">{r.name}</span>
+                <span class="mt-1 block font-serif text-[1rem] leading-snug text-ink-2">{r.tagline}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Base>

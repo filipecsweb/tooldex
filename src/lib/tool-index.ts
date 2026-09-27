@@ -12,6 +12,8 @@ export type IndexTool = {
   categoryName: string;
   tags: string[];
   url: string;
+  /** "owner/repo" for repos, the host for websites. Set on composed plates. */
+  source: string;
   thumb: { src: string; width: number; height: number } | null;
   icon: string | null;
 };
@@ -23,7 +25,7 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
       const thumb = t.data.thumbnail
         ? await getImage({ src: t.data.thumbnail, width: 800, format: 'webp' })
         : null;
-      const icon = t.data.icon ? await getImage({ src: t.data.icon, width: 64, format: 'webp' }) : null;
+      const icon = t.data.icon ? await getImage({ src: t.data.icon, width: 128, format: 'webp' }) : null;
       return {
         slug: t.id,
         name: t.data.name,
@@ -32,6 +34,7 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
         categoryName: names.get(t.data.category.id) ?? t.data.category.id,
         tags: t.data.tags,
         url: primaryUrl(t),
+        source: t.data.repo ? new URL(t.data.repo).pathname.slice(1) : new URL(t.data.website!).hostname,
         thumb: thumb
           ? { src: thumb.src, width: Number(thumb.attributes.width), height: Number(thumb.attributes.height) }
           : null,
