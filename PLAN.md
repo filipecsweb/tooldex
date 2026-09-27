@@ -117,7 +117,7 @@ Nothing per tool is hardcoded outside its folder. `src/lib/data.ts` is the only 
 | `/404` | Search box + categories. |
 | `/sitemap-index.xml`, `/robots.txt` | Sitemap integration; robots in `public/`. |
 
-Components: `BaseLayout.astro` (head, canonical, OG/Twitter, JSON-LD, `<ClientRouter />`, header, footer), `ToolCard.tsx` (one card, rendered statically by Astro and by the island), `Thumb` (image or designed fallback card), `Directory.tsx` (island). `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
+Components: `Base.astro` (head, canonical, OG/Twitter, JSON-LD, `<ClientRouter />`, header, footer), `ToolCard.tsx` (one card, rendered statically by Astro and by the island), `Thumb` (image or designed fallback card), `Directory.tsx` (island). `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
 
 The **fallback** for tools without a thumbnail is a composed plate in HTML/CSS (halftoned icon, the name set large, the repo path), used on cards. Entry pages skip the plate in that case because the header already shows icon and name. Social shares fall back to the site default `public/og.png`.
 
@@ -146,7 +146,7 @@ npm run tool add <repo-or-website-url> [<second-url>]
 4. Website only: title, meta description and any GitHub repo link on the page.
 5. Category guess: scores each category's `keywords` against topics + description + README. Prints the ranking so the reviewer can overrule it.
 6. Slug from the repo or site name, kebab-case. Refuses to overwrite an existing folder.
-7. Writes `src/content/tools/<slug>/index.md` with prefilled frontmatter, `added: today`, and a body placeholder `TODO: write 2–4 paragraphs`, then runs `thumbs` for it.
+7. Writes `src/content/tools/<slug>/index.md` with prefilled frontmatter, `added: today`, and a body placeholder `TODO(tooldex): write the body.`, then runs `thumbs` for it.
 
 What is left for a human or agent: the body copy, the tagline polish, the tags, and the category if the guess is wrong.
 
@@ -241,18 +241,18 @@ Local: `herd proxy tooldex http://localhost:4401 --secure` once, then `npm run d
 
 Git: local only, personal identity (global config already correct). Commits at each step of §11.
 
-Deploy: `npx wrangler login` (interactive, done by the owner) → `npm run deploy` → `tooldex.<account>.workers.dev` → set `site` to that URL → deploy again.
+Deploy: confirm `npx wrangler whoami` is the personal login and matches the `account_id` pinned in `wrangler.jsonc`, then `npm run deploy` (tests are separate: run `npm test` and `npm run check` first).
 
 ## 9. Starter-template hygiene
 
-Generic: `astro.config.mjs`, `wrangler.jsonc`, `BaseLayout.astro`, `global.css` + `@theme`, `src/site.ts`, `.claude/` (impeccable), README setup sections.
+Generic: `astro.config.mjs`, `wrangler.jsonc`, `Base.astro`, `global.css` + `@theme`, `src/site.ts`, `.claude/` (impeccable), README setup sections.
 Site-specific: `src/content*`, `src/pages/{tools,categories}`, `Directory.tsx`, `ToolCard.tsx`, `src/lib/*`, `scripts/tool.ts`, `PRODUCT.md`, `DESIGN.md`.
 
 Nothing is parameterised now; the split is a README section. Copy the repo and delete the second list when the second site arrives.
 
 ## 10. Scaling ceilings
 
-Each is marked with a `ponytail:` comment where it lives in code.
+The ones that live in code carry a `ponytail:` comment there.
 
 | What | Holds until | Then |
 |---|---|---|
