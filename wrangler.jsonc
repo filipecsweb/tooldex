@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tooldex",
+  "account_id": "d5f715c012463143e5a859636403780f", // personal account
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-09-26",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],

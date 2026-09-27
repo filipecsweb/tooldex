@@ -4,7 +4,7 @@ A public directory of **AI agent tooling**: skills, plugins, subagents, MCP serv
 
 The per-tool workflow (add, edit, rename, delete, check) is a first-class feature. §6 specifies it.
 
-Status: approved 2026-09-26 with the answers in §13. Steps 1–5 of §11 are built; step 6 (`wrangler login`, deploy) waits for the owner. This file stays the source of truth and reflects what was built.
+Status: approved 2026-09-26 with the answers in §13. All six steps of §11 are done. Live at **https://tooldex.tooldex.workers.dev** (personal Cloudflare account, `account_id` pinned in `wrangler.jsonc`). This file stays the source of truth and reflects what was built.
 
 ---
 
@@ -222,7 +222,7 @@ Exit code is non-zero on any error. `npm run build` runs `check --offline`, so u
 
 ```js
 export default defineConfig({
-  site: 'https://tooldex.workers.dev', // placeholder: set to the real workers.dev URL after first deploy
+  site: 'https://tooldex.tooldex.workers.dev',
   session: false,
   trailingSlash: 'never',
   build: { format: 'file' },
@@ -233,7 +233,7 @@ export default defineConfig({
 });
 ```
 
-`wrangler.jsonc`: `name: tooldex`, adapter entrypoint, `nodejs_compat`, assets `{ binding: ASSETS, directory: ./dist, not_found_handling: 404-page }`, observability on.
+`wrangler.jsonc`: `name: tooldex`, pinned personal `account_id`, adapter entrypoint, `nodejs_compat`, assets `{ binding: ASSETS, directory: ./dist, not_found_handling: 404-page }`, observability on.
 
 Scripts: `dev`, `build` (`astro check && tool check --offline && astro build`), `preview`, `deploy` (`npm run build && wrangler deploy`), `check`, `tool`, `test`.
 

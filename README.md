@@ -60,12 +60,14 @@ It prefills name, tagline, tags, links and a category guess from the GitHub API 
 
 ## Deploy
 
+Live at https://tooldex.tooldex.workers.dev. The Cloudflare account is pinned by `account_id` in `wrangler.jsonc`.
+
 ```bash
 npx wrangler login     # once, interactive
-npm run deploy         # -> https://tooldex.<account>.workers.dev
+npm run deploy
 ```
 
-After the first deploy, set `site` in `astro.config.mjs` and `public/robots.txt` to the real URL and deploy again.
+If the site moves to a custom domain, update `site` in `astro.config.mjs` and the sitemap line in `public/robots.txt`, then deploy.
 
 ## Starter-template split
 
