@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import css from '../styles/global.css?raw';
 import { ClientRouter } from 'astro:transitions';
 import Seo from '../components/Seo.astro';
 import Masthead from '../components/Masthead.astro';
@@ -19,13 +20,15 @@ interface Props {
 }
 const { title, description, image, imageAlt, jsonLd, noindex } = Astro.props;
 const sections = await getCategories();
+// The browser chrome takes the page's paper colour, read from its one definition in @theme.
+const paper = css.match(/--color-paper:\s*([^;]+);/)![1].trim();
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#e9eae7" />
+    <meta name="theme-color" content={paper} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={franklin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={literata} as="font" type="font/woff2" crossorigin />
