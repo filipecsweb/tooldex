@@ -248,7 +248,7 @@ For tools without a thumbnail.
 - **Quiet variant (entry page):** the H1 already carries the name, so the plate drops its fixed aspect and becomes a band: the icon at clamp(7rem, 22%, 11rem) on the left, the source line set on its rule beside it, aligned to the bottom. No name.
 
 ### Access
-- **Access line (cards):** a 2px ink box, 0.375rem by 0.625rem, holding the spot "Access" label and the URL in Courier as a spot link with an outbound arrow drawn to Franklin's stroke weight. Below it, "Filed under" in ink-3 plus the section as a spot link at 600.
+- **Access line (cards):** a 2px ink box, 0.375rem by 0.625rem, holding the spot "Access" label and the URL in Courier as a spot link with an outbound arrow drawn to Franklin's stroke weight. Below it, "Filed under" in ink-3 plus the section as a spot link at 600; omitted on a section's own page, where every card would repeat it.
 - **Access box (entry page):** a 3px ink box, 1.25rem padding, sticky on desktop. "Access" heads it in spot capitals. Then the primary action: a full-width solid ink bar (Franklin 800, 1.0625rem, paper text, 0.75rem by 1rem) reading "Visit the website" or "View the repository" with the outbound arrow, turning spot on hover (0.15s). Below, a definition list: Website, Repository and other links in Courier; Filed under; Tags in Courier linking to a search; Listed date in ink-2.
 
 ### Buttons
@@ -261,7 +261,7 @@ For tools without a thumbnail.
 Borderless except a 3px ink underline; Franklin 600 at 1.625rem, -0.01em. On focus the underline turns spot and no outline is drawn. The caret is spot; the placeholder ink-3. Its label is Franklin 800 with a light "(press /)" hint; "/" focuses it from anywhere.
 
 ### Section index run
-A typeset run of section names with counts that doubles as the filter (buttons with `aria-pressed` on home; links elsewhere, `aria-current` where applicable). Items wrap with 0.35rem by 1.5rem gaps at 1.0625rem Franklin 700 in ink-2, counts at 0.8125rem 500 in ink-3. Hover: ink text over a 3px ink-3 underline. Current: ink text over a 3px ink underline. Empty sections drop to ink-3 at 500. It is reused on 404 and as "Other sections".
+A typeset run of section names with counts that doubles as the filter (buttons with `aria-pressed` on home; links elsewhere, `aria-current` where applicable). Items wrap with 0.35rem by 1.5rem gaps at 1.0625rem Franklin 700 in ink-2, counts at 0.8125rem 500 in ink-3. Hover: ink text over a 3px ink-3 underline. Current: ink text over a 3px ink underline. Empty sections drop to ink-3 at 500. It is reused as "Other sections". The 404 page does not repeat it (the footer already lists every section); it offers a search field instead, pre-filled from the dead address.
 
 ### Navigation
 Masthead: full on home (tagline and nav above a 2px rule, then the display name and statement, then a 4px rule), compact everywhere else (Franklin 900 name at 2.125rem left, nav right, 4px rule). Nav links are Franklin 700 ink, underlined on hover and when current. Breadcrumbs are ink links at 600, underlined on hover, with ink-3 slashes. The footer repeats the name, a Literata note and the section list with counts.

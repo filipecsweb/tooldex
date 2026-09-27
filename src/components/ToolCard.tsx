@@ -4,7 +4,7 @@ import ArrowOut from './ArrowOut';
 import Plate from './Plate';
 
 /** One catalog entry: plate, name, the tagline as its lead, and an Access line. */
-export default function ToolCard({ tool, eager = false, lead = false }: { tool: IndexTool; eager?: boolean; lead?: boolean }) {
+export default function ToolCard({ tool, eager = false, lead = false, filed = true }: { tool: IndexTool; eager?: boolean; lead?: boolean; filed?: boolean }) {
   const href = `/tools/${tool.slug}`;
   const name = (
     <h3
@@ -29,12 +29,14 @@ export default function ToolCard({ tool, eager = false, lead = false }: { tool: 
             <ArrowOut className="ml-1 inline align-baseline" />
           </a>
         </p>
-        <p className="mt-2 text-label text-ink-3">
-          Filed under{' '}
-          <a href={`/categories/${tool.category}`} className="link font-semibold">
-            {tool.categoryName}
-          </a>
-        </p>
+        {filed && (
+          <p className="mt-2 text-label text-ink-3">
+            Filed under{' '}
+            <a href={`/categories/${tool.category}`} className="link font-semibold">
+              {tool.categoryName}
+            </a>
+          </p>
+        )}
       </div>
     </>
   );

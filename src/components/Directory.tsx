@@ -83,7 +83,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
       <section aria-label="Find a tool" className="grid gap-5 pb-8 pt-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
         <div>
           <label htmlFor="find" className="block text-label font-extrabold">
-            Find a tool <span className="font-normal text-ink-3">(press /)</span>
+            Find a tool <span className="font-normal text-ink-3 pointer-coarse:hidden">(press /)</span>
           </label>
           <input
             ref={input}

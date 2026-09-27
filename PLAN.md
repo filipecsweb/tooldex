@@ -209,7 +209,7 @@ Exit code is non-zero on any error. `npm run build` runs `check --offline`, so u
 
 ## 7. SEO
 
-- Unique title "{name}: {tagline} · tooldex", meta description = tagline, canonical from `Astro.site`, OG/Twitter with the thumbnail (absolute URL) or the site default.
+- Unique title "{name}: {section} tool for AI agents · tooldex" (short enough not to be truncated; the tagline is too long for a title), meta description = tagline, canonical from `Astro.site`, OG/Twitter with the thumbnail (absolute URL) or the site default.
 - JSON-LD: `SoftwareApplication` on tools, `ItemList` on categories, `BreadcrumbList` on both, `WebSite` on home.
 - Internal linking: breadcrumbs, related tools, category links, footer categories, `/categories` hub.
 - Sitemap, robots.txt, real 404 via `not_found_handling: "404-page"`, 301s for renamed and deleted tools.
