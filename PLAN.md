@@ -241,7 +241,7 @@ Local: `herd proxy tooldex http://localhost:4401 --secure` once, then `npm run d
 
 Git: public GitHub repo `filipecsweb/tooldex` (origin), personal gh account only, commits under the GitHub noreply email. Code is MIT; write-ups and data under `src/content/` are all rights reserved (see `LICENSE`). Commits at each step of §11.
 
-Deploy: confirm `npx wrangler whoami` is the personal login and matches the `account_id` pinned in `wrangler.jsonc`, then `npm run deploy` (tests are separate: run `npm test` and `npm run check` first).
+Deploy: a push to `main` builds and deploys through Cloudflare Workers Builds (build `npm test && npm run build`, deploy `npx wrangler deploy`, Node from `.node-version`, preview builds off, the auto-created Workers Builds token with its default permissions; settings in README › Deploy). The online link check stays local. Manual fallback: confirm `npx wrangler whoami` matches the pinned `account_id`, then `npm run deploy`.
 
 ## 9. Starter-template hygiene
 

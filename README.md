@@ -62,8 +62,25 @@ It prefills name, tagline, tags, links and a category guess from the GitHub API 
 
 Live at https://tooldex.tooldex.workers.dev. The Cloudflare account is pinned by `account_id` in `wrangler.jsonc`.
 
+Every push to `main` deploys to production through Cloudflare Workers Builds (the Worker is connected to this repository in the dashboard, under the Worker's **Settings → Builds**). The build runs on Cloudflare with these settings:
+
+| Setting | Value |
+|---|---|
+| Root directory | repository root |
+| Production branch | `main` |
+| Build command | `npm test && npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| Preview builds | off |
+| API token | the token Workers Builds creates, with its default permissions (kept in the dashboard, never in the repository) |
+
+Node comes from `.node-version`. There are no build variables or secrets, and none belong in the repository. The Worker `name` in `wrangler.jsonc` must match the Worker connected in the dashboard. The Cloudflare GitHub app has access to this repository only.
+
+A failed test, type check or content check fails the build and leaves the live site as it was. The online link check (`npm run check`) stays local.
+
+Manual fallback, from a clean `main`:
+
 ```bash
-npx wrangler login     # once, interactive
+npx wrangler whoami    # must be the account pinned in wrangler.jsonc
 npm run deploy
 ```
 
