@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-27T00:00:00Z",
+  "title": "Design System: tooldex",
+  "extensions": {
+    "colorMeta": {
+      "spot": { "role": "primary", "displayName": "Earth Spot Blue", "canonical": "#1f55a6", "tonalRamp": ["oklch(20% 0.08 258)", "oklch(30% 0.11 258)", "oklch(40% 0.13 258)", "oklch(46% 0.14 258)", "oklch(58% 0.13 258)", "oklch(70% 0.09 258)", "oklch(82% 0.05 258)", "oklch(94% 0.02 258)"] },
+      "spot-deep": { "role": "primary", "displayName": "Pressed Spot Blue", "canonical": "#163f7d", "tonalRamp": ["oklch(18% 0.07 258)", "oklch(26% 0.09 258)", "oklch(33% 0.11 258)", "oklch(38% 0.12 258)", "oklch(50% 0.12 258)", "oklch(64% 0.09 258)", "oklch(80% 0.05 258)", "oklch(94% 0.02 258)"] },
+      "paper": { "role": "neutral", "displayName": "Newsprint Grey", "canonical": "#e9eae7", "tonalRamp": ["oklch(15% 0.004 110)", "oklch(27% 0.004 110)", "oklch(39% 0.004 110)", "oklch(51% 0.004 110)", "oklch(63% 0.004 110)", "oklch(75% 0.004 110)", "oklch(87% 0.004 110)", "oklch(93.5% 0.004 110)"] },
+      "paper-2": { "role": "neutral", "displayName": "Plate Grey", "canonical": "#dcddd9", "tonalRamp": ["oklch(15% 0.005 110)", "oklch(27% 0.005 110)", "oklch(39% 0.005 110)", "oklch(51% 0.005 110)", "oklch(63% 0.005 110)", "oklch(75% 0.005 110)", "oklch(89.5% 0.005 110)", "oklch(95% 0.005 110)"] },
+      "ink": { "role": "neutral", "displayName": "Warm Black Ink", "canonical": "#16150f", "tonalRamp": ["oklch(19% 0.01 100)", "oklch(29% 0.01 100)", "oklch(39% 0.01 100)", "oklch(49% 0.01 100)", "oklch(60% 0.01 100)", "oklch(71% 0.01 100)", "oklch(83% 0.008 100)", "oklch(95% 0.005 100)"] },
+      "ink-2": { "role": "neutral", "displayName": "Second Ink", "canonical": "#45443c", "tonalRamp": ["oklch(19% 0.012 100)", "oklch(29% 0.012 100)", "oklch(38% 0.012 100)", "oklch(49% 0.012 100)", "oklch(60% 0.012 100)", "oklch(71% 0.01 100)", "oklch(83% 0.008 100)", "oklch(95% 0.005 100)"] },
+      "ink-3": { "role": "neutral", "displayName": "Third Ink", "canonical": "#5f5e55", "tonalRamp": ["oklch(19% 0.012 100)", "oklch(29% 0.012 100)", "oklch(39% 0.012 100)", "oklch(47% 0.012 100)", "oklch(60% 0.012 100)", "oklch(71% 0.01 100)", "oklch(83% 0.008 100)", "oklch(95% 0.005 100)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Masthead", "purpose": "The home-page \"tooldex\" masthead only." },
+      "headline": { "displayName": "Page Headline", "purpose": "Page H1s: tool name, section name, Sections, 404." },
+      "title": { "displayName": "Entry Name", "purpose": "Entry names on cards (lead entry scales up); section heads at 900." },
+      "lead": { "displayName": "Lead", "purpose": "Tagline under an entry-page H1, max 40ch." },
+      "body": { "displayName": "Review", "purpose": "Review prose at 66ch; run-in heads in Franklin 800 at 0.94em." },
+      "body-sm": { "displayName": "Small Reading", "purpose": "Card taglines, section descriptions, notes." },
+      "label": { "displayName": "Label", "purpose": "Navigation, field labels, summaries, dt terms, index items." },
+      "access-label": { "displayName": "Access Label", "purpose": "The spot-blue uppercase \"Access\" heading; 0.8125rem/850/0.06em on the card line." },
+      "data": { "displayName": "Access Data", "purpose": "Courier Prime only for URLs, repository paths, tags and the plate source line." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Plate develop: halftone fades out, colour fades in over 0.6s." },
+      { "name": "state-fast", "value": "150ms", "purpose": "Colour and underline changes on buttons, the Access CTA and index items." },
+      { "name": "plate-view-transition", "value": "view-transition-name: plate-<slug>", "purpose": "Carries a plate from its card into its entry page (Astro ClientRouter)." },
+      { "name": "reduced-motion", "value": "transition-duration: 0s; view transitions off", "purpose": "prefers-reduced-motion: reduce." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ],
+    "plateMaterial": {
+      "generator": "scripts/plates.ts with halftone() and toneMap() from scripts/lib.ts",
+      "jobs": [
+        { "source": "thumb.webp", "width": 840, "cell": 5, "crop": "card aspect 1600:840, keep top" },
+        { "source": "icon.png", "width": 240, "cell": 5, "crop": "none" }
+      ],
+      "toneMap": "2nd percentile to solid ink, 98th to bare paper, gamma 0.9; blurred to cell/2",
+      "screen": "amplitude-modulated, 45-degree, dot area tracks tone",
+      "inkColor": "rgb(22, 21, 15) = --color-ink, as alpha",
+      "output": "16-colour PNG with a 'Derived, not generated' provenance text chunk",
+      "compositing": "colour original mix-blend-mode: multiply beneath; halftone on top; colour hidden while a plate exists",
+      "develops": "on .entry hover, wrapping link hover/focus-visible, or .plate[data-developed] (entry pages)"
+    }
+  },
+  "components": [
+    {
+      "name": "Access Box",
+      "kind": "custom",
+      "refersTo": "access-box",
+      "description": "The entry page's primary action: spot Access label, solid ink CTA that turns spot on hover, access data in Courier.",
+      "html": "<div class=\"ds-access-box\"><h2 class=\"ds-access-label\">Access</h2><a class=\"ds-access-cta\" href=\"#\">View the repository <svg width=\"0.8em\" height=\"0.8em\" viewBox=\"0 0 12 12\" aria-hidden=\"true\"><path d=\"M3 9 9 3M4.2 3H9v4.8\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"square\"/></svg></a><dl class=\"ds-access-dl\"><div><dt>Repository</dt><dd class=\"ds-data\"><a class=\"ds-link\" href=\"#\">github.com/garrytan/gstack</a></dd></div><div><dt>Tags</dt><dd class=\"ds-data\"><a class=\"ds-link\" href=\"#\">skill</a> <a class=\"ds-link\" href=\"#\">claude-code</a></dd></div><div><dt>Listed</dt><dd style=\"color:var(--color-ink-2)\">2026-09-26</dd></div></dl></div>",
+      "css": ".ds-access-box { border: 3px solid var(--color-ink, #16150f); padding: 1.25rem; background: var(--color-paper, #e9eae7); color: var(--color-ink, #16150f); font-family: var(--font-sans); max-width: 22rem; } .ds-access-label { margin: 0; font-size: 0.9375rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-spot, #1f55a6); } .ds-access-cta { margin-top: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--color-ink, #16150f); color: var(--color-paper, #e9eae7); padding: 0.75rem 1rem; font-size: 1.0625rem; font-weight: 800; text-decoration: none; transition: background-color 150ms; } .ds-access-cta:hover { background: var(--color-spot, #1f55a6); } .ds-access-cta:focus-visible { outline: 3px solid var(--color-spot, #1f55a6); outline-offset: 3px; } .ds-access-dl { margin: 1.25rem 0 0; display: grid; gap: 0.75rem; font-size: 0.9375rem; } .ds-access-dl dt { font-weight: 700; } .ds-access-dl dd { margin: 0; } .ds-data { font-family: var(--font-mono, 'Courier Prime', monospace); overflow-wrap: anywhere; } .ds-link { color: var(--color-spot, #1f55a6); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.2em; text-decoration-color: color-mix(in oklab, var(--color-spot, #1f55a6) 45%, transparent); } .ds-link:hover { color: var(--color-spot-deep, #163f7d); text-decoration-color: currentColor; }"
+    },
+    {
+      "name": "Entry Card with Access Line",
+      "kind": "card",
+      "refersTo": "access-line",
+      "description": "One catalog entry on a 2px rule: plate, bold name, serif tagline, boxed Access line, Filed under.",
+      "html": "<article class=\"ds-entry\"><a class=\"ds-entry-link\" href=\"#\"><div class=\"ds-plate\"></div><h3 class=\"ds-entry-name\">last30days</h3></a><p class=\"ds-entry-tagline\">Researches any topic across forums and the web, and writes a grounded brief.</p><p class=\"ds-access-line\"><span class=\"ds-access-line-label\">Access</span><a class=\"ds-link\" href=\"#\">github.com/example/last30days</a></p><p class=\"ds-filed\">Filed under <a class=\"ds-link\" href=\"#\" style=\"font-weight:600\">Research</a></p></article>",
+      "css": ".ds-entry { border-top: 2px solid var(--color-ink, #16150f); padding-top: 0.75rem; max-width: 26rem; color: var(--color-ink, #16150f); font-family: var(--font-sans); } .ds-entry-link { display: block; color: inherit; text-decoration: none; } .ds-plate { aspect-ratio: 1600 / 840; background: var(--color-paper-2, #dcddd9); background-image: radial-gradient(circle, var(--color-ink, #16150f) 30%, transparent 32%); background-size: 5px 5px; } .ds-entry-name { margin: 1rem 0 0; font-size: 1.75rem; font-weight: 850; line-height: 1.02; letter-spacing: -0.03em; } .ds-entry-link:hover .ds-entry-name, .ds-entry-link:focus-visible .ds-entry-name { text-decoration: underline; } .ds-entry-tagline { margin: 0.5rem 0 0; font-family: var(--font-serif, Georgia, serif); font-size: 1.0625rem; line-height: 1.5; color: var(--color-ink-2, #45443c); } .ds-access-line { margin: 1rem 0 0; display: flex; align-items: baseline; gap: 0.5rem; border: 2px solid var(--color-ink, #16150f); padding: 0.375rem 0.625rem; font-family: var(--font-mono, 'Courier Prime', monospace); font-size: 0.9375rem; } .ds-access-line-label { font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 850; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-spot, #1f55a6); } .ds-filed { margin: 0.5rem 0 0; font-size: 0.875rem; color: var(--color-ink-3, #5f5e55); } .ds-link { color: var(--color-spot, #1f55a6); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.2em; text-decoration-color: color-mix(in oklab, var(--color-spot, #1f55a6) 45%, transparent); } .ds-link:hover { color: var(--color-spot-deep, #163f7d); text-decoration-color: currentColor; }"
+    },
+    {
+      "name": "Composed Plate",
+      "kind": "custom",
+      "refersTo": "plate",
+      "description": "Fallback for tools without a thumbnail: halftoned icon, name set large, source in Courier on a 2px rule.",
+      "html": "<div class=\"ds-cplate\"><div class=\"ds-cplate-grid\"><span class=\"ds-cplate-icon\"></span><span class=\"ds-cplate-name\">Archify</span><span class=\"ds-cplate-source\">example/archify</span></div></div>",
+      "css": ".ds-cplate { position: relative; aspect-ratio: 1600 / 840; overflow: hidden; background: var(--color-paper-2, #dcddd9); container-type: inline-size; max-width: 30rem; color: var(--color-ink, #16150f); font-family: var(--font-sans); } .ds-cplate-grid { position: absolute; inset: 0; display: grid; grid-template-columns: auto 1fr; grid-template-rows: 1fr auto; align-items: center; gap: 0 6cqw; padding: 7cqw; } .ds-cplate-icon { width: 24cqw; height: 24cqw; background-image: radial-gradient(circle, var(--color-ink, #16150f) 38%, transparent 40%); background-size: 5px 5px; } .ds-cplate-name { font-weight: 900; font-size: min(10cqw, 5rem); line-height: 0.92; letter-spacing: -0.035em; } .ds-cplate-source { grid-column: 1 / -1; font-family: var(--font-mono, 'Courier Prime', monospace); font-size: clamp(0.7rem, 3.2cqw, 1.1rem); color: var(--color-ink-2, #45443c); border-top: 2px solid var(--color-ink, #16150f); padding-top: 2.5cqw; }"
+    },
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Square ink button with paper text, e.g. Clear the search.",
+      "html": "<button class=\"ds-btn-solid\" type=\"button\">Clear the search</button>",
+      "css": ".ds-btn-solid { display: inline-flex; align-items: baseline; gap: 0.375rem; border: 2px solid var(--color-ink, #16150f); background: var(--color-ink, #16150f); color: var(--color-paper, #e9eae7); padding: 0.375rem 0.75rem; font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 700; border-radius: 0; cursor: pointer; transition: background-color 150ms, color 150ms; } .ds-btn-solid:focus-visible { outline: 3px solid var(--color-spot, #1f55a6); outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Square 2px ink outline; hover fills plate grey, e.g. Show more entries.",
+      "html": "<button class=\"ds-btn-outline\" type=\"button\">Show 48 more entries</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: baseline; gap: 0.375rem; border: 2px solid var(--color-ink, #16150f); background: transparent; color: var(--color-ink, #16150f); padding: 0.375rem 0.75rem; font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 700; border-radius: 0; cursor: pointer; transition: background-color 150ms; } .ds-btn-outline:hover { background: var(--color-paper-2, #dcddd9); } .ds-btn-outline:focus-visible { outline: 3px solid var(--color-spot, #1f55a6); outline-offset: 3px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "Underlined search, 3px ink rule turning spot on focus; spot caret.",
+      "html": "<label class=\"ds-search-label\" for=\"ds-find\">Find a tool <span>(press /)</span></label><input class=\"ds-search\" id=\"ds-find\" type=\"search\" placeholder=\"diagrams, security, codex…\">",
+      "css": ".ds-search-label { display: block; font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 800; color: var(--color-ink, #16150f); } .ds-search-label span { font-weight: 400; color: var(--color-ink-3, #5f5e55); } .ds-search { margin-top: 0.5rem; width: 100%; max-width: 30rem; border: 0; border-bottom: 3px solid var(--color-ink, #16150f); border-radius: 0; background: transparent; padding: 0.5rem 0; font-family: var(--font-sans); font-size: 1.625rem; font-weight: 600; letter-spacing: -0.01em; color: var(--color-ink, #16150f); caret-color: var(--color-spot, #1f55a6); outline: none; } .ds-search::placeholder { color: var(--color-ink-3, #5f5e55); } .ds-search:focus-visible { border-bottom-color: var(--color-spot, #1f55a6); outline: none; }"
+    },
+    {
+      "name": "Section Index Run",
+      "kind": "chip",
+      "refersTo": "index-item",
+      "description": "A typeset run of section names with counts, the current one underscored in ink.",
+      "html": "<ul class=\"ds-index-run\"><li><button class=\"ds-index-item\" aria-pressed=\"true\">All sections <span class=\"ds-index-count\">7</span></button></li><li><button class=\"ds-index-item\" aria-pressed=\"false\">Research <span class=\"ds-index-count\">1</span></button></li><li><button class=\"ds-index-item\" aria-pressed=\"false\" data-empty>Security <span class=\"ds-index-count\">0</span></button></li></ul>",
+      "css": ".ds-index-run { display: flex; flex-wrap: wrap; gap: 0.35rem 1.5rem; list-style: none; margin: 0; padding: 0; font-family: var(--font-sans); font-size: 1.0625rem; } .ds-index-item { display: inline-flex; align-items: baseline; gap: 0.35em; padding: 0.15rem 0; border: 0; border-bottom: 3px solid transparent; background: none; font: inherit; font-weight: 700; color: var(--color-ink-2, #45443c); cursor: pointer; transition: border-color 150ms, color 150ms; } .ds-index-item:hover { color: var(--color-ink, #16150f); border-bottom-color: var(--color-ink-3, #5f5e55); } .ds-index-item[aria-pressed='true'] { color: var(--color-ink, #16150f); border-bottom-color: var(--color-ink, #16150f); } .ds-index-item[data-empty] { color: var(--color-ink-3, #5f5e55); font-weight: 500; } .ds-index-item:focus-visible { outline: 3px solid var(--color-spot, #1f55a6); outline-offset: 3px; } .ds-index-count { font-size: 0.8125rem; font-weight: 500; color: var(--color-ink-3, #5f5e55); }"
+    },
+    {
+      "name": "Compact Masthead",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "Franklin black name at left, ink nav at right, a 4px rule under it.",
+      "html": "<header class=\"ds-mast\"><div class=\"ds-mast-row\"><a class=\"ds-mast-name\" href=\"#\">tooldex</a><nav class=\"ds-mast-nav\"><a href=\"#\" aria-current=\"page\">Catalog</a><a href=\"#\">Sections</a></nav></div></header>",
+      "css": ".ds-mast { border-bottom: 4px solid var(--color-ink, #16150f); font-family: var(--font-sans); color: var(--color-ink, #16150f); } .ds-mast-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1rem 0; } .ds-mast-name { font-size: 2.125rem; font-weight: 900; line-height: 1; letter-spacing: -0.045em; color: inherit; text-decoration: none; } .ds-mast-nav { display: flex; gap: 1.25rem; font-size: 0.9375rem; font-weight: 700; } .ds-mast-nav a { color: inherit; text-decoration: none; text-underline-offset: 0.2em; text-decoration-thickness: 1.5px; } .ds-mast-nav a:hover, .ds-mast-nav a[aria-current='page'] { text-decoration: underline; } .ds-mast a:focus-visible { outline: 3px solid var(--color-spot, #1f55a6); outline-offset: 3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Access to Tools",
+    "overview": "tooldex is a catalog you read, not a feed you scroll. The world is a pasted-up newsprint catalog in the manner of the Whole Earth Catalog: grey paper, warm black ink, one Earth-blue spot colour, and heavy black rules that cut the page into blocks. Every tool is a reviewed entry: a printed plate, a bold name, the tagline as its lead, a plain review in a book serif, and a boxed Access line that sends the reader to the source.\n\nDepth is not simulated; it is printed. Pictures arrive as real halftone plates, multiplied into the paper, and \"develop\" to their colour original only when the reader reaches for them. Hierarchy is carried by rule weight and type weight, never by cards, shadows or tint washes. The system is light-only by owner decision: there is no dark theme and no toggle, and nothing in it should be designed to invert.\n\nDensity is editorial rather than dashboard: a 1320px sheet, three columns of entries on desktop, generous 3.5rem gaps between entries, and prose held to a 66ch measure.",
+    "keyCharacteristics": [
+      "Grey newsprint ground, warm black ink, one spot blue.",
+      "Heavy paste-up rules (4px section, 2px block, 3px boxes); square corners everywhere.",
+      "Libre Franklin black for names and mastheads, Literata for reading, Courier Prime only for access data.",
+      "Halftone plates that develop to colour on hover, focus, and on the entry page.",
+      "A boxed Access line on every entry; the Access box is the primary action on every tool page.",
+      "Light theme only."
+    ],
+    "rules": [
+      { "name": "The One Spot Rule", "body": "Spot blue marks what the reader can act on to leave or move: content links, the Access label, focus and caret, the Access button's hover. Navigation, headings, entry names and index items stay ink and underline instead.", "section": "colors" },
+      { "name": "The Link Ink Rule", "body": "Links inside content are spot with a 45%-spot underline (`color-mix(in oklab, spot 45%, transparent)`, 1.5px, offset 0.2em), deepening to spot-deep with a full underline on hover. Navigation links (masthead, footer sections, entry names) are ink with no underline at rest and a plain underline on hover or when current.", "section": "colors" },
+      { "name": "The Typewriter Rule", "body": "Courier Prime is only for access data: URLs (shown as host/path, breaking only after a slash), repository paths, and tags. It never sets prose, headings, counts, dates or UI labels.", "section": "typography" },
+      { "name": "The Weight Carries It Rule", "body": "Names and heads are Franklin at 850 to 900 with tight negative tracking; there is no light or regular display. Reading text is never Franklin.", "section": "typography" },
+      { "name": "The Printed Not Lifted Rule", "body": "Nothing floats. Separation is a rule, a 2 to 3px ink box, or a change of paper (paper to paper-2); never a shadow, blur or rounded card.", "section": "elevation" },
+      { "name": "The Paste-Up Rule", "body": "Rule weight is the hierarchy: 4px opens a section, 2px opens a block, 3px frames the one box that matters (Access). Rules are ink at full strength; don't add grey hairlines to separate content.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do open every section on a 4px ink rule and every block on a 2px ink rule.",
+      "Do print every picture as a plate on paper-2 and let it develop to colour only on hover, focus, or its own entry page.",
+      "Do give every tool without a thumbnail the composed plate: halftoned icon, name set large on cards, source in Courier on a 2px rule; the quiet band on its entry page.",
+      "Do end every entry in an Access line or Access box, with the URL in Courier as host/path.",
+      "Do keep spot blue for content links, the Access label, focus, caret and the Access button's hover.",
+      "Do set reading text in Literata at a 66ch measure; set names and heads in Franklin 850 to 900 with negative tracking."
+    ],
+    "donts": [
+      "Don't use shadows, rounded corners, soft cards or tinted panels.",
+      "Don't set anything but URLs, repository paths and tags in Courier Prime.",
+      "Don't add colour beyond the single spot blue; images carry their own colour only once developed.",
+      "Don't colour navigation, headings or entry names with the spot; they stay ink.",
+      "Don't add a dark theme, a theme toggle, or colours chosen to survive inversion.",
+      "Don't replace the section index run with pill tags or a dropdown."
+    ]
+  }
+}
