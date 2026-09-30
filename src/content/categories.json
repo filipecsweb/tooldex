@@ -54,6 +54,12 @@
     "keywords": ["image-generation", "video-generation", "audio-generation", "stable-diffusion", "diffusion", "text-to-image", "comfyui", "flux", "generative-art"]
   },
   {
+    "id": "speech",
+    "name": "Speech & voice",
+    "description": "Tools that let software listen and talk: speech-to-text, text-to-speech and the voice pipelines that give an agent ears and a voice, on your own hardware or in the cloud.",
+    "keywords": ["speech", "speech-to-text", "text-to-speech", "asr", "tts", "voice", "transcription", "whisper", "vad", "diarization"]
+  },
+  {
     "id": "careers",
     "name": "Careers & job search",
     "description": "Agent workflows for finding work: sorting job postings, tailoring CVs and cover letters, and preparing for interviews.",
