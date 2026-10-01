@@ -5,6 +5,10 @@
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-09-26",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // Custom domain: wrangler deploy creates the DNS record and certificate on the hellofilipe.dev zone (same account).
+  "routes": [{ "pattern": "tooldex.hellofilipe.dev", "custom_domain": true }],
+  // Routes would infer workers_dev: false; keep the old URL answering. Its pages canonicalise to the custom domain.
+  "workers_dev": true,
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist",

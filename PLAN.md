@@ -4,7 +4,7 @@ A public directory of **AI agent tooling**: skills, plugins, subagents, MCP serv
 
 The per-tool workflow (add, edit, rename, delete, check) is a first-class feature. §6 specifies it.
 
-Status: approved 2026-09-26 with the answers in §13. All six steps of §11 are done. Live at **https://tooldex.tooldex.workers.dev** (personal Cloudflare account, `account_id` pinned in `wrangler.jsonc`). This file stays the source of truth and reflects what was built.
+Status: approved 2026-09-26 with the answers in §13. All six steps of §11 are done. Live at **https://tooldex.hellofilipe.dev** (Workers custom domain; personal Cloudflare account, `account_id` pinned in `wrangler.jsonc`). This file stays the source of truth and reflects what was built.
 
 ---
 
@@ -222,7 +222,7 @@ Exit code is non-zero on any error. `npm run build` runs `check --offline`, so u
 
 ```js
 export default defineConfig({
-  site: 'https://tooldex.tooldex.workers.dev',
+  site: 'https://tooldex.hellofilipe.dev',
   session: false,
   trailingSlash: 'never',
   build: { format: 'file' },
@@ -239,7 +239,7 @@ export default defineConfig({
 
 Dev keeps its own Vite dep cache: `astro check` and `astro build` re-optimise deps into the default `node_modules/.vite/` and would delete chunks a running dev server still imports, so every page 500s until a restart.
 
-`wrangler.jsonc`: `name: tooldex`, pinned personal `account_id`, adapter entrypoint, `nodejs_compat`, assets `{ binding: ASSETS, directory: ./dist, not_found_handling: 404-page }`, observability on.
+`wrangler.jsonc`: `name: tooldex`, pinned personal `account_id`, adapter entrypoint, `nodejs_compat`, custom-domain route `tooldex.hellofilipe.dev` with `workers_dev: true` kept, assets `{ binding: ASSETS, directory: ./dist, not_found_handling: 404-page }`, observability on.
 
 Scripts: `dev`, `build` (`astro check && tool check --offline && astro build`), `preview`, `deploy` (`npm run build && wrangler deploy`), `check`, `tool`, `test`.
 
@@ -300,7 +300,7 @@ Exactly seven, nothing else. The owner adds more with `tool add`.
 ## 13. Decisions (answers to the draft's open questions)
 
 1. **Niche:** AI agent tooling. Categories grouped by what the tool does, derived from the seeds (§2).
-2. **Domain:** workers.dev for now.
+2. **Domain:** workers.dev at launch; moved to `tooldex.hellofilipe.dev` (2026-10-01) to tie it to the owner's site.
 3. **Seed:** the seven in §12 only.
 4. **Thumbnails:** mixed sources per §6; never GitHub's auto-generated card; designed fallback card last; manual file always wins. Icons: owner avatar for repo-only tools.
 5. **Visual:** light theme only. impeccable decides type, colour and layout; the draft's font, hue and emoji choices are void.

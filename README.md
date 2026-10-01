@@ -60,7 +60,7 @@ It prefills name, tagline, tags, links and a category guess from the GitHub API 
 
 ## Deploy
 
-Live at https://tooldex.tooldex.workers.dev. The Cloudflare account is pinned by `account_id` in `wrangler.jsonc`.
+Live at https://tooldex.hellofilipe.dev (a Workers custom domain on the hellofilipe.dev zone, set by `routes` in `wrangler.jsonc`; the old https://tooldex.tooldex.workers.dev still answers and canonicalises to it). The Cloudflare account is pinned by `account_id` in `wrangler.jsonc`.
 
 Every push to `main` deploys to production through Cloudflare Workers Builds (the Worker is connected to this repository in the dashboard, under the Worker's **Settings → Builds**). The build runs on Cloudflare with these settings:
 
@@ -84,7 +84,7 @@ npx wrangler whoami    # must be the account pinned in wrangler.jsonc
 npm run deploy
 ```
 
-If the site moves to a custom domain, update `site` in `astro.config.mjs` and the sitemap line in `public/robots.txt`, then deploy.
+If the domain changes, update `site` in `astro.config.mjs`, the sitemap line in `public/robots.txt` and the custom-domain route in `wrangler.jsonc`, then deploy.
 
 ## Starter-template split
 

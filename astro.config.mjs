@@ -28,8 +28,8 @@ function lastmod(path) {
 }
 
 export default defineConfig({
-  // Canonicals, sitemap and OG URLs. Swap for the custom domain when there is one.
-  site: 'https://tooldex.tooldex.workers.dev',
+  // Canonicals, sitemap and OG URLs.
+  site: 'https://tooldex.hellofilipe.dev',
   // Static site: no sessions, so no KV namespace gets provisioned on deploy.
   session: false,
   trailingSlash: 'never',

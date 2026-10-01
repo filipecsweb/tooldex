@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tooldex.tooldex.workers.dev/sitemap-index.xml
+Sitemap: https://tooldex.hellofilipe.dev/sitemap-index.xml
