@@ -2,7 +2,7 @@
 name: "i-have-adhd"
 tagline: "An output-style skill that makes your coding agent lead with the next action, number its steps and drop the preamble, recaps and tangents."
 category: writing
-tags: [skill, plugin, claude-code, codex, cursor, gemini-cli, opencode, copilot, antigravity, grok, hermes, kimi-code, pi, oh-my-pi, qwen-code, zed, amp, astronclaw, output-style, focus]
+tags: [skill, plugin, free, claude-code, codex, cursor, gemini-cli, opencode, copilot, antigravity, grok, hermes, kimi-code, pi, oh-my-pi, qwen-code, zed, amp, astronclaw, output-style, focus]
 repo: https://github.com/ayghri/i-have-adhd
 icon: ./icon.png
 added: 2026-09-27

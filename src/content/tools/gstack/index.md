@@ -2,7 +2,7 @@
 name: "gstack"
 tagline: "Garry Tan's Claude Code setup: role-based skills that plan, review, test and ship your code like a small engineering team."
 category: dev-workflow
-tags: [skill, claude-code, codex, opencode, cursor, factory-droid, kiro, slate, openclaw, hermes, code-review, qa, planning, release]
+tags: [skill, free, claude-code, codex, opencode, cursor, factory-droid, kiro, slate, openclaw, hermes, code-review, qa, planning, release]
 repo: https://github.com/garrytan/gstack
 icon: ./icon.png
 added: 2026-09-26

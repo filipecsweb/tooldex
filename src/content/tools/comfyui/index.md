@@ -2,7 +2,7 @@
 name: "ComfyUI"
 tagline: "A node-graph engine for generating images, video, audio and 3D with open models, running on your own hardware or in the cloud."
 category: media
-tags: [app, api, image-generation, video-generation, local-models, node-graph]
+tags: [app, freemium, api, image-generation, video-generation, local-models, node-graph]
 repo: https://github.com/Comfy-Org/ComfyUI
 website: https://www.comfy.org/
 thumbnail: ./thumb.webp

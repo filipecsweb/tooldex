@@ -2,7 +2,7 @@
 name: "AI Job Search"
 tagline: "A Claude Code workflow for job hunting: builds your profile, scores postings for fit, tailors your CV, drafts cover letters and preps you for interviews."
 category: careers
-tags: [skill, subagents, claude-code, job-search, cv, cover-letters]
+tags: [skill, subagents, free, claude-code, job-search, cv, cover-letters]
 repo: https://github.com/MadsLorentzen/ai-job-search
 thumbnail: ./thumb.webp
 icon: ./icon.png

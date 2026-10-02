@@ -1,30 +1,54 @@
-// The facet vocabulary (src/content/facets.json) is the only place that knows which tags are
-// kinds or hosts. Everything else derives from it. Pure, so the site, the island and the CLI share it.
+// The facet vocabulary (src/content/facets.json) is the only place that knows which tags are kinds,
+// hosts or pricing. Everything else derives from it. Pure, so the site, the island and the CLI share it.
 import facets from '../content/facets.json' with { type: 'json' };
 
 export type Facet = { tag: string; label: string };
+/** A facet group: what a tool is, where it runs, what it costs. */
+export type FacetGroup = keyof typeof facets;
 
-export const KINDS: Facet[] = facets.kinds;
-export const HOSTS: Facet[] = facets.hosts;
+export const VOCABULARY: Record<FacetGroup, Facet[]> = facets;
+/** The groups in vocabulary order, which is the order the directory shows them in. */
+export const FACET_GROUPS = Object.keys(VOCABULARY) as FacetGroup[];
+export const KINDS = VOCABULARY.kinds;
+export const HOSTS = VOCABULARY.hosts;
+export const PRICING = VOCABULARY.pricing;
 
-const kindTags = new Set(KINDS.map((f) => f.tag));
-const hostTags = new Set(HOSTS.map((f) => f.tag));
-const labels = new Map([...KINDS, ...HOSTS].map((f) => [f.tag, f.label]));
+/** One value per facet group, from `fn`. */
+export const byGroup = <T>(fn: (g: FacetGroup) => T) => Object.fromEntries(FACET_GROUPS.map((g) => [g, fn(g)])) as Record<FacetGroup, T>;
 
-/** A tool's tags split into kinds (what it is), hosts (where it runs) and topics (everything else), in tag order. */
+const groupOf = new Map(FACET_GROUPS.flatMap((g) => VOCABULARY[g].map((f) => [f.tag, g] as const)));
+const labels = new Map(FACET_GROUPS.flatMap((g) => VOCABULARY[g].map((f) => [f.tag, f.label] as const)));
+
+/** A tool's tags split by facet group, and topics (everything else), in tag order. */
 export function splitTags(tags: string[]) {
-  return {
-    kinds: tags.filter((t) => kindTags.has(t)),
-    hosts: tags.filter((t) => hostTags.has(t)),
-    topics: tags.filter((t) => !kindTags.has(t) && !hostTags.has(t)),
-  };
+  const out = { ...byGroup((): string[] => []), topics: [] as string[] };
+  for (const t of tags) out[groupOf.get(t) ?? 'topics'].push(t);
+  return out;
 }
 
-/** Kind and host tags: they say what a tool is or where it runs, not what it does. */
-export const GENERIC_TAGS = new Set([...kindTags, ...hostTags]);
+/** The tags a tool shows as badges after its section: its kinds, then its price. */
+export function badges(tags: string[]) {
+  const { kinds, pricing } = splitTags(tags);
+  return [...kinds, ...pricing];
+}
+
+/** Facet tags: they say what a tool is, where it runs or what it costs, not what it does. */
+export const GENERIC_TAGS = new Set(groupOf.keys());
 
 /** Tags are lowercase kebab-case (CLAUDE.md › Tags). */
 export const isTag = (tag: string) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(tag);
+
+/** What `check` reports for a tool's tags (CLAUDE.md › Tags): one not kebab-case or listed twice, no
+ *  kind, or not exactly one pricing tag. */
+export function tagProblems(tags: unknown[]): string[] {
+  const { kinds, pricing } = splitTags([...new Set(tags.filter((t) => typeof t === 'string'))]);
+  return [
+    ...tags.filter((t) => typeof t !== 'string' || !isTag(t)).map((t) => `tag "${t}" is not lowercase kebab-case`),
+    ...new Set(tags.filter((t, i) => tags.indexOf(t) !== i).map((t) => `tag "${t}" is listed more than once`)),
+    ...(kinds.length ? [] : [`no kind tag (one of ${KINDS.map((k) => k.tag).join(', ')}; see src/content/facets.json)`]),
+    ...(pricing.length === 1 ? [] : [`needs exactly one pricing tag (${PRICING.map((p) => p.tag).join(', ')}; see CLAUDE.md › Tags), has ${pricing.length}`]),
+  ];
+}
 
 /** "mcp" -> "MCP"; a topic tag is its own label. */
 export const facetLabel = (tag: string) => labels.get(tag) ?? tag;

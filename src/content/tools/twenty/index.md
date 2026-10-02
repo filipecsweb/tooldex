@@ -2,7 +2,7 @@
 name: "Twenty"
 tagline: "An open-source CRM you can self-host and extend as code, with AI chat and agents built in, and skills that let coding agents build on it and query it."
 category: sales
-tags: [app, mcp, skill, plugin, claude-code, codex, cursor, pi, crm, self-hosted]
+tags: [app, mcp, skill, plugin, freemium, claude-code, codex, cursor, pi, crm, self-hosted]
 repo: https://github.com/twentyhq/twenty
 website: https://twenty.com
 thumbnail: ./thumb.webp

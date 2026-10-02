@@ -2,7 +2,7 @@
 name: "Fabric"
 tagline: "A command-line tool that runs a large, crowd-sourced library of task prompts, such as summarise or extract key ideas, over any text you pipe in."
 category: research
-tags: [cli, prompts, prompt-engineering]
+tags: [cli, free, prompts, prompt-engineering]
 repo: https://github.com/danielmiessler/Fabric
 thumbnail: ./thumb.webp
 icon: ./icon.png

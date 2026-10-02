@@ -2,7 +2,7 @@
 name: "Prompt Master"
 tagline: "A Claude skill that writes a tight, tool-specific prompt for whatever AI you're about to use, from coding agents to image and video models."
 category: writing
-tags: [skill, claude-code, claude-ai, prompt-engineering, prompts]
+tags: [skill, free, claude-code, claude-ai, prompt-engineering, prompts]
 repo: https://github.com/nidhinjs/prompt-master
 icon: ./icon.png
 added: 2026-09-27

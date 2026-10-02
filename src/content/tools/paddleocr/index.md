@@ -2,7 +2,7 @@
 name: "PaddleOCR"
 tagline: "An open-source OCR and document parsing toolkit that turns PDFs and images into structured Markdown or JSON ready for LLMs and RAG pipelines."
 category: data
-tags: [library, cli, mcp, skill, openclaw, python, ocr, document-parsing, pdf, rag]
+tags: [library, cli, mcp, skill, free, openclaw, python, ocr, document-parsing, pdf, rag]
 repo: https://github.com/PaddlePaddle/PaddleOCR
 website: https://www.paddleocr.com
 icon: ./icon.png

@@ -2,7 +2,7 @@
 name: "Comp AI CRM"
 tagline: "An open-source CRM built around an autonomous agent that reads your team's email and meetings, researches contacts and records only what it can prove."
 category: sales
-tags: [app, crm, self-hosted, sales, enrichment, agents]
+tags: [app, free, crm, self-hosted, sales, enrichment, agents]
 repo: https://github.com/trycompai/crm
 website: https://trycrm.ai
 thumbnail: ./thumb.webp

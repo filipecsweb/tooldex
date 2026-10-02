@@ -19,9 +19,9 @@ THESIS: tooldex is a dense, filterable index you operate, not a magazine you scr
 
 OWN-WORLD: near-white ground (#FAFAF9) under a white list sheet, near-black ink, four grey inks down to a 4.5:1 meta grey, 1px warm-grey lines, one indigo accent (#2B37D6) reserved for links, the primary action, selection and focus. Geist for everything; Geist Mono only for access data (URLs, kinds, counts, the `/` key). Radii 12 containers, 9 to 10 controls, 7 rows and chips, 5 to 6 keys. No shadows but the focus halo; no gradients.
 
-STORY: the visitor reads one sentence of what tooldex is, types or filters by section, host and kind, scans rows by name, job and tagline, then opens an entry or follows the mono access link out.
+STORY: the visitor reads one sentence of what tooldex is, types or filters by section, host, kind and price, scans rows by name, job and tagline, then opens an entry or follows the mono access link out.
 
-FIRST VIEWPORT: white 64px header (wordmark left, Catalog/Sections right); a 44px tagline H1, one lead sentence, a 56px search field with its `/` key; below, a 224px sidebar (Sections, Works with, Kind) beside the summary line, Newest / A to Z switch and the white list sheet, its first rows above the fold at 1440x900.
+FIRST VIEWPORT: white 64px header (wordmark left, Catalog/Sections right); a 44px tagline H1, one lead sentence, a 56px search field with its `/` key; below, a 224px sidebar (Sections, Works with, Kind, Price) beside the summary line, Newest / A to Z switch and the white list sheet, its first rows above the fold at 1440x900.
 
 FORM: Index (direction A), pinned by the owner on the design canvas; it overrides the roll. Seed key 834ea4fc (concept-seed run only for the key; its assignment is overridden by the owner's pin). Signature interaction: live faceted narrowing, every facet count answering "what would I get" as you type and tick, mirrored to a shareable URL.
 

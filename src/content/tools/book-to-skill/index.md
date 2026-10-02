@@ -2,7 +2,7 @@
 name: "book-to-skill"
 tagline: "Turns a technical book, a docs folder or a stack of papers into an agent skill your coding agent can consult while you work."
 category: research
-tags: [skill, cli, claude-code, codex, copilot, amp, hermes, openclaw, opencode, knowledge-base, books]
+tags: [skill, cli, free, claude-code, codex, copilot, amp, hermes, openclaw, opencode, knowledge-base, books]
 repo: https://github.com/virgiliojr94/book-to-skill
 icon: ./icon.png
 added: 2026-09-27

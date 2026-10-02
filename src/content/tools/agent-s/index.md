@@ -2,7 +2,7 @@
 name: "Agent S"
 tagline: "An open-source framework for agents that use a real desktop like a person: they read the screen, then click, type and scroll to finish a task."
 category: computer-use
-tags: [library, cli, gui-agents, desktop-automation, python]
+tags: [library, cli, free, gui-agents, desktop-automation, python]
 repo: https://github.com/simular-ai/Agent-S
 icon: ./icon.png
 added: 2026-10-02T14:36:00Z

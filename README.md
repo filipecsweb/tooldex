@@ -52,9 +52,9 @@ It prefills name, tagline, tags, the website (the repo's homepage, when that is 
 
 **Delete**: `npm run tool -- rm <slug>`. Removes the folder and 301s the old URL, with and without a trailing slash, to its category (or `/` if the category is now empty).
 
-**Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, image provenance (a thumbnail's note names a known source or says it was supplied by hand, since the tool page's caption and alt text come from it), unwritten bodies, the write-up's "When to use it" and "Caveats" paragraphs, tags (lowercase kebab-case, at least one kind), redirects, and that every link responds. Add `--offline` to skip the network.
+**Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, image provenance (a thumbnail's note names a known source or says it was supplied by hand, since the tool page's caption and alt text come from it), unwritten bodies, the write-up's "When to use it" and "Caveats" paragraphs, tags (lowercase kebab-case, no repeats, at least one kind, exactly one pricing tag), redirects, and that every link responds. Add `--offline` to skip the network.
 
-**Kinds and hosts**: `src/content/facets.json` says which tags are kinds (skill, plugin, MCP server…) and which are hosts (Claude Code, Codex…), with their labels; every other tag is a topic. The home filters, the tool pages and `check` all read it. `CLAUDE.md` has the bar a tag must clear.
+**Kinds, hosts and pricing**: `src/content/facets.json` says which tags are kinds (skill, plugin, MCP server…), which are hosts (Claude Code, Codex…) and which say what a tool costs (free, freemium, paid), with their labels; every other tag is a topic. The home filters, the tool pages and `check` all read it. `CLAUDE.md` has the bar a tag must clear.
 
 **Categories** live in `src/content/categories.json`. Adding one is one object (`id`, `name`, `description`, `keywords`). `keywords` drive the category guess in `add`. A category with no tools renders no page.
 

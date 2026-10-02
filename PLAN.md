@@ -69,8 +69,7 @@ Rules:
 - **Primary CTA** goes to `website` if present, else `repo`.
 - `website` is a real product or landing site (archify's GitHub Pages, claude-ads.md).
 - `links` holds docs, articles or papers only when neither the website nor the repository reaches them (`CLAUDE.md` › Links), so most tools have none.
-- **Kinds and hosts** are tags, not fields. `src/content/facets.json` is the vocabulary: which tags are kinds (`skill`, `plugin`, `subagents`, `mcp`, `cli`, `library`, `app`), which are hosts (`claude-code`, `codex`, …), and their labels. Every other tag is a topic. Every tool needs at least one kind (`check` enforces it); the bars a kind or host tag must clear are in `CLAUDE.md`.
-- `pricing` from the draft plan is dropped: every tool in this niche is open source so far, so it would not discriminate. Re-add with a filter when paid tools arrive.
+- **Kinds, hosts and pricing** are tags, not fields. `src/content/facets.json` is the vocabulary: which tags are kinds (`skill`, `plugin`, `subagents`, `mcp`, `cli`, `library`, `app`), which are hosts (`claude-code`, `codex`, …), which say what a tool costs (`free`, `freemium`, `paid`), and their labels. Every other tag is a topic. Every tool needs at least one kind and exactly one pricing tag (`check` enforces both); the bars a kind, host or pricing tag must clear are in `CLAUDE.md`.
 
 ### Category schema (`categories`, `file('src/content/categories.json')`)
 
@@ -103,15 +102,15 @@ Nothing per tool is hardcoded outside its folder. `src/lib/data.ts` is the only 
 
 - `getTools()` sorted (featured first, then newest).
 - `getCategories()` returns **only categories with at least one tool**, each with its count. Category pages, the categories hub, the directory's sidebar, the footer and the sitemap all use it, so an empty category renders nothing.
-- `relatedTools(tool)` ranks other tools by same category (+10) plus shared topic tags (+1 each), top 6 with score > 0. Kind and host tags (the vocabulary in `facets.json`) don't count: nearly every tool has them, so they made unrelated tools "related". Fewer, or none, is fine.
+- `relatedTools(tool)` ranks other tools by same category (+10) plus shared topic tags (+1 each), top 6 with score > 0. Kind, host and pricing tags (the vocabulary in `facets.json`) don't count: nearly every tool has them, so they made unrelated tools "related". Fewer, or none, is fine.
 - Site-wide counts come from these arrays.
 
 ## 4. Routes and layouts
 
 | Route | Content |
 |---|---|
-| `/` | Hero (the tagline as `h1`, one lead sentence, the search field), then the directory island: sections, "Works with" and "Kind" filters in a sidebar beside one list of icon rows, the first page of rows SSR'd before hydration. |
-| `/tools/[slug]` | Breadcrumb · icon · name · tagline · section and kind chips · "What it is" · "When to use it" and "Caveats" cards · the screenshot when there is one · related tools; a sticky aside with the primary button, the repository button when both exist, and the details (links, hosts, topic tags, dates) · JSON-LD `SoftwareApplication` + `BreadcrumbList`. |
+| `/` | Hero (the tagline as `h1`, one lead sentence, the search field), then the directory island: sections, "Works with", "Kind" and "Price" filters in a sidebar beside one list of icon rows, the first page of rows SSR'd before hydration. |
+| `/tools/[slug]` | Breadcrumb · icon · name · tagline · section, kind and price chips · "What it is" · "When to use it" and "Caveats" cards · the screenshot when there is one · related tools; a sticky aside with the primary button, the repository button when both exist, and the details (links, hosts, topic tags, dates) · JSON-LD `SoftwareApplication` + `BreadcrumbList`. |
 | `/categories` | Sections with tools: name, description, count and a few tool names. |
 | `/categories/[slug]` | Breadcrumb · name · description · the same directory island scoped to the section (sections become links) · JSON-LD `ItemList` + `BreadcrumbList`. Unpaginated. |
 | `/tools.json` | Prerendered index in the island's shape (§5). Nothing fetches it yet. |
@@ -127,11 +126,11 @@ Lists show icons, never thumbnails. A tool without a thumbnail simply has no scr
 `Directory.tsx`, `client:load`.
 
 - **Data.** The island gets the full list inline as props, and the server renders the first page of rows. The same shape is served at `/tools.json`. Fetching it instead of inlining is the plan past ~200 tools (a scaling ceiling, §10), not built.
-- **State.** `q`, `section`, `host` and `kind` (comma lists), `order` (newest, the default featured-then-newest order, or A to Z), mirrored to the URL with `history.replaceState` and read once after hydration; unknown values are ignored. The mirror writes the whole query string from that state, so parameters it doesn't own (`utm_*` and the like) are dropped once the island hydrates: by design, the URL after load is the canonical address of the view. The fragment is kept. A filtered URL holds the list until the island has applied it, so the whole catalog never flashes.
+- **State.** `q`, `section`, `host`, `kind` and `price` (comma lists), `order` (newest, the default featured-then-newest order, or A to Z), mirrored to the URL with `history.replaceState` and read once after hydration; unknown values are ignored. The mirror writes the whole query string from that state, so parameters it doesn't own (`utm_*` and the like) are dropped once the island hydrates: by design, the URL after load is the canonical address of the view. The fragment is kept. A filtered URL holds the list until the island has applied it, so the whole catalog never flashes.
 - **Matching** (`src/lib/match.ts`, tested): normalise (lowercase, strip diacritics); every token must appear in name, tagline, tags or category name; name-prefix hits rank first, then name-contains, then the rest.
-- **Filters** (`src/lib/filter.ts`, tested): sections single-select; "Works with" and "Kind" multi-select, OR inside a group, AND between groups and with search and section. Each option's count is what it would give with everything else applied. Options come from the vocabulary, only those in use, ordered by catalog-wide count; past 8 a group folds behind "N more". On phones the sections scroll sideways and the facets sit behind a "Filters" disclosure.
+- **Filters** (`src/lib/filter.ts`, tested): sections single-select; "Works with", "Kind" and "Price" multi-select, OR inside a group, AND between groups and with search and section. Each option's count is what it would give with everything else applied. Options come from the vocabulary, only those that narrow the list (some of its tools have them, not all), ordered by catalog-wide count, except Price, which keeps its own order; a group with none is left out. Past 8 a group folds behind "N more". On phones the sections scroll sideways and the facets sit behind a "Filters" disclosure.
 - **Keyboard.** `/` focuses the page's main search from anywhere (one site-wide handler, `src/lib/slash.ts`), with a control to turn it off, remembered in the browser (WCAG 2.1.4); only a device with any fine pointer (`any-pointer: fine`) has the shortcut and the control; a touch-only device has neither. Enter or ↓ in the field moves to the first result.
-- Result summary (live region) naming the ticked hosts and kinds, each with a remove control, so a shared link says what it filters; empty state with "Clear search and filters", "Show more" in pages of 48 once there are that many.
+- Result summary (live region) naming the ticked options, each with a remove control, so a shared link says what it filters; empty state with "Clear search and filters", "Show more" in pages of 48 once there are that many.
 
 ## 6. Per-tool workflow
 
@@ -309,5 +308,5 @@ The launch seed was these seven; the owner adds more with `tool add`. Each entry
 5. **Visual:** light theme only. impeccable decides type, colour and layout; the draft's font, hue and emoji choices are void.
 6. **Submissions:** none.
 7. **Analytics:** Cloudflare Web Analytics (2026-10-02, owner decision; was none). The zone setting injects the beacon at the edge, so nothing in the repo adds or configures it.
-8. **Schema:** no extras beyond `repo` + `website` + other `links`, at least one of repo or website required. `pricing` dropped (§2).
+8. **Schema:** no extras beyond `repo` + `website` + other `links`, at least one of repo or website required. Pricing came back (2026-10-02, owner decision) as a facet of tags, `free`, `freemium` or `paid`, with a "Price" filter (§2, §5).
 9. **Rebuild (2026-10):** the UI was rebuilt in the owner-pinned direction A · Index; the first design and the image pipeline that served only it were deleted. Kept: every entry and URL, `_redirects`, the tool CLI, SEO, deploy, light theme only. Kinds and hosts became a filterable vocabulary (§2, §5), checked against each tool's own README and site.

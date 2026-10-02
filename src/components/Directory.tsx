@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { facetCounts, facetOptions, filterTools, readQuery, writeQuery, type Filters } from '../lib/filter';
-import { HOSTS, KINDS, facetLabel, type Facet } from '../lib/facets';
+import { FACETS, facetCounts, facetOptions, filterTools, readQuery, writeQuery, type Filters } from '../lib/filter';
+import { FACET_GROUPS, byGroup, facetLabel, type Facet, type FacetGroup } from '../lib/facets';
 import { setSlash as storeSlash, slashOn } from '../lib/slash';
 import type { IndexTool } from '../lib/tool-index';
 import ToolRow from './ToolRow';
@@ -10,10 +10,10 @@ type Order = 'newest' | 'name';
 const PAGE = 48;
 const FOLD = 8; // past this many options a group shows its top SHOWN and folds the rest
 const SHOWN = 6;
-const EMPTY: Filters = { q: '', section: '', hosts: [], kinds: [] };
+const EMPTY: Filters = { q: '', section: '', ...byGroup((): string[] => []) };
 
 /**
- * The catalog's finding aid: search, sections, hosts and kinds, order, mirrored to the URL.
+ * The catalog's finding aid: search, sections, the facet groups (hosts, kinds, price), order, mirrored to the URL.
  * With `scope` (a section id) it is that section's page: `tools` holds only its tools, the sections
  * become links to their pages, and rows drop the section name they would all share.
  */
@@ -27,8 +27,9 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
   const input = useRef<HTMLInputElement>(null);
   const run = useRef<HTMLUListElement>(null);
 
-  const hostOptions = useMemo(() => facetOptions(HOSTS, tools, (t) => t.hosts), [tools]);
-  const kindOptions = useMemo(() => facetOptions(KINDS, tools, (t) => t.kinds), [tools]);
+  const options = useMemo(() => byGroup((g) => facetOptions(g, tools)), [tools]);
+  // A group with no option that would narrow the list is left out, and with none left, the Filters toggle too.
+  const groups = FACET_GROUPS.filter((g) => options[g].length);
 
   // Any change to what is shown starts again from the first page.
   const update = (next: Partial<Filters>) => {
@@ -40,8 +41,7 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
   useEffect(() => {
     const { order, ...filters } = readQuery(location.search, {
       sections: scope ? [] : sections.map((s) => s.id),
-      hosts: hostOptions.map((o) => o.tag),
-      kinds: kindOptions.map((o) => o.tag),
+      ...byGroup((g) => options[g].map((o) => o.tag)),
     });
     setF(filters);
     setOrder(order);
@@ -85,7 +85,7 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
   }, [tools, f, order]);
 
   const query = f.q.trim();
-  const facetsOn = f.hosts.length + f.kinds.length;
+  const facetsOn = FACET_GROUPS.reduce((n, g) => n + f[g].length, 0);
   const filtered = Boolean(query || f.section || facetsOn);
   const scopeName = scope && sections.find((s) => s.id === scope)?.name;
   const sectionName = scopeName || sections.find((s) => s.id === f.section)?.name;
@@ -96,8 +96,8 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
     : `${results.length} of ${tools.length} ${noun(tools.length)}${query ? ` for “${query}”` : ''}${where}`;
   const catalogSize = sections.reduce((n, s) => n + s.count, 0);
   const clear = () => { update(EMPTY); input.current?.focus(); };
-  // The ticked hosts and kinds, named beside the summary so a shared link says what it filters.
-  const active = [...f.hosts.map((t) => ['hosts', t] as const), ...f.kinds.map((t) => ['kinds', t] as const)];
+  // The ticked options, named beside the summary so a shared link says what it filters.
+  const active = FACET_GROUPS.flatMap((g) => f[g].map((t) => [g, t] as const));
   // Removing a chip keeps the reader in place: focus moves to the next chip, else the previous one,
   // else "Clear all", else the summary (focusable for that moment only). Applied once the list re-renders.
   const refocus = useRef<string[] | null>(null);
@@ -117,7 +117,7 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
     }
     el?.focus();
   }, [f]);
-  const toggle = (group: 'hosts' | 'kinds', tag: string) =>
+  const toggle = (group: FacetGroup, tag: string) =>
     update({ [group]: f[group].includes(tag) ? f[group].filter((x) => x !== tag) : [...f[group], tag] });
 
   return (
@@ -196,25 +196,28 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
             </ul>
           </nav>
 
-          <button
-            type="button"
-            aria-expanded={filtersOpen}
-            aria-controls="facets"
-            onClick={() => setFiltersOpen(!filtersOpen)}
-            className="flex h-11 items-center justify-between gap-3 rounded-control border border-line-strong bg-surface px-3.5 text-ui font-medium text-ink-2 hover:bg-fill lg:hidden"
-          >
-            <span>
-              Filters{facetsOn > 0 && <span className="ml-1.5 rounded-key bg-accent-tint px-1.5 py-px font-mono text-micro text-accent-deep">{facetsOn} on</span>}
-            </span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`text-meta transition-transform duration-150 ${filtersOpen ? 'rotate-180' : ''}`}>
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </button>
+          {groups.length > 0 && (<>
+            <button
+              type="button"
+              aria-expanded={filtersOpen}
+              aria-controls="facets"
+              onClick={() => setFiltersOpen(!filtersOpen)}
+              className="flex h-11 items-center justify-between gap-3 rounded-control border border-line-strong bg-surface px-3.5 text-ui font-medium text-ink-2 hover:bg-fill lg:hidden"
+            >
+              <span>
+                Filters{facetsOn > 0 && <span className="ml-1.5 rounded-key bg-accent-tint px-1.5 py-px font-mono text-micro text-accent-deep">{facetsOn} on</span>}
+              </span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`text-meta transition-transform duration-150 ${filtersOpen ? 'rotate-180' : ''}`}>
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
 
-          <div id="facets" className={`flex-col gap-6 lg:flex lg:gap-7 ${filtersOpen ? 'flex' : 'hidden'}`}>
-            <FacetGroup legend="Works with" options={hostOptions} counts={counts.hosts} selected={f.hosts} onToggle={(t) => toggle('hosts', t)} />
-            <FacetGroup legend="Kind" options={kindOptions} counts={counts.kinds} selected={f.kinds} onToggle={(t) => toggle('kinds', t)} />
-          </div>
+            <div id="facets" className={`flex-col gap-6 lg:flex lg:gap-7 ${filtersOpen ? 'flex' : 'hidden'}`}>
+              {groups.map((g) => (
+                <FacetFieldset key={g} legend={FACETS[g].legend} options={options[g]} counts={counts[g]} selected={f[g]} onToggle={(t) => toggle(g, t)} />
+              ))}
+            </div>
+          </>)}
         </aside>
 
         <div className="min-w-0">
@@ -301,7 +304,7 @@ const count = 'font-mono text-micro text-meta';
 const sectionItem =
   'flex w-full items-baseline justify-between gap-3 whitespace-nowrap rounded-row px-2.5 py-1.5 text-left text-ui text-ink-2 transition-colors duration-150 hover:bg-fill focus-visible:-outline-offset-2 aria-pressed:bg-accent-tint aria-pressed:font-semibold aria-pressed:text-accent-deep aria-[current=page]:bg-accent-tint aria-[current=page]:font-semibold aria-[current=page]:text-accent-deep data-zero:text-meta pointer-coarse:min-h-11 pointer-coarse:items-center';
 
-function FacetGroup({ legend, options, counts, selected, onToggle }: {
+function FacetFieldset({ legend, options, counts, selected, onToggle }: {
   legend: string; options: Facet[]; counts: Map<string, number>; selected: string[]; onToggle: (tag: string) => void;
 }) {
   const fold = options.length > FOLD;

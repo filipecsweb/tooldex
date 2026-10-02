@@ -2,7 +2,7 @@
 name: "SkillSpector"
 tagline: "NVIDIA's scanner for agent skills: checks a skill before you install it for prompt injection, data exfiltration and supply-chain risks."
 category: security
-tags: [cli, mcp, skill, claude-code, codex, gemini-cli, opencode, pi, prompt-injection, supply-chain, scanner]
+tags: [cli, mcp, skill, free, claude-code, codex, gemini-cli, opencode, pi, prompt-injection, supply-chain, scanner]
 repo: https://github.com/NVIDIA/SkillSpector
 icon: ./icon.png
 added: 2026-09-26

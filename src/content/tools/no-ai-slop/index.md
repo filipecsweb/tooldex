@@ -2,7 +2,7 @@
 name: "No AI Slop"
 tagline: "An editing skill that strips the tell-tale patterns of AI-written prose from your writing while keeping your own voice."
 category: writing
-tags: [skill, plugin, claude-code, codex, chatgpt, editing, style]
+tags: [skill, plugin, free, claude-code, codex, chatgpt, editing, style]
 repo: https://github.com/petergyang/no-ai-slop
 icon: ./icon.png
 added: 2026-09-26

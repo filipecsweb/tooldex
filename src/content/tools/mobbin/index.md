@@ -2,7 +2,7 @@
 name: "Mobbin"
 tagline: "A searchable library of screens and flows from real apps and websites, with an MCP server that lets your agent pull design references while it builds."
 category: design
-tags: [mcp, app, claude-code, claude-desktop, claude-ai, codex, cursor, copilot, antigravity, chatgpt, ui-patterns, design-inspiration, frontend]
+tags: [mcp, app, paid, claude-code, claude-desktop, claude-ai, codex, cursor, copilot, antigravity, chatgpt, ui-patterns, design-inspiration, frontend]
 website: https://mobbin.com
 thumbnail: ./thumb.webp
 icon: ./icon.png

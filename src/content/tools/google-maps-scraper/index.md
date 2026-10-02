@@ -2,7 +2,7 @@
 name: "Google Maps Scraper"
 tagline: "Scrapes Google Maps business listings into CSV or JSON, with an agent skill that turns a plain-language request for leads into a full local scrape."
 category: data
-tags: [skill, cli, app, claude-code, codex, cursor, copilot, web-scraping, lead-generation, google-maps]
+tags: [skill, cli, app, free, claude-code, codex, cursor, copilot, web-scraping, lead-generation, google-maps]
 repo: https://github.com/gosom/google-maps-scraper
 thumbnail: ./thumb.webp
 icon: ./icon.png

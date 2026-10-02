@@ -12,9 +12,10 @@ export type IndexTool = {
   category: string;
   categoryName: string;
   tags: string[];
-  /** Kind and host tags (src/content/facets.json), in tag order. */
+  /** Kind, host and pricing tags (src/content/facets.json), in tag order. */
   kinds: string[];
   hosts: string[];
+  pricing: string[];
   url: string;
   icon: string | null;
 };
@@ -24,7 +25,7 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
   return Promise.all(
     tools.map(async (t) => {
       const icon = t.data.icon ? await getImage({ src: t.data.icon, width: 128, format: 'webp' }) : null;
-      const { kinds, hosts } = splitTags(t.data.tags);
+      const { kinds, hosts, pricing } = splitTags(t.data.tags);
       return {
         slug: t.id,
         name: t.data.name,
@@ -34,6 +35,7 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
         tags: t.data.tags,
         kinds,
         hosts,
+        pricing,
         url: primaryUrl(t),
         icon: icon?.src ?? null,
       };

@@ -1,16 +1,17 @@
-import { facetLabel } from '../lib/facets';
+import { badges, facetLabel } from '../lib/facets';
 import { accessLabel, outbound, visitName } from '../lib/format';
 import type { IndexTool } from '../lib/tool-index';
 import ArrowOut from './ArrowOut';
 
 /**
  * One tool in a list: icon, name (and its section, with `section`), the tagline and, with `out`, its
- * source one click away and its kinds. The directory and a tool page's related tools both use it.
+ * source one click away with its kinds and price. The directory and a tool page's related tools both use it.
  */
 export default function ToolRow({ tool, section, out = false, eager = false }: { tool: IndexTool; section: boolean; out?: boolean; eager?: boolean }) {
   const href = `/tools/${tool.slug}`;
   const access = accessLabel(tool.url);
   const box = 'size-9 rounded-control border border-line bg-fill md:size-10';
+  const meta = badges(tool.tags).map(facetLabel).join(' · ');
   return (
     <li className={`grid grid-cols-[--spacing(9)_minmax(0,1fr)] gap-x-3.5 gap-y-2 border-t border-line-soft px-4 py-4 transition-colors duration-150 first:border-t-0 hover:bg-fill-soft md:gap-x-4 md:px-5 ${out ? 'md:grid-cols-[--spacing(10)_minmax(0,1fr)_minmax(0,220px)]' : 'md:grid-cols-[--spacing(10)_minmax(0,1fr)]'}`}>
       {/* The name is the link keyboards and screen readers use; the icon repeats it for the pointer only. */}
@@ -37,9 +38,7 @@ export default function ToolRow({ tool, section, out = false, eager = false }: {
             <span className="truncate">{access}</span>
             <ArrowOut className="size-3 flex-none" />
           </a>
-          {tool.kinds.length > 0 && (
-            <p className="mt-1.25 font-mono text-micro text-meta">{tool.kinds.map(facetLabel).join(' · ')}</p>
-          )}
+          {meta && <p className="mt-1.25 font-mono text-micro text-meta">{meta}</p>}
         </div>
       )}
     </li>

@@ -2,7 +2,7 @@
 name: "Hypit"
 tagline: "A video skill for coding agents: clone a reference video or describe one, and your agent builds an editable, re-runnable workflow to make variants."
 category: media
-tags: [skill, cli, claude-code, codex, video-generation, short-form-video, ads]
+tags: [skill, cli, freemium, claude-code, codex, video-generation, short-form-video, ads]
 repo: https://github.com/hypit-ai/hypit
 website: https://hypit.ai
 thumbnail: ./thumb.webp

@@ -11,7 +11,7 @@ import {
   guessCategory, isSiteRoot, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
   readmeH1, readmeImages, redirectProblems, repoUrl, serializeRedirects, slugify, sourcedNote, thumbNote, thumbNoteProblem, type Repo, type ThumbFrom,
 } from './lib.ts';
-import { KINDS, isTag, splitTags } from '../src/lib/facets.ts';
+import { PRICING, tagProblems } from '../src/lib/facets.ts';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const TOOLS = join(ROOT, 'src/content/tools');
@@ -321,7 +321,7 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
     name,
     tagline: clip(description || name, 160),
     category,
-    tags: topics.slice(0, 8),
+    tags: topics.filter((t) => !PRICING.some((p) => p.tag === t)).slice(0, 8), // the price is the owner's call (CLAUDE.md › Tags)
     ...(repo && { repo: repoUrl(repo) }),
     ...(website && { website }),
     added: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), // listing time, so same-day entries still order
@@ -332,7 +332,7 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
   console.log(`Created src/content/tools/${slug}/index.md`);
   console.log(`  category: ${category}   (ranking: ${ranking.slice(0, 3).map((r) => `${r.id} ${r.score}`).join(', ')})`);
   await thumbs(slug, false);
-  console.log(`\nLeft for you: write the body, tighten the tagline (no counts or versions), review tags and category.`);
+  console.log(`\nLeft for you: write the body, tighten the tagline (no counts or versions), review the category and the tags (a kind, one pricing tag, hosts, topics).`);
 }
 
 function mv(from: string, to: string) {
@@ -377,10 +377,7 @@ async function check(offline: boolean) {
     if (!d.repo && !d.website) errors.push(`${where}: needs a repo or a website`);
     if (e.body.includes(BODY_PLACEHOLDER) || !e.body.trim()) errors.push(`${where}: body not written yet`);
     else for (const problem of bodyProblems(e.body)) errors.push(`${where}: ${problem}`);
-    for (const t of (d.tags ?? []).filter((t: unknown) => typeof t !== 'string' || !isTag(t)))
-      errors.push(`${where}: tag "${t}" is not lowercase kebab-case`);
-    if (!splitTags(d.tags ?? []).kinds.length)
-      errors.push(`${where}: no kind tag (one of ${KINDS.map((k) => k.tag).join(', ')}; see src/content/facets.json)`);
+    for (const problem of tagProblems(d.tags ?? [])) errors.push(`${where}: ${problem}`);
     for (const [key, file] of [['thumbnail', 'thumb.webp'], ['icon', 'icon.png']] as const) {
       const has = files.includes(file);
       if (d[key] && !has) errors.push(`${where}: ${key} is set but ${file} is missing`);

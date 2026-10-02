@@ -2,7 +2,7 @@
 name: "Colibrì"
 tagline: "A small inference engine in C that runs very large open mixture-of-experts models on ordinary hardware by streaming experts from disk."
 category: infrastructure
-tags: [cli, local-models, inference, moe, openai-compatible, self-hosted]
+tags: [cli, free, local-models, inference, moe, openai-compatible, self-hosted]
 repo: https://github.com/JustVugg/colibri
 website: https://justvugg.github.io/colibri
 thumbnail: ./thumb.webp

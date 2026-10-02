@@ -2,7 +2,7 @@
 name: "sherpa-onnx"
 tagline: "An offline speech toolkit that runs speech-to-text, text-to-speech, voice activity detection and speaker diarization locally, from servers to phones."
 category: speech
-tags: [library, speech-to-text, text-to-speech, local-models, on-device]
+tags: [library, free, speech-to-text, text-to-speech, local-models, on-device]
 repo: https://github.com/k2-fsa/sherpa-onnx
 icon: ./icon.png
 added: 2026-09-30T21:20:04Z

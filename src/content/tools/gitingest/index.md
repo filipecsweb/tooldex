@@ -2,7 +2,7 @@
 name: "Gitingest"
 tagline: "Turns a Git repository or a local folder into one text digest, with a file tree and a token estimate, ready to paste into an LLM."
 category: dev-workflow
-tags: [cli, library, app, codebase-context, python]
+tags: [cli, library, app, free, codebase-context, python]
 repo: https://github.com/coderamp-labs/gitingest
 website: https://gitingest.com
 thumbnail: ./thumb.webp

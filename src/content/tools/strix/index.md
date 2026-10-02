@@ -2,7 +2,7 @@
 name: "Strix"
 tagline: "Open-source AI penetration testing: teams of agents probe your app, validate findings with working proofs of concept and suggest fixes."
 category: security
-tags: [cli, skill, claude-code, codex, cursor, pentesting, owasp, ci]
+tags: [cli, skill, freemium, claude-code, codex, cursor, pentesting, owasp, ci]
 repo: https://github.com/usestrix/strix
 website: https://strix.ai
 thumbnail: ./thumb.webp

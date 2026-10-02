@@ -1,13 +1,4 @@
 {
-  "kinds": [
-    { "tag": "skill", "label": "Skill" },
-    { "tag": "plugin", "label": "Plugin" },
-    { "tag": "subagents", "label": "Subagents" },
-    { "tag": "mcp", "label": "MCP" },
-    { "tag": "cli", "label": "CLI" },
-    { "tag": "library", "label": "Library" },
-    { "tag": "app", "label": "App" }
-  ],
   "hosts": [
     { "tag": "claude-code", "label": "Claude Code" },
     { "tag": "codex", "label": "Codex" },
@@ -45,5 +36,19 @@
     { "tag": "command-code", "label": "Command Code" },
     { "tag": "trae", "label": "Trae" },
     { "tag": "codebuddy", "label": "CodeBuddy" }
+  ],
+  "kinds": [
+    { "tag": "skill", "label": "Skill" },
+    { "tag": "plugin", "label": "Plugin" },
+    { "tag": "subagents", "label": "Subagents" },
+    { "tag": "mcp", "label": "MCP" },
+    { "tag": "cli", "label": "CLI" },
+    { "tag": "library", "label": "Library" },
+    { "tag": "app", "label": "App" }
+  ],
+  "pricing": [
+    { "tag": "free", "label": "Free" },
+    { "tag": "freemium", "label": "Freemium" },
+    { "tag": "paid", "label": "Paid" }
   ]
 }

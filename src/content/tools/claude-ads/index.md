@@ -2,7 +2,7 @@
 name: "Claude Ads"
 tagline: "Paid-media operations for Claude Code: evidence-backed ad account audits, plans, creative and reports, read-only unless you approve changes."
 category: marketing
-tags: [skill, plugin, subagents, claude-code, codex, gemini-cli, cursor, windsurf, goose, advertising, ppc, google-ads, meta-ads]
+tags: [skill, plugin, subagents, free, claude-code, codex, gemini-cli, cursor, windsurf, goose, advertising, ppc, google-ads, meta-ads]
 repo: https://github.com/AgriciDaniel/claude-ads
 website: https://claude-ads.md
 icon: ./icon.png

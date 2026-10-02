@@ -2,7 +2,7 @@
 name: "Scrapling"
 tagline: "A Python web scraping framework, from single requests to full crawls, with selectors that survive site redesigns and an MCP server and skill for agents."
 category: data
-tags: [library, cli, mcp, skill, claude-code, claude-desktop, openclaw, cursor, windsurf, web-scraping, crawler, python]
+tags: [library, cli, mcp, skill, free, claude-code, claude-desktop, openclaw, cursor, windsurf, web-scraping, crawler, python]
 repo: https://github.com/D4Vinci/Scrapling
 icon: ./icon.png
 added: 2026-09-27

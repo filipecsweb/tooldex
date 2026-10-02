@@ -2,7 +2,7 @@
 name: "Cloudflare security-audit"
 tagline: "Cloudflare's coding-agent skill for multi-phase security audits: isolated hunters find bugs, fresh agents try to disprove them, and verified findings remain."
 category: security
-tags: [skill, code-audit, vulnerability, owasp]
+tags: [skill, free, code-audit, vulnerability, owasp]
 repo: https://github.com/cloudflare/security-audit-skill
 icon: ./icon.png
 added: 2026-09-27

@@ -279,9 +279,9 @@ Numerals are tabular site-wide, so counts line up in their columns. Headings bal
 - **Row** (400, 14.5px, 1.45): taglines inside rows, clamped to two lines.
 - **UI** (14px, 1.45; the role sets no weight, so 400 unless the element adds one): facet options at 400; nav and buttons at 500; the result summary at 600.
 - **Caption** (400, 13px, 1.45): section names beside row titles, breadcrumbs, chips, the details list, figure captions, the footer.
-- **Label** (600, 12px, 0.07em, uppercase): names of a group of controls or a details box ("Sections", "Works with", "Kind", "Details"). It names the group it sits on; it is never a kicker above a headline.
+- **Label** (600, 12px, 0.07em, uppercase): names of a group of controls or a details box ("Sections", "Works with", "Kind", "Price", "Details"). It names the group it sits on; it is never a kicker above a headline.
 - **Data** (Mono 400, 12.5px, 1.45): access links (host/path) and section tool counts.
-- **Micro** (400, 12px, 1.4; the role sets size only): in Geist Mono (with `font-mono`, or a `kbd`) for facet counts, kinds under a row's link, topic tags and the "/" key; in Geist for the "Turn off the / shortcut" switch.
+- **Micro** (400, 12px, 1.4; the role sets size only): in Geist Mono (with `font-mono`, or a `kbd`) for facet counts, kinds and price under a row's link, topic tags and the "/" key; in Geist for the "Turn off the / shortcut" switch.
 
 ### Named Rules
 **The Mono Means Data Rule.** Geist Mono sets only what a reader would copy, count or type: URLs, counts, kinds, tags, the "/" key and inline code. Never headings, never prose, never buttons.
@@ -292,7 +292,7 @@ Numerals are tabular site-wide, so counts line up in their columns. Headings bal
 
 A single 1280px sheet column, centred, with 16px gutters on phones and 32px from the md breakpoint. A white header at least 64px tall (wordmark left, Catalog and Sections right; on pages with the header search, at about 335px and below, the nav wraps to a second line, 8px below, its text 12px in from the wordmark by the links' own padding) and a white footer are both ruled off the ground by one line. Pages leave 72px below the content.
 
-The directory is two columns from lg: a 224px sidebar (Sections, then the Works with and Kind facets) beside the result column, 40px apart. Below lg the sidebar collapses: the sections become one horizontally scrolling run that brings the chosen section into view, and the facets fold behind a full-width Filters button. Above the list sits one line holding the live summary, any active-filter chips and the Newest / A–Z switch.
+The directory is two columns from lg: a 224px sidebar (Sections, then the Works with, Kind and Price facets) beside the result column, 40px apart. Below lg the sidebar collapses: the sections become one horizontally scrolling run that brings the chosen section into view, and the facets fold behind a full-width Filters button. Above the list sits one line holding the live summary, any active-filter chips and the Newest / A–Z switch.
 
 A list row is a grid: 40px icon, the name-and-tagline column, then a 220px access column right-aligned on desktop. On phones the icon shrinks to 36px and the access column drops under the text.
 
@@ -333,7 +333,7 @@ Plain, solid and quiet; never more than one primary in view.
 ### Chips
 - **Filter chip:** Indigo Wash background, Deep Indigo caption text, row radius, a 12px cross; hover to Halo Indigo. One per ticked facet, beside the summary; activating it removes the filter and moves focus to the next chip, else the previous one, else "Clear all", else the summary. On touch screens each chip and "Clear all" sit in a full 44px button with the chip drawn inside, so wrapped lines (4px apart) never share a tap area.
 - **Section badge:** the same wash treatment, 28px tall, linking to the section.
-- **Kind badge:** white, 1px line, Ink 3, 28px tall; not interactive.
+- **Kind badge:** white, 1px line, Ink 3, 28px tall; not interactive. The price badge, after the kinds, looks the same.
 - **Topic tag:** Fill background, mono micro, key radius; hover to Line. Links to a search.
 
 ### Cards / Containers
@@ -358,7 +358,7 @@ Plain, solid and quiet; never more than one primary in view.
 - **Skip link:** first in the tab order, appears as a solid Ink control at top left on focus.
 
 ### The Index Row (signature)
-The unit of the whole site. Icon (a second link to the tool's page for the pointer, which underlines the name on hover; keyboards and screen readers use the name), then the name (title, Ink) with its section in meta caption beside it, then the tagline (row size, Ink 4, two lines max), then at the right the access link in mono indigo (host/path, truncated, with the outbound arrow) and the tool's kinds in mono meta beneath. Rows are separated by Soft Line and hover to Soft Fill. Enter or Down from the search moves focus to the first row's name. The empty state is a sheet with a title-size message, one line of help and a primary "Clear search and filters" button.
+The unit of the whole site. Icon (a second link to the tool's page for the pointer, which underlines the name on hover; keyboards and screen readers use the name), then the name (title, Ink) with its section in meta caption beside it, then the tagline (row size, Ink 4, two lines max), then at the right the access link in mono indigo (host/path, truncated, with the outbound arrow) and the tool's kinds and price in mono meta beneath. Rows are separated by Soft Line and hover to Soft Fill. Enter or Down from the search moves focus to the first row's name. The empty state is a sheet with a title-size message, one line of help and a primary "Clear search and filters" button.
 
 ### The "/" Shortcut
 "/" focuses the page's main search, else the header's. It exists only on a device with any fine pointer (`any-pointer: fine`: a mouse or trackpad, so a tablet with a trackpad keeps it); a touch-only device gets neither the shortcut, its hint nor its switch. Where it exists, a meta "Turn off the / shortcut" switch sits under the main search (WCAG 2.1.4), remembered per browser; the key caps show only while it is on. Both are decided before first paint by Base's head script (`data-slash-available`, `data-slash` on `<html>`), so neither flashes.

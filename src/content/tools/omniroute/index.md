@@ -2,7 +2,7 @@
 name: "OmniRoute"
 tagline: "A self-hosted AI gateway that puts many model providers behind one local endpoint, with automatic fallback when a quota or provider runs out."
 category: infrastructure
-tags: [cli, mcp, skill, claude-code, codex, cursor, opencode, gemini-cli, copilot, cline, aider, goose, qwen-code, continue, kilo-code, claude-desktop, chatgpt, openclaw, kiro, antigravity, windsurf, amp, agent-deck, command-code, ai-gateway, model-routing]
+tags: [cli, mcp, skill, free, claude-code, codex, cursor, opencode, gemini-cli, copilot, cline, aider, goose, qwen-code, continue, kilo-code, claude-desktop, chatgpt, openclaw, kiro, antigravity, windsurf, amp, agent-deck, command-code, ai-gateway, model-routing]
 repo: https://github.com/diegosouzapw/OmniRoute
 website: https://omniroute.online
 thumbnail: ./thumb.webp

@@ -203,7 +203,7 @@
 /* A page with its own main search takes "/" there, so the header's hint would point at the wrong field. */
 :root:has([data-main-search]) header .slash-key { display: none; }
 
-/* A filtered URL (?q=, ?section=, ?host=, ?kind=) is rendered unfiltered on the server; hold the list
+/* A filtered URL (any query string) is rendered unfiltered on the server; hold the list
    until the island has applied the filter, so it doesn't paint the whole catalog and then collapse. */
 [data-filtering] #results { visibility: hidden; }
 

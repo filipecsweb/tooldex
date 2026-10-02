@@ -42,7 +42,7 @@ Success: a visitor understands a tool in under a minute and clicks through to it
 
 - Name: **tooldex**, always lowercase.
 - Voice of write-ups: **light editorial**. Factual, plus a short "when to use it" and honest caveats (e.g. heavy setup, one harness only). No ratings, no scores, no hype.
-- **No rotting facts.** Copy never states star counts, version numbers, counts of features/patterns/platforms, pricing, or install commands. The tool's own page is the source of truth for specifics; tooldex links to it.
+- **No rotting facts.** Copy never states star counts, version numbers, counts of features/patterns/platforms, prices or what a plan includes, or install commands. What a tool costs is its pricing tag (free, freemium or paid); a write-up may say how it is paid for (a hosted plan, usage-based billing), never what it costs. The tool's own page is the source of truth for specifics; tooldex links to it.
 - Identity: the lowercase **tooldex** wordmark set in Geist, a mark (a white "t" on an indigo rounded square, the favicon and share image), and the Index visual system recorded in `DESIGN.md`.
 
 ## Evidence on Hand

@@ -2,7 +2,7 @@
 name: "AI Website Cloner Template"
 tagline: "A starter project with a skill that has your coding agent rebuild a live website from its URL as a clean Next.js app."
 category: design
-tags: [skill, claude-code, codex, cursor, opencode, frontend, nextjs]
+tags: [skill, free, claude-code, codex, cursor, opencode, frontend, nextjs]
 repo: https://github.com/JCodesMore/ai-website-cloner-template
 thumbnail: ./thumb.webp
 icon: ./icon.png

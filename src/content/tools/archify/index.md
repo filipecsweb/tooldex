@@ -2,7 +2,7 @@
 name: "Archify"
 tagline: "Turns a plain-language description or a real codebase into interactive architecture, workflow and sequence diagrams, shared as one HTML file."
 category: design
-tags: [skill, plugin, claude-code, codex, cursor, opencode, claude-ai, hermes, deepseek-harness, diagrams, architecture, visualization]
+tags: [skill, plugin, free, claude-code, codex, cursor, opencode, claude-ai, hermes, deepseek-harness, diagrams, architecture, visualization]
 repo: https://github.com/tt-a1i/archify
 website: https://tt-a1i.github.io/archify/
 thumbnail: ./thumb.webp
