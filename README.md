@@ -38,7 +38,7 @@ npm run tool -- add https://product-site.com                                  # 
 # options: --slug <slug>  --category <id>
 ```
 
-It prefills name, tagline, tags, links and a category guess from the GitHub API (uses `GITHUB_TOKEN` or `gh auth token` if present), then fetches the thumbnail and icon. Then:
+It prefills name, tagline, tags, the website (the repo's homepage, when that is a site root; it prints what it did with it) and a category guess from the GitHub API (uses `GITHUB_TOKEN` or `gh auth token` if present), then fetches the thumbnail and icon. Then:
 
 1. Replace the `TODO(tooldex)` body with the write-up (see the style rules in `CLAUDE.md`).
 2. Tighten the tagline, prune tags, confirm the category.

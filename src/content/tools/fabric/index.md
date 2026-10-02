@@ -4,9 +4,6 @@ tagline: "A command-line tool that runs a large, crowd-sourced library of task p
 category: research
 tags: [cli, prompts, prompt-engineering]
 repo: https://github.com/danielmiessler/Fabric
-links:
-  - label: Article
-    url: https://danielmiessler.com/p/fabric-origin-story
 thumbnail: ./thumb.webp
 icon: ./icon.png
 added: 2026-10-02T14:35:23Z

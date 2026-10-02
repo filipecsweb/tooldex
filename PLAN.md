@@ -25,7 +25,7 @@ Status: approved 2026-09-26 with the answers in §13. All six steps of §11 are 
 | Screenshots | `playwright` (dev dep, Chromium only) + sharp | Local only, never in the Worker. |
 | YAML | `yaml` (dev dep) | Scripts read and rewrite frontmatter. |
 | Wrangler | `wrangler@4` dev dep | No global install. |
-| Tests | `node --test` | Zero deps. Pure logic only: search matcher, filters and facet counts, facet vocabulary, write-up split, category guess, homepage classifier, redirect rewriting and validation. |
+| Tests | `node --test` | Zero deps. Pure logic only: search matcher, filters and facet counts, facet vocabulary, write-up split, category guess, site-root test for a repo's homepage, redirect rewriting and validation. |
 
 Not added: Fuse/MiniSearch, Pagefind, MDX, CMS, D1, icon library, state library, analytics code (§13.7), CI, submissions.
 
@@ -56,7 +56,7 @@ schema: ({ image }) => z.object({
   tags: z.array(z.string()).default([]),     // kinds + hosts (vocabulary in src/content/facets.json) + topics
   repo: z.url().optional(),                  // source repository
   website: z.url().optional(),               // ONLY a real product/landing site
-  links: z.array(z.object({ label: z.string(), url: z.url() })).default([]), // docs, articles, anything else
+  links: z.array(z.object({ label: z.string(), url: z.url() })).default([]), // only what the repo and website don't reach
   thumbnail: image().optional(),             // ./thumb.webp
   icon: image().optional(),                  // ./icon.png
   featured: z.boolean().default(false),
@@ -67,7 +67,8 @@ schema: ({ image }) => z.object({
 
 Rules:
 - **Primary CTA** goes to `website` if present, else `repo`.
-- `website` is a real product or landing site (archify's GitHub Pages, claude-ads.md). A repo "homepage" that is a blog post or docs page goes in `links`.
+- `website` is a real product or landing site (archify's GitHub Pages, claude-ads.md).
+- `links` holds docs, articles or papers only when neither the website nor the repository reaches them (`CLAUDE.md` › Links), so most tools have none.
 - **Kinds and hosts** are tags, not fields. `src/content/facets.json` is the vocabulary: which tags are kinds (`skill`, `plugin`, `subagents`, `mcp`, `cli`, `library`, `app`), which are hosts (`claude-code`, `codex`, …), and their labels. Every other tag is a topic. Every tool needs at least one kind (`check` enforces it); the bars a kind or host tag must clear are in `CLAUDE.md`.
 - `pricing` from the draft plan is dropped: every tool in this niche is open source so far, so it would not discriminate. Re-add with a filter when paid tools arrive.
 
@@ -144,7 +145,7 @@ npm run tool add <repo-or-website-url> [<second-url>]
 
 1. Classifies each URL: `github.com/<owner>/<repo>` is the repo, anything else is the website.
 2. Repo: GitHub REST API (uses `GITHUB_TOKEN` or `gh auth token` when available, else anonymous) for name, description, topics, homepage, default branch, owner avatar. The README's H1 is used as the name when short and clean, else the repo name.
-3. Homepage classifier: a domain root or a GitHub Pages project root is a `website`; a deep path (blog post, docs page) becomes a `links` entry labelled Docs or Article.
+3. The repo's homepage becomes the `website` when it is a real site root (a domain root or a GitHub Pages project root); a deeper page is left out, since the repository already links it.
 4. Website only: title, meta description and any GitHub repo link on the page.
 5. Category guess: scores each category's `keywords` against topics + description + README. Prints the ranking so the reviewer can overrule it.
 6. Slug from the repo or site name, kebab-case. Refuses to overwrite an existing folder.

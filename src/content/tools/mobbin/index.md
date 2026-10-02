@@ -4,9 +4,6 @@ tagline: "A searchable library of screens and flows from real apps and websites,
 category: design
 tags: [mcp, app, claude-code, claude-desktop, claude-ai, codex, cursor, copilot, antigravity, chatgpt, ui-patterns, design-inspiration, frontend]
 website: https://mobbin.com
-links:
-  - label: MCP docs
-    url: https://docs.mobbin.com/mcp/introduction
 thumbnail: ./thumb.webp
 icon: ./icon.png
 added: 2026-10-02T14:35:09Z

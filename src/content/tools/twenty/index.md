@@ -5,9 +5,6 @@ category: sales
 tags: [app, mcp, skill, plugin, claude-code, codex, cursor, pi, crm, self-hosted]
 repo: https://github.com/twentyhq/twenty
 website: https://twenty.com
-links:
-  - label: Docs
-    url: https://docs.twenty.com
 thumbnail: ./thumb.webp
 icon: ./icon.png
 added: 2026-10-02T14:36:38Z

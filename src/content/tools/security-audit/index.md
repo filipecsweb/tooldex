@@ -4,9 +4,6 @@ tagline: "Cloudflare's coding-agent skill for multi-phase security audits: isola
 category: security
 tags: [skill, code-audit, vulnerability, owasp]
 repo: https://github.com/cloudflare/security-audit-skill
-links:
-  - label: Article
-    url: https://blog.cloudflare.com/build-your-own-vulnerability-harness
 icon: ./icon.png
 added: 2026-09-27
 thumbnail: ./thumb.webp

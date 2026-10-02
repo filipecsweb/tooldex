@@ -4,9 +4,6 @@ tagline: "An offline speech toolkit that runs speech-to-text, text-to-speech, vo
 category: speech
 tags: [library, speech-to-text, text-to-speech, local-models, on-device]
 repo: https://github.com/k2-fsa/sherpa-onnx
-links:
-  - label: Docs
-    url: https://k2-fsa.github.io/sherpa/onnx/index.html
 icon: ./icon.png
 added: 2026-09-30T21:20:04Z
 thumbnail: ./thumb.webp

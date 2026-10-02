@@ -4,9 +4,6 @@ tagline: "An open-source framework for agents that use a real desktop like a per
 category: computer-use
 tags: [library, cli, gui-agents, desktop-automation, python]
 repo: https://github.com/simular-ai/Agent-S
-links:
-  - label: Paper
-    url: https://arxiv.org/abs/2510.02250
 icon: ./icon.png
 added: 2026-10-02T14:36:00Z
 ---

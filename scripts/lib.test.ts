@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  botChallenged, classifyHomepage, cropBox, goodThumb, guessCategory, normalizeRedirects, parseGithubRepo,
+  botChallenged, cropBox, goodThumb, guessCategory, isSiteRoot, normalizeRedirects, parseGithubRepo,
   parseRedirects, pickName, pngFromIco, pngText, pngWithText, readmeImages, redirectProblems, serializeRedirects, slugify,
 } from './lib.ts';
 
@@ -13,12 +13,17 @@ test('parseGithubRepo', () => {
   assert.equal(parseGithubRepo('https://claude-ads.md'), null);
 });
 
-test('classifyHomepage: site roots are websites, deep pages are links', () => {
-  assert.deepEqual(classifyHomepage('https://claude-ads.md'), { kind: 'website' });
-  assert.deepEqual(classifyHomepage('https://tt-a1i.github.io/archify/'), { kind: 'website' });
-  assert.deepEqual(classifyHomepage('https://creatoreconomy.so/p/use-my-no-ai-slop-skill'), { kind: 'link', label: 'Article' });
-  assert.deepEqual(classifyHomepage('https://docs.nvidia.com/skills/scanning-agent-skills'), { kind: 'link', label: 'Docs' });
-  assert.deepEqual(classifyHomepage('https://example.com/some/page'), { kind: 'link', label: 'Homepage' });
+test('isSiteRoot: domain and GitHub Pages project roots are websites, deeper pages are not', () => {
+  assert.equal(isSiteRoot('https://claude-ads.md'), true);
+  assert.equal(isSiteRoot('https://tt-a1i.github.io/archify/'), true);
+  assert.equal(isSiteRoot('https://tt-a1i.github.io/archify/docs/'), false);
+  assert.equal(isSiteRoot('https://creatoreconomy.so/p/use-my-no-ai-slop-skill'), false);
+  assert.equal(isSiteRoot('https://docs.nvidia.com/skills/scanning-agent-skills'), false);
+  assert.equal(isSiteRoot('https://docs.twenty.com'), false);
+  assert.equal(isSiteRoot('https://notgithub.io/x'), false);
+  assert.equal(isSiteRoot('https://www.github.com/'), false);
+  assert.equal(isSiteRoot('https://github.com/o'), false);
+  assert.equal(isSiteRoot('example.com'), false);
 });
 
 test('pickName', () => {

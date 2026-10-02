@@ -7,8 +7,8 @@ import { parseArgs } from 'node:util';
 import sharp, { type Sharp } from 'sharp';
 import YAML from 'yaml';
 import {
-  BODY_PLACEHOLDER, botChallenged, bodyProblems, handNote, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
-  guessCategory, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
+  BODY_PLACEHOLDER, botChallenged, bodyProblems, handNote, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, clip, cropBox, goodThumb,
+  guessCategory, isSiteRoot, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
   readmeH1, readmeImages, redirectProblems, repoUrl, serializeRedirects, slugify, sourcedNote, thumbNote, thumbNoteProblem, type Repo, type ThumbFrom,
 } from './lib.ts';
 import { KINDS, isTag, splitTags } from '../src/lib/facets.ts';
@@ -282,7 +282,6 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
   }
 
   let name = '', description = '', topics: string[] = [], text = '';
-  const links: { label: string; url: string }[] = [];
 
   if (website && !repo) {
     // Website only: read the page, and pick up a repo link if it has one.
@@ -302,10 +301,9 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
     description = r.description || description;
     topics = r.topics ?? [];
     text = `${r.description ?? ''} ${md.slice(0, 4000)}`;
-    if (r.homepage && !website) {
-      const kind = classifyHomepage(r.homepage);
-      if (kind.kind === 'website') website = r.homepage;
-      else links.push({ label: kind.label, url: r.homepage });
+    if (r.homepage) {
+      if (!website && isSiteRoot(r.homepage)) website = r.homepage;
+      console.log(`  repo homepage ${r.homepage}: ${website === r.homepage ? 'used as the website' : 'not used as the website; check it against CLAUDE.md › Links'}`);
     }
   }
 
@@ -326,7 +324,6 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
     tags: topics.slice(0, 8),
     ...(repo && { repo: repoUrl(repo) }),
     ...(website && { website }),
-    ...(links.length && { links }),
     added: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), // listing time, so same-day entries still order
   };
   mkdirSync(dir, { recursive: true });

@@ -4,9 +4,6 @@ tagline: "A Python web scraping framework, from single requests to full crawls, 
 category: data
 tags: [library, cli, mcp, skill, claude-code, claude-desktop, openclaw, cursor, windsurf, web-scraping, crawler, python]
 repo: https://github.com/D4Vinci/Scrapling
-links:
-  - label: Docs
-    url: https://scrapling.readthedocs.io/en/latest/
 icon: ./icon.png
 added: 2026-09-27
 thumbnail: ./thumb.webp

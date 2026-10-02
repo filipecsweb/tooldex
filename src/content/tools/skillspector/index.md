@@ -4,9 +4,6 @@ tagline: "NVIDIA's scanner for agent skills: checks a skill before you install i
 category: security
 tags: [cli, mcp, skill, claude-code, codex, gemini-cli, opencode, pi, prompt-injection, supply-chain, scanner]
 repo: https://github.com/NVIDIA/SkillSpector
-links:
-  - label: Docs
-    url: https://docs.nvidia.com/skills/scanning-agent-skills
 icon: ./icon.png
 added: 2026-09-26
 thumbnail: ./thumb.webp

@@ -4,9 +4,6 @@ tagline: "An editing skill that strips the tell-tale patterns of AI-written pros
 category: writing
 tags: [skill, plugin, claude-code, codex, chatgpt, editing, style]
 repo: https://github.com/petergyang/no-ai-slop
-links:
-  - label: Article
-    url: https://creatoreconomy.so/p/use-my-no-ai-slop-skill-to-remove-20-ai-slop-patterns
 icon: ./icon.png
 added: 2026-09-26
 thumbnail: ./thumb.webp

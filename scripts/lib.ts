@@ -28,17 +28,16 @@ export function parseGithubRepo(url: string): Repo | null {
 export const repoUrl = (r: Repo) => `https://github.com/${r.owner}/${r.name}`;
 
 /**
- * A repo's "homepage" is a website only when it is a real site root:
- * a domain root, or a GitHub Pages project root. Deep pages become links.
+ * A repo's "homepage" is the tool's website only when it is a real site root: a domain root, or a
+ * GitHub Pages project root. Docs, a deeper page or a malformed URL is left out: the repository
+ * links it already.
  */
-export function classifyHomepage(url: string): { kind: 'website' } | { kind: 'link'; label: string } {
+export function isSiteRoot(url: string): boolean {
+  if (!URL.canParse(url)) return false;
   const u = new URL(url);
   const parts = u.pathname.split('/').filter(Boolean);
-  if (u.hostname.endsWith('github.io') && parts.length <= 1) return { kind: 'website' };
-  if (u.hostname !== 'github.com' && parts.length === 0) return { kind: 'website' };
-  if (u.hostname.startsWith('docs.') || parts.includes('docs')) return { kind: 'link', label: 'Docs' };
-  if (/^(p|blog|posts?|articles?|news)$/.test(parts[0] ?? '')) return { kind: 'link', label: 'Article' };
-  return { kind: 'link', label: 'Homepage' };
+  if (u.hostname.endsWith('.github.io')) return parts.length <= 1;
+  return !/^(www\.)?github\.com$/.test(u.hostname) && !u.hostname.startsWith('docs.') && parts.length === 0;
 }
 
 export function slugify(s: string): string {
