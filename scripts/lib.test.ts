@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   botChallenged, classifyHomepage, cropBox, goodThumb, guessCategory, normalizeRedirects, parseGithubRepo,
-  parseRedirects, pickName, pngFromIco, pngText, pngWithText, readmeImages, serializeRedirects, slugify,
+  parseRedirects, pickName, pngFromIco, pngText, pngWithText, readmeImages, redirectProblems, serializeRedirects, slugify,
 } from './lib.ts';
 
 test('parseGithubRepo', () => {
@@ -56,28 +56,56 @@ test('goodThumb and cropBox', () => {
   assert.deepEqual(cropBox(1000, 1000, 2), { left: 0, top: 0, width: 1000, height: 500 });
 });
 
-test('normalizeRedirects follows chains, drops live sources, rescues dead targets, keeps off-site ones', () => {
+test('normalizeRedirects follows chains, drops live sources, rescues dead or missing targets, keeps off-site ones', () => {
   const live = new Set(['/', '/tools/c', '/tools/reused', '/categories/x']);
-  const rules = parseRedirects('/tools/a /tools/b 301\n/tools/b /tools/c 301\n/tools/reused /tools/c 301\n/tools/d /categories/gone 301\n/tools/e /categories/x 301\n/tools/f https://example.com 301');
+  const rules = parseRedirects('/tools/a /tools/b 301\n/tools/b /tools/c 301\n/tools/reused /tools/c 301\n/tools/d /categories/gone 301\n/tools/e /categories/x 301\n/tools/f https://example.com 301\n/tools/g\n/tools/h // 301');
   assert.deepEqual(
     normalizeRedirects(rules, (p) => live.has(p)).map((r) => `${r.from} ${r.to}`),
-    ['/tools/a /tools/c', '/tools/b /tools/c', '/tools/d /', '/tools/e /categories/x', '/tools/f https://example.com'],
+    ['/tools/a /tools/c', '/tools/b /tools/c', '/tools/d /', '/tools/e /categories/x', '/tools/f https://example.com', '/tools/g /', '/tools/h /'],
   );
 });
 
 test('normalizeRedirects treats /x and /x/ as one source', () => {
   const live = new Set(['/', '/tools/c', '/tools/reused']);
-  const rules = parseRedirects('/tools/a /tools/b/ 301\n/tools/a/ /tools/b/ 301\n/tools/b/ /tools/c 301\n/tools/reused/ / 301\n/tools/d / 301\n/tools/d /tools/c 301');
+  const rules = parseRedirects('/tools/a /tools/b/ 301\n/tools/a/ /tools/b/ 301\n/tools/b/ /tools/c 301\n/tools/reused/ / 301\n/tools/d / 301\n/tools/d /tools/c 301\n/tools/e /tools/c/ 301');
   assert.deepEqual(
     normalizeRedirects(rules, (p) => live.has(p)).map((r) => `${r.from} ${r.to}`),
-    ['/tools/a /tools/c', '/tools/b /tools/c', '/tools/d /tools/c'], // twins collapse, a live slash source drops, chains follow a slash target, the later rule wins
+    ['/tools/a /tools/c', '/tools/b /tools/c', '/tools/d /tools/c', '/tools/e /tools/c'], // twins collapse, a live slash source drops, chains follow a slash target, the later rule wins, a slash target naming a live page loses its slash
   );
 });
 
-test('serializeRedirects writes each rule for both forms, and rewriting its output is a no-op', () => {
-  const text = serializeRedirects([{ from: '/tools', to: '/', status: '301' }]);
-  assert.deepEqual(text.split('\n').slice(1), ['/tools / 301', '/tools/ / 301', '']);
+test('serializeRedirects writes each rule for both forms, keeps a status left at the default, and rewriting its output is a no-op', () => {
+  const text = serializeRedirects([{ from: '/tools', to: '/', status: '301' }, ...parseRedirects('/promo /')]);
+  assert.deepEqual(text.split('\n').slice(1), ['/tools / 301', '/tools/ / 301', '/promo / 302', '/promo/ / 302', '']);
   assert.equal(serializeRedirects(normalizeRedirects(parseRedirects(text), (p) => p === '/')), text);
+});
+
+test('redirectProblems passes a valid file and names each broken rule', () => {
+  const live = (p: string) => ['/', '/tools/c'].includes(p);
+  assert.deepEqual(redirectProblems(parseRedirects('/tools / 301\n/tools/ / 301\n/ok https://example.com\n/ok/ https://example.com'), live), []);
+  const bad = [
+    '/m', '/blog/* /tools/c 301', '/old/:slug /tools/c 301', '/p /tools/c 200', '/p/ /tools/c 200',
+    '/d /tools/c 301', '/d/ /tools/c 301', '/d /tools/c 301', '/t /tools/c 301', '/s /tools/c', '/s/ /tools/c 301',
+    '/tools/c/ / 301', '/tools/c / 301', '/x /tools/nope 301', '/x/ /tools/nope 301', '/y /tools/c/ 301', '/y/ /tools/c/ 301',
+  ];
+  const twin = '(Cloudflare matches sources exactly, so each rule is written for both forms)';
+  assert.deepEqual(redirectProblems(parseRedirects(bad.join('\n')), live), [
+    'malformed rule "/m "',
+    '/blog/* is a splat or placeholder rule; only static rules are supported',
+    '/old/:slug is a splat or placeholder rule; only static rules are supported',
+    '/p has status 200; only redirects (301, 302, 303, 307, 308) are supported',
+    '/p/ has status 200; only redirects (301, 302, 303, 307, 308) are supported',
+    'duplicate source /d',
+    `/t has no /t/ twin with the same target and status ${twin}`,
+    `/s has no /s/ twin with the same target and status ${twin}`,
+    `/s/ has no /s twin with the same target and status ${twin}`,
+    '/tools/c/ is a live page but still redirects',
+    '/tools/c is a live page but still redirects',
+    '/x -> /tools/nope, which is not a live page',
+    '/x/ -> /tools/nope, which is not a live page',
+    '/y -> /tools/c/: write the target as /tools/c',
+    '/y/ -> /tools/c/: write the target as /tools/c',
+  ]);
 });
 
 test('pngFromIco extracts the largest embedded PNG', () => {

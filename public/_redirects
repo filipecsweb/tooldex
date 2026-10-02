@@ -1,3 +1,3 @@
-# Managed by `npm run tool -- mv|rm`, which write each rule for both /path and /path/. Edits by hand are fine; `npm run tool -- check` validates them.
+# Managed by `npm run tool -- mv|rm`, which write each rule for both /path and /path/. Edits by hand are fine if they do the same with static redirects only (no splats, placeholders or 200 proxies); `npm run tool -- check` validates them.
 /tools / 301
 /tools/ / 301

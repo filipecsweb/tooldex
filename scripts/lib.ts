@@ -139,23 +139,24 @@ export function parseRedirects(text: string): Rule[] {
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith('#'))
     .map((l) => {
-      const [from, to, status = '301'] = l.split(/\s+/);
+      const [from, to = '', status = '302'] = l.split(/\s+/); // 302 is Cloudflare's default
       return { from, to, status };
     });
 }
 
-/** A source without its trailing slash: the one source that `/x` and `/x/` both name. */
-export const bareSource = (path: string) => (path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path);
+/** A path without its trailing slash: the one page or source that `/x` and `/x/` both name. */
+const barePath = (path: string) => (path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path);
 
 /** Both forms of a source. Cloudflare matches `_redirects` sources exactly, so every rule is written for each. */
-export const sourceForms = (path: string) => [bareSource(path), `${bareSource(path)}/`];
+const sourceForms = (path: string) => [barePath(path), `${barePath(path)}/`];
 
-/** An off-site target, kept as written: there is no live page to check it against. */
-export const offSite = (to: string) => /^https?:/.test(to);
+/** Where a rule should point: an off-site URL as written, a live page in its bare form (no extra hop), else the home page. */
+const resolveTarget = (to: string, isLive: (path: string) => boolean) =>
+  /^https?:\/\//i.test(to) ? to : isLive(barePath(to)) ? barePath(to) : '/';
 
 /** Rules as normalizeRedirects returns them (one per source), each written for both forms. */
 export const serializeRedirects = (rules: Rule[]) =>
-  '# Managed by `npm run tool -- mv|rm`, which write each rule for both /path and /path/. Edits by hand are fine; `npm run tool -- check` validates them.\n' +
+  '# Managed by `npm run tool -- mv|rm`, which write each rule for both /path and /path/. Edits by hand are fine if they do the same with static redirects only (no splats, placeholders or 200 proxies); `npm run tool -- check` validates them.\n' +
   rules.flatMap((r) => sourceForms(r.from).map((from) => `${from} ${r.to} ${r.status}`)).join('\n') +
   '\n';
 
@@ -165,21 +166,42 @@ export const serializeRedirects = (rules: Rule[]) =>
  *   earlier one (mv and rm append theirs),
  * - drop rules whose source is live again (a slug was reused),
  * - follow chains so every rule points straight at its final destination,
- * - send anything still pointing at a dead page to the home page (off-site targets stay as written).
+ * - point each at resolveTarget's answer: anything still pointing at a dead page goes to the home page.
  */
 export function normalizeRedirects(rules: Rule[], isLive: (path: string) => boolean): Rule[] {
   const map = new Map<string, Rule>();
   for (const r of rules) {
-    const from = bareSource(r.from);
+    const from = barePath(r.from);
     if (!isLive(from)) map.set(from, { ...r, from });
   }
   return [...map.values()].map((r) => {
     let to = r.to;
     const seen = new Set([r.from]);
-    for (let next = bareSource(to); map.has(next) && !seen.has(next); next = bareSource(to)) { seen.add(next); to = map.get(next)!.to; }
-    if (!isLive(to) && !offSite(to)) to = '/';
-    return { ...r, to };
+    for (let next = barePath(to); map.has(next) && !seen.has(next); next = barePath(to)) { seen.add(next); to = map.get(next)!.to; }
+    return { ...r, to: resolveTarget(to, isLive) };
   });
+}
+
+/** What is wrong with a `_redirects` file, one message per problem in file order; `check` reports them. */
+export function redirectProblems(rules: Rule[], isLive: (path: string) => boolean): string[] {
+  const problems: string[] = [];
+  const seen = new Set<string>();
+  const lines = new Set(rules.map((r) => `${r.from} ${r.to} ${r.status}`));
+  for (const r of rules) {
+    if (!r.from?.startsWith('/') || !r.to) { problems.push(`malformed rule "${r.from} ${r.to}"`); continue; }
+    if (/\*|\/:/.test(r.from)) { problems.push(`${r.from} is a splat or placeholder rule; only static rules are supported`); continue; }
+    if (!['301', '302', '303', '307', '308'].includes(r.status)) problems.push(`${r.from} has status ${r.status}; only redirects (301, 302, 303, 307, 308) are supported`);
+    if (seen.has(r.from)) problems.push(`duplicate source ${r.from}`);
+    seen.add(r.from);
+    for (const form of sourceForms(r.from)) {
+      if (!lines.has(`${form} ${r.to} ${r.status}`)) problems.push(`${r.from} has no ${form} twin with the same target and status (Cloudflare matches sources exactly, so each rule is written for both forms)`);
+    }
+    if (isLive(barePath(r.from))) problems.push(`${r.from} is a live page but still redirects`);
+    const to = resolveTarget(r.to, isLive);
+    if (to === '/' && r.to !== '/') problems.push(`${r.from} -> ${r.to}, which is not a live page`);
+    else if (to !== r.to) problems.push(`${r.from} -> ${r.to}: write the target as ${to}`);
+  }
+  return problems;
 }
 
 // ---------- ICO ----------

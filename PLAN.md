@@ -25,7 +25,7 @@ Status: approved 2026-09-26 with the answers in §13. All six steps of §11 are 
 | Screenshots | `playwright` (dev dep, Chromium only) + sharp | Local only, never in the Worker. |
 | YAML | `yaml` (dev dep) | Scripts read and rewrite frontmatter. |
 | Wrangler | `wrangler@4` dev dep | No global install. |
-| Tests | `node --test` | Zero deps. Pure logic only: search matcher, filters and facet counts, facet vocabulary, write-up split, category guess, homepage classifier. |
+| Tests | `node --test` | Zero deps. Pure logic only: search matcher, filters and facet counts, facet vocabulary, write-up split, category guess, homepage classifier, redirect rewriting and validation. |
 
 Not added: Fuse/MiniSearch, Pagefind, MDX, CMS, D1, icon library, state library, analytics code (§13.7), CI, submissions.
 
@@ -117,7 +117,7 @@ Nothing per tool is hardcoded outside its folder. `src/lib/data.ts` is the only 
 | `/404` | A search field pre-filled from the dead address, a link to the sections. |
 | `/sitemap-index.xml`, `/robots.txt` | Sitemap integration; robots in `public/`. |
 
-Components: `Base.astro` (head, canonical, OG/Twitter, JSON-LD, `<ClientRouter />`, header with a compact search on every page but home, footer), `Directory.tsx` (the island; `Catalog.astro` mounts it on home and, scoped, on section pages), `ToolActions.astro` and `ToolDetails.astro` (the tool page's buttons and details). `src/lib/body.ts` splits the Markdown write-up at AST level into "What it is" and the two cards; `check` reads bodies with the same rule. `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
+Components: `Base.astro` (head, `<ClientRouter />`, header with a compact search on every page but home, footer), `Seo.astro` (rendered by `Base.astro` in the head: title, description, canonical, OG/Twitter, JSON-LD; a noindex page, the 404, gets no canonical or `og:url`, since it is served at whatever address was dead), `Directory.tsx` (the island; `Catalog.astro` mounts it on home and, scoped, on section pages), `ToolActions.astro` and `ToolDetails.astro` (the tool page's buttons and details). `src/lib/body.ts` splits the Markdown write-up at AST level into "What it is" and the two cards; `check` reads bodies with the same rule. `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
 
 Lists show icons, never thumbnails. A tool without a thumbnail simply has no screenshot on its page, and its social share falls back to the site default `public/og.png` (made from `scripts/og.html`).
 
@@ -126,7 +126,7 @@ Lists show icons, never thumbnails. A tool without a thumbnail simply has no scr
 `Directory.tsx`, `client:load`.
 
 - **Data.** The island gets the full list inline as props, and the server renders the first page of rows. The same shape is served at `/tools.json`. Fetching it instead of inlining is the plan past ~200 tools (a scaling ceiling, §10), not built.
-- **State.** `q`, `section`, `host` and `kind` (comma lists), `order` (newest, the default featured-then-newest order, or A to Z), mirrored to the URL with `history.replaceState` and read once after hydration; unknown values are ignored. A filtered URL holds the list until the island has applied it, so the whole catalog never flashes.
+- **State.** `q`, `section`, `host` and `kind` (comma lists), `order` (newest, the default featured-then-newest order, or A to Z), mirrored to the URL with `history.replaceState` and read once after hydration; unknown values are ignored. The mirror writes the whole query string from that state, so parameters it doesn't own (`utm_*` and the like) are dropped once the island hydrates: by design, the URL after load is the canonical address of the view. The fragment is kept. A filtered URL holds the list until the island has applied it, so the whole catalog never flashes.
 - **Matching** (`src/lib/match.ts`, tested): normalise (lowercase, strip diacritics); every token must appear in name, tagline, tags or category name; name-prefix hits rank first, then name-contains, then the rest.
 - **Filters** (`src/lib/filter.ts`, tested): sections single-select; "Works with" and "Kind" multi-select, OR inside a group, AND between groups and with search and section. Each option's count is what it would give with everything else applied. Options come from the vocabulary, only those in use, ordered by catalog-wide count; past 8 a group folds behind "N more". On phones the sections scroll sideways and the facets sit behind a "Filters" disclosure.
 - **Keyboard.** `/` focuses the page's main search from anywhere (one site-wide handler, `src/lib/slash.ts`), with a control to turn it off, remembered in the browser (WCAG 2.1.4); only a device with any fine pointer (`any-pointer: fine`) has the shortcut and the control; a touch-only device has neither. Enter or ↓ in the field moves to the first result.
@@ -200,7 +200,7 @@ npm run tool check [--offline]
 - Referenced images exist and carry provenance; a missing thumbnail is a note, not an error. A missing icon is an error.
 - Body is not the `TODO` placeholder, and has exactly one non-empty `**When to use it:**` and one `**Caveats:**` paragraph, each label opening its paragraph (the same reader the tool page splits with).
 - Every tag is lowercase kebab-case, and at least one is a kind from `facets.json`.
-- Every `_redirects` rule has its twin for the other form of its source (`/path` and `/path/`, same target), no source in either form is a live page, and every target is a live page or an off-site `http(s)` URL.
+- Every `_redirects` rule is a static redirect (no splats, placeholders or 200 proxies; status 301, 302, 303, 307 or 308, 302 when left out, as Cloudflare does) and has its twin for the other form of its source (`/path` and `/path/`, same target and status), no source in either form is a live page, and every target is a live page in its bare form (`/x`, not `/x/`) or an off-site `http(s)` URL.
 - Every category id referenced exists (also enforced by the schema).
 - Unless `--offline`: `repo`, `website` and `links` return < 400 (HEAD, falling back to GET; 8 in parallel; 10 s timeout). A 403 carrying Cloudflare's `cf-mitigated: challenge` is a note ("behind a bot challenge, not verified"), not an error: the site is up but refuses scripts.
 

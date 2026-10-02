@@ -20,7 +20,7 @@ Tools are data, not code. Each tool is `src/content/tools/<slug>/` containing `i
 - Delete: `npm run tool -- rm <slug>` (removes folder + images, adds a 301 for both forms of the old URL)
 - Validate everything: `npm run check` (or `npm run tool -- check --offline` to skip link checks)
 
-Never rename or delete tool folders by hand; use `mv` and `rm` so redirects stay correct. `public/_redirects` may be edited by hand; write every rule for both `/path` and `/path/` (sources match exactly); `check` validates it.
+Never rename or delete tool folders by hand; use `mv` and `rm` so redirects stay correct. `public/_redirects` may be edited by hand; write every rule for both `/path` and `/path/` (sources match exactly), static redirects only (no splats, placeholders or 200 proxies), each target a page's bare form (`/x`, not `/x/`) or an off-site URL; `check` validates it.
 
 ### After `add`, finish the entry
 
