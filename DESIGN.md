@@ -284,7 +284,7 @@ Numerals are tabular site-wide, so counts line up in their columns. Headings bal
 - **Micro** (400, 12px, 1.4; the role sets size only): in Geist Mono (with `font-mono`, or a `kbd`) for facet counts, kinds and price under a row's link, topic tags and the "/" key; in Geist for the "Turn off the / shortcut" switch.
 
 ### Named Rules
-**The Mono Means Data Rule.** Geist Mono sets only what a reader would copy, count or type: URLs, counts, kinds, tags, the "/" key and inline code. Never headings, never prose, never buttons.
+**The Mono Means Data Rule.** Geist Mono sets only what a reader would copy, count or type: URLs, counts, kinds and price, tags, the "/" key and inline code. Never headings, never prose, never buttons.
 
 **The Fallback Face Rule.** Every font stack carries its metric-matched local fallback face second. A new face without one is incomplete.
 
@@ -371,7 +371,7 @@ State changes (colour, border, halo, disclosure chevrons) run at 150ms. Under `p
 ### Do:
 - **Do** keep the accent for links, the primary action, selection and focus; never use it as decoration.
 - **Do** frame every list in one white sheet with 12px corners and 1px lines, rows divided by Soft Line.
-- **Do** set URLs, counts, kinds, tags and keys in Geist Mono, and everything else in Geist.
+- **Do** set URLs, counts, kinds and price, tags and keys in Geist Mono, and everything else in Geist.
 - **Do** use the four radii by object size: 12 sheet, 9 control, 7 row, 5 key.
 - **Do** give every target 44px on coarse pointers through padding or an invisible hit area.
 - **Do** show the focus ring (2px Index Indigo, 2px offset) on every focusable element, inset where a parent would clip it.

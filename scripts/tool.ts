@@ -11,7 +11,7 @@ import {
   guessCategory, isSiteRoot, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
   readmeH1, readmeImages, redirectProblems, repoUrl, serializeRedirects, slugify, sourcedNote, thumbNote, thumbNoteProblem, type Repo, type ThumbFrom,
 } from './lib.ts';
-import { PRICING, tagProblems } from '../src/lib/facets.ts';
+import { VOCABULARY, tagProblems } from '../src/lib/facets.ts';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const TOOLS = join(ROOT, 'src/content/tools');
@@ -321,7 +321,7 @@ async function add(urls: string[], opts: { slug?: string; category?: string }) {
     name,
     tagline: clip(description || name, 160),
     category,
-    tags: topics.filter((t) => !PRICING.some((p) => p.tag === t)).slice(0, 8), // the price is the owner's call (CLAUDE.md › Tags)
+    tags: topics.filter((t) => !VOCABULARY.pricing.some((p) => p.tag === t)).slice(0, 8), // the price is the owner's call (CLAUDE.md › Tags)
     ...(repo && { repo: repoUrl(repo) }),
     ...(website && { website }),
     added: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), // listing time, so same-day entries still order

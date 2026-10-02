@@ -9,9 +9,6 @@ export type FacetGroup = keyof typeof facets;
 export const VOCABULARY: Record<FacetGroup, Facet[]> = facets;
 /** The groups in vocabulary order, which is the order the directory shows them in. */
 export const FACET_GROUPS = Object.keys(VOCABULARY) as FacetGroup[];
-export const KINDS = VOCABULARY.kinds;
-export const HOSTS = VOCABULARY.hosts;
-export const PRICING = VOCABULARY.pricing;
 
 /** One value per facet group, from `fn`. */
 export const byGroup = <T>(fn: (g: FacetGroup) => T) => Object.fromEntries(FACET_GROUPS.map((g) => [g, fn(g)])) as Record<FacetGroup, T>;
@@ -45,8 +42,8 @@ export function tagProblems(tags: unknown[]): string[] {
   return [
     ...tags.filter((t) => typeof t !== 'string' || !isTag(t)).map((t) => `tag "${t}" is not lowercase kebab-case`),
     ...new Set(tags.filter((t, i) => tags.indexOf(t) !== i).map((t) => `tag "${t}" is listed more than once`)),
-    ...(kinds.length ? [] : [`no kind tag (one of ${KINDS.map((k) => k.tag).join(', ')}; see src/content/facets.json)`]),
-    ...(pricing.length === 1 ? [] : [`needs exactly one pricing tag (${PRICING.map((p) => p.tag).join(', ')}; see CLAUDE.md › Tags), has ${pricing.length}`]),
+    ...(kinds.length ? [] : [`no kind tag (one of ${VOCABULARY.kinds.map((k) => k.tag).join(', ')}; see src/content/facets.json)`]),
+    ...(pricing.length === 1 ? [] : [`needs exactly one pricing tag (${VOCABULARY.pricing.map((p) => p.tag).join(', ')}; see CLAUDE.md › Tags), has ${pricing.length}`]),
   ];
 }
 
