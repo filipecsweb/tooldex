@@ -6,7 +6,7 @@ import ToolActions from '../../components/ToolActions.astro';
 import ToolDetails from '../../components/ToolDetails.astro';
 import { getCategories, getTools, relatedTools, type Tool } from '../../lib/data';
 import { toIndex } from '../../lib/tool-index';
-import { thumbSource } from '../../lib/format';
+import { thumbSource } from '../../lib/provenance';
 import { facetLabel, splitTags } from '../../lib/facets';
 import { breadcrumbLd, toolLd } from '../../lib/jsonld';
 import { SITE } from '../../site';
@@ -28,8 +28,7 @@ const source = thumbSource(provenance[`/src/content/tools/${tool.id}/thumb.webp.
 const { Content } = await render(tool);
 const og = d.thumbnail ? (await getImage({ src: d.thumbnail, width: 1200, height: 630, fit: 'cover', format: 'png' })).src : undefined;
 const site = Astro.site!;
-// A hand-supplied picture names no source; fall back to where the primary button goes.
-const pictureAlt = `${d.name}, as shown on its ${source?.on ?? (d.website ? 'website' : 'repository')}`;
+const pictureAlt = source ? `${d.name}, ${source.alt}` : d.name; // a picture supplied by hand names no source, so its alt claims none
 const crumb = 'text-ink-3 no-underline hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3.25';
 const box = 'rounded-sheet border border-line bg-surface p-5';
 ---

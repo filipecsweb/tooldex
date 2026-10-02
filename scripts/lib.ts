@@ -4,13 +4,13 @@ import { crc32 } from 'node:zlib';
 export const THUMB = { width: 1600, height: 840 }; // ~1.91:1, the og:image shape
 export const ICON_SIZE = 128;
 export const TOOL_FILES = new Set(['index.md', 'thumb.webp', 'thumb.webp.json', 'icon.png']);
-/** Key impeccable's provenance scanner reads (PNG tEXt chunk; WebP uses a .json sidecar). */
-export const PROVENANCE_KEY = 'impeccable:prompt';
 export const BODY_PLACEHOLDER = 'TODO(tooldex): write the body.';
 
 /** Paragraphs every write-up has, each opening with `**Label:**` (CLAUDE.md › Write-up style). The
  *  rule lives with the tool page's splitter, so `check` passes exactly the bodies the page can split. */
 export { bodyProblems } from '../src/lib/body.ts';
+/** Image provenance notes: written here, read by the tool page, so `check` holds them to the form the page reads. */
+export { handNote, PROVENANCE_KEY, sourcedNote, thumbNote, thumbNoteProblem, type ThumbFrom } from '../src/lib/provenance.ts';
 
 export type Repo = { owner: string; name: string };
 

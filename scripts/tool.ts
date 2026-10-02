@@ -7,9 +7,9 @@ import { parseArgs } from 'node:util';
 import sharp, { type Sharp } from 'sharp';
 import YAML from 'yaml';
 import {
-  BODY_PLACEHOLDER, botChallenged, bodyProblems, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
+  BODY_PLACEHOLDER, botChallenged, bodyProblems, handNote, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
   guessCategory, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
-  readmeH1, readmeImages, redirectProblems, repoUrl, serializeRedirects, slugify, type Repo,
+  readmeH1, readmeImages, redirectProblems, repoUrl, serializeRedirects, slugify, sourcedNote, thumbNote, thumbNoteProblem, type Repo, type ThumbFrom,
 } from './lib.ts';
 import { KINDS, isTag, splitTags } from '../src/lib/facets.ts';
 
@@ -138,7 +138,7 @@ async function toIcon(buf: Uint8Array) {
 
 type Hit = { buf: Buffer; src: string };
 
-async function firstOk(label: string, tries: [string, () => Promise<Hit | null | undefined>][]): Promise<(Hit & { from: string }) | null> {
+async function firstOk<From extends string>(label: string, tries: [From, () => Promise<Hit | null | undefined>][]): Promise<(Hit & { from: From }) | null> {
   for (const [from, fn] of tries) {
     try {
       const hit = await fn();
@@ -151,9 +151,12 @@ async function firstOk(label: string, tries: [string, () => Promise<Hit | null |
 }
 
 const today = () => new Date().toISOString().slice(0, 10);
-const provenance = (from: string, src: string) =>
-  `Sourced, not generated: ${from} (${src}), fetched ${today()} by scripts/tool.ts and resized.`;
-const HAND = `Supplied by hand; recorded ${today()} by scripts/tool.ts.`;
+
+/** A tool's thumbnail note that the page can't read, with the fix, or null: `check` fails on it, `thumbs` warns. */
+function thumbNoteError(slug: string) {
+  const problem = thumbNoteProblem(readFileSync(join(TOOLS, slug, 'thumb.webp.json'), 'utf8'));
+  return problem && `thumb.webp.json: ${problem}. Fix the sidecar, keeping the source URL its note records; only if the picture's origin is unknown, delete thumb.webp.json (keep the picture) and run npm run tool -- thumbs ${slug} to record it as supplied by hand`;
+}
 
 function writeThumb(path: string, buf: Buffer, note: string) {
   writeFileSync(path, buf);
@@ -197,10 +200,10 @@ async function thumbs(slug: string, force: boolean) {
 
   // Thumbnail
   if (existsSync(thumbPath) && !force) {
-    if (!existsSync(`${thumbPath}.json`)) writeThumb(thumbPath, readFileSync(thumbPath), HAND);
+    if (!existsSync(`${thumbPath}.json`)) writeThumb(thumbPath, readFileSync(thumbPath), handNote(today()));
     console.log('    thumb: kept existing file');
   } else {
-    const tries: [string, () => Promise<Hit | null>][] = [];
+    const tries: [ThumbFrom, () => Promise<Hit | null>][] = [];
     const as = (src: string) => async (buf: Buffer | null) => (buf ? { buf, src } : null);
     if (e.data.website) {
       tries.push(['website og:image', async () => {
@@ -228,7 +231,7 @@ async function thumbs(slug: string, force: boolean) {
     }
     const hit = await firstOk('thumb', tries);
     if (hit) {
-      writeThumb(thumbPath, hit.buf, provenance(hit.from, hit.src));
+      writeThumb(thumbPath, hit.buf, thumbNote(hit.from, hit.src, today()));
       console.log(`    thumb: ${hit.from}`);
     } else if (existsSync(thumbPath)) {
       console.log('    thumb: no new source found, kept the existing file (to show no screenshot, delete it, its sidecar and the thumbnail: line)');
@@ -236,11 +239,15 @@ async function thumbs(slug: string, force: boolean) {
       console.log('    thumb: none usable, the tool page will show no screenshot');
     }
   }
+  if (existsSync(thumbPath) && existsSync(`${thumbPath}.json`)) {
+    const error = thumbNoteError(slug);
+    if (error) console.log(`    thumb: ${error}`);
+  }
 
   // Icon
   if (existsSync(iconPath) && !force) {
     const buf = readFileSync(iconPath);
-    if (!pngText(buf, PROVENANCE_KEY)) writeFileSync(iconPath, pngWithText(buf, PROVENANCE_KEY, HAND));
+    if (!pngText(buf, PROVENANCE_KEY)) writeFileSync(iconPath, pngWithText(buf, PROVENANCE_KEY, handNote(today())));
     console.log('    icon: kept existing file');
   } else {
     const tries: [string, () => Promise<Hit | null>][] = [];
@@ -249,7 +256,7 @@ async function thumbs(slug: string, force: boolean) {
     if (repo) tries.push(['GitHub owner avatar', () => icon(`https://github.com/${repo.owner}.png?size=256`)]);
     const hit = await firstOk('icon', tries);
     if (hit) {
-      writeFileSync(iconPath, pngWithText(hit.buf, PROVENANCE_KEY, provenance(hit.from, hit.src)));
+      writeFileSync(iconPath, pngWithText(hit.buf, PROVENANCE_KEY, sourcedNote(hit.from, hit.src, today())));
       console.log(`    icon: ${hit.from} ${hit.src}`);
     } else {
       console.log('    icon: none found. Add src/content/tools/' + slug + '/icon.png by hand');
@@ -384,6 +391,10 @@ async function check(offline: boolean) {
     }
     if (files.includes('thumb.webp') && !files.includes('thumb.webp.json')) errors.push(`${where}: thumb.webp has no provenance sidecar (run npm run tool -- thumbs ${slug})`);
     if (files.includes('thumb.webp.json') && !files.includes('thumb.webp')) errors.push(`${where}/thumb.webp.json: orphaned sidecar`);
+    if (files.includes('thumb.webp') && files.includes('thumb.webp.json')) {
+      const error = thumbNoteError(slug);
+      if (error) errors.push(`${where}/${error}`);
+    }
     if (files.includes('icon.png') && !pngText(readFileSync(join(TOOLS, slug, 'icon.png')), PROVENANCE_KEY)) errors.push(`${where}: icon.png has no provenance (run npm run tool -- thumbs ${slug})`);
     if (!files.includes('icon.png')) errors.push(`${where}: no icon (run npm run tool -- thumbs ${slug})`);
     if (!files.includes('thumb.webp')) notes.push(`${where}: no thumbnail, the tool page shows no screenshot`);
