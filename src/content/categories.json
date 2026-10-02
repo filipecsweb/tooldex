@@ -82,5 +82,11 @@
     "name": "Sales & CRM",
     "description": "Agent tooling for selling: CRMs that keep themselves up to date, contact and company research, and pipeline work handed to agents.",
     "keywords": ["crm", "sales", "pipeline", "leads", "lead-generation", "enrichment", "prospecting", "outreach", "deals"]
+  },
+  {
+    "id": "computer-use",
+    "name": "Computer use",
+    "description": "Agents that operate a computer the way a person does: they look at the screen, then click, type and scroll through desktop apps and browsers to finish a task.",
+    "keywords": ["computer-use", "computer-use-agent", "cua", "gui-agents", "gui-automation", "desktop-automation", "rpa"]
   }
 ]

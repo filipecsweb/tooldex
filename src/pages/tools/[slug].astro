@@ -6,7 +6,7 @@ import ToolActions from '../../components/ToolActions.astro';
 import ToolDetails from '../../components/ToolDetails.astro';
 import { getCategories, getTools, relatedTools, type Tool } from '../../lib/data';
 import { toIndex } from '../../lib/tool-index';
-import { captionFor } from '../../lib/format';
+import { thumbSource } from '../../lib/format';
 import { facetLabel, splitTags } from '../../lib/facets';
 import { breadcrumbLd, toolLd } from '../../lib/jsonld';
 import { SITE } from '../../site';
@@ -23,12 +23,13 @@ const category = categories.find((c) => c.id === d.category.id)!;
 const related = await toIndex(relatedTools(tool, all), categories);
 const { kinds } = splitTags(d.tags);
 const provenance = import.meta.glob<{ prompt: string }>('/src/content/tools/*/thumb.webp.json', { eager: true, import: 'default' });
-const caption = captionFor(provenance[`/src/content/tools/${tool.id}/thumb.webp.json`]?.prompt);
+const source = thumbSource(provenance[`/src/content/tools/${tool.id}/thumb.webp.json`]?.prompt);
 // The write-up arrives split by src/lib/body.ts: "What it is", then the When to use it / Caveats cards.
 const { Content } = await render(tool);
 const og = d.thumbnail ? (await getImage({ src: d.thumbnail, width: 1200, height: 630, fit: 'cover', format: 'png' })).src : undefined;
 const site = Astro.site!;
-const pictureAlt = `${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`;
+// A hand-supplied picture names no source; fall back to where the primary button goes.
+const pictureAlt = `${d.name}, as shown on its ${source?.on ?? (d.website ? 'website' : 'repository')}`;
 const crumb = 'text-ink-3 no-underline hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3.25';
 const box = 'rounded-sheet border border-line bg-surface p-5';
 ---
@@ -96,7 +97,7 @@ const box = 'rounded-sheet border border-line bg-surface p-5';
             alt={pictureAlt}
             class="block aspect-thumb w-full rounded-sheet border border-line bg-fill object-cover object-top"
           />
-          {caption && <figcaption class="mt-2.5 text-caption text-meta">{caption}</figcaption>}
+          {source && <figcaption class="mt-2.5 text-caption text-meta">{source.caption}</figcaption>}
         </figure>
       )}
 
