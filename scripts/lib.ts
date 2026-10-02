@@ -144,25 +144,40 @@ export function parseRedirects(text: string): Rule[] {
     });
 }
 
+/** A source without its trailing slash: the one source that `/x` and `/x/` both name. */
+export const bareSource = (path: string) => (path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path);
+
+/** Both forms of a source. Cloudflare matches `_redirects` sources exactly, so every rule is written for each. */
+export const sourceForms = (path: string) => [bareSource(path), `${bareSource(path)}/`];
+
+/** An off-site target, kept as written: there is no live page to check it against. */
+export const offSite = (to: string) => /^https?:/.test(to);
+
+/** Rules as normalizeRedirects returns them (one per source), each written for both forms. */
 export const serializeRedirects = (rules: Rule[]) =>
-  '# Managed by `npm run tool -- mv|rm`. Edits by hand are fine; `npm run tool -- check` validates them.\n' +
-  rules.map((r) => `${r.from} ${r.to} ${r.status}`).join('\n') +
+  '# Managed by `npm run tool -- mv|rm`, which write each rule for both /path and /path/. Edits by hand are fine; `npm run tool -- check` validates them.\n' +
+  rules.flatMap((r) => sourceForms(r.from).map((from) => `${from} ${r.to} ${r.status}`)).join('\n') +
   '\n';
 
 /**
  * Keep redirects valid against the live pages:
+ * - one rule per bare source: `/x` and `/x/` are the same source, and a later rule replaces an
+ *   earlier one (mv and rm append theirs),
  * - drop rules whose source is live again (a slug was reused),
  * - follow chains so every rule points straight at its final destination,
- * - send anything still pointing at a dead page to the home page.
+ * - send anything still pointing at a dead page to the home page (off-site targets stay as written).
  */
 export function normalizeRedirects(rules: Rule[], isLive: (path: string) => boolean): Rule[] {
-  const kept = rules.filter((r) => !isLive(r.from));
-  const map = new Map(kept.map((r) => [r.from, r.to]));
-  return kept.map((r) => {
+  const map = new Map<string, Rule>();
+  for (const r of rules) {
+    const from = bareSource(r.from);
+    if (!isLive(from)) map.set(from, { ...r, from });
+  }
+  return [...map.values()].map((r) => {
     let to = r.to;
     const seen = new Set([r.from]);
-    while (map.has(to) && !seen.has(to)) { seen.add(to); to = map.get(to)!; }
-    if (!isLive(to)) to = '/';
+    for (let next = bareSource(to); map.has(next) && !seen.has(next); next = bareSource(to)) { seen.add(next); to = map.get(next)!.to; }
+    if (!isLive(to) && !offSite(to)) to = '/';
     return { ...r, to };
   });
 }

@@ -20,7 +20,7 @@ Status: approved 2026-09-26 with the answers in §13. All six steps of §11 are 
 | Fonts | Geist (everything), Geist Mono (access data only: URLs, kinds, counts, keys), self-hosted via `@fontsource-variable`, latin files preloaded, metric-matched local fallbacks | No third-party font request, no shift on the swap. |
 | SEO plumbing | `@astrojs/sitemap` | Meta and JSON-LD hand-written. |
 | URLs | `trailingSlash: 'never'` + `build.format: 'file'` | Emits `tools/gstack.html`; Cloudflare's default `auto-trailing-slash` serves `/tools/gstack`. Dev and prod agree. |
-| Redirects | `public/_redirects` | Native to Workers static assets. Written by the rename/delete commands. |
+| Redirects | `public/_redirects` | Native to Workers static assets. Written by the rename/delete commands. Sources match exactly, so each rule is written for both `/path` and `/path/`. |
 | Tool scripts | `scripts/tool.ts`, run by plain `node` (Node 24 strips TS) | One file, subcommands `add`, `thumbs`, `mv`, `rm`, `check`. |
 | Screenshots | `playwright` (dev dep, Chromium only) + sharp | Local only, never in the Worker. |
 | YAML | `yaml` (dev dep) | Scripts read and rewrite frontmatter. |
@@ -178,7 +178,7 @@ Edit `src/content/tools/<slug>/index.md`. Schema validation runs in `astro dev`,
 npm run tool mv <old-slug> <new-slug>
 ```
 
-Moves the folder and appends `/tools/<old> /tools/<new> 301` to `public/_redirects`, rewriting any earlier redirect that pointed at `<old>` so chains never form.
+Moves the folder and appends `/tools/<old> /tools/<new> 301` to `public/_redirects`, with the same rule for `/tools/<old>/`, rewriting any earlier redirect that pointed at `<old>` so chains never form.
 
 ### Delete
 
@@ -186,7 +186,7 @@ Moves the folder and appends `/tools/<old> /tools/<new> 301` to `public/_redirec
 npm run tool rm <slug>
 ```
 
-Removes the folder (entry and images together) and appends `/tools/<slug> /categories/<its-category> 301` so inbound links and search results land somewhere useful. If that category becomes empty, the redirect points at `/` instead.
+Removes the folder (entry and images together) and appends `/tools/<slug> /categories/<its-category> 301`, with the same rule for `/tools/<slug>/`, so inbound links and search results land somewhere useful. If that category becomes empty, the redirect points at `/` instead.
 
 ### Check
 
@@ -200,7 +200,7 @@ npm run tool check [--offline]
 - Referenced images exist and carry provenance; a missing thumbnail is a note, not an error. A missing icon is an error.
 - Body is not the `TODO` placeholder, and has exactly one non-empty `**When to use it:**` and one `**Caveats:**` paragraph, each label opening its paragraph (the same reader the tool page splits with).
 - Every tag is lowercase kebab-case, and at least one is a kind from `facets.json`.
-- Every `_redirects` source is not a live page, and every target resolves to a live page or category.
+- Every `_redirects` rule has its twin for the other form of its source (`/path` and `/path/`, same target), no source in either form is a live page, and every target is a live page or an off-site `http(s)` URL.
 - Every category id referenced exists (also enforced by the schema).
 - Unless `--offline`: `repo`, `website` and `links` return < 400 (HEAD, falling back to GET; 8 in parallel; 10 s timeout). A 403 carrying Cloudflare's `cf-mitigated: challenge` is a note ("behind a bot challenge, not verified"), not an error: the site is up but refuses scripts.
 
@@ -271,7 +271,7 @@ The ones that live in code carry a `ponytail:` comment there.
 | Home renders the first 48 rows in the HTML and every tool in the island's props | ~200 tools | Same switch as the inline index: fetch `/tools.json` instead of inlining every tool. |
 | Images committed to git (~60 KB per tool) | a few thousand tools | Masters in R2, derived files at build. |
 | Workers assets: 20k files, 25 MiB each | ~2.5k tools (≈7 built files per tool: page, icon, 4 screenshot widths, OG) | Move image variants to R2 / Cloudflare Images. |
-| `_redirects`: 2,000 static rules | 2,000 renames + deletes | Bulk Redirects in Cloudflare, or prune rules older than a year. |
+| `_redirects`: 2,000 static rules, two per redirect (`/path` and `/path/`) | 1,000 renames + deletes | Bulk Redirects in Cloudflare, or prune rules older than a year. |
 | Full rebuild on every change | ~2k tools (minutes of sharp) | Astro's image cache already persists in `node_modules/.astro`; then incremental builds. |
 | Link check serial-ish (8 parallel) | ~1k links per run | Raise concurrency, cache results for 24 h. |
 | GitHub API anonymous (60 req/h) | ~50 adds per hour | Set `GITHUB_TOKEN` (picked up automatically). |

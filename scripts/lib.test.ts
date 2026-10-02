@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   botChallenged, classifyHomepage, cropBox, goodThumb, guessCategory, normalizeRedirects, parseGithubRepo,
-  parseRedirects, pickName, pngFromIco, pngText, pngWithText, readmeImages, slugify,
+  parseRedirects, pickName, pngFromIco, pngText, pngWithText, readmeImages, serializeRedirects, slugify,
 } from './lib.ts';
 
 test('parseGithubRepo', () => {
@@ -56,13 +56,28 @@ test('goodThumb and cropBox', () => {
   assert.deepEqual(cropBox(1000, 1000, 2), { left: 0, top: 0, width: 1000, height: 500 });
 });
 
-test('normalizeRedirects follows chains, drops live sources, rescues dead targets', () => {
+test('normalizeRedirects follows chains, drops live sources, rescues dead targets, keeps off-site ones', () => {
   const live = new Set(['/', '/tools/c', '/tools/reused', '/categories/x']);
-  const rules = parseRedirects('/tools/a /tools/b 301\n/tools/b /tools/c 301\n/tools/reused /tools/c 301\n/tools/d /categories/gone 301\n/tools/e /categories/x 301');
+  const rules = parseRedirects('/tools/a /tools/b 301\n/tools/b /tools/c 301\n/tools/reused /tools/c 301\n/tools/d /categories/gone 301\n/tools/e /categories/x 301\n/tools/f https://example.com 301');
   assert.deepEqual(
     normalizeRedirects(rules, (p) => live.has(p)).map((r) => `${r.from} ${r.to}`),
-    ['/tools/a /tools/c', '/tools/b /tools/c', '/tools/d /', '/tools/e /categories/x'],
+    ['/tools/a /tools/c', '/tools/b /tools/c', '/tools/d /', '/tools/e /categories/x', '/tools/f https://example.com'],
   );
+});
+
+test('normalizeRedirects treats /x and /x/ as one source', () => {
+  const live = new Set(['/', '/tools/c', '/tools/reused']);
+  const rules = parseRedirects('/tools/a /tools/b/ 301\n/tools/a/ /tools/b/ 301\n/tools/b/ /tools/c 301\n/tools/reused/ / 301\n/tools/d / 301\n/tools/d /tools/c 301');
+  assert.deepEqual(
+    normalizeRedirects(rules, (p) => live.has(p)).map((r) => `${r.from} ${r.to}`),
+    ['/tools/a /tools/c', '/tools/b /tools/c', '/tools/d /tools/c'], // twins collapse, a live slash source drops, chains follow a slash target, the later rule wins
+  );
+});
+
+test('serializeRedirects writes each rule for both forms, and rewriting its output is a no-op', () => {
+  const text = serializeRedirects([{ from: '/tools', to: '/', status: '301' }]);
+  assert.deepEqual(text.split('\n').slice(1), ['/tools / 301', '/tools/ / 301', '']);
+  assert.equal(serializeRedirects(normalizeRedirects(parseRedirects(text), (p) => p === '/')), text);
 });
 
 test('pngFromIco extracts the largest embedded PNG', () => {

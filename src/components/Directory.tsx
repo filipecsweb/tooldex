@@ -58,7 +58,7 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
   useEffect(() => {
     if (!ready) return;
     const qs = writeQuery(f, order);
-    history.replaceState(history.state, '', qs ? `?${qs}` : location.pathname);
+    history.replaceState(history.state, '', (qs ? `?${qs}` : location.pathname) + location.hash);
   }, [f, order, ready]);
 
   // On phones the section run scrolls sideways; bring the chosen section into view (horizontally only).

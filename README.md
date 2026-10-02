@@ -48,9 +48,9 @@ It prefills name, tagline, tags, links and a category guess from the GitHub API 
 
 **Refresh images**: `npm run tool -- thumbs <slug> --force` refetches; if no new source is found it keeps the existing file. To use your own image, drop `thumb.webp` (≈1.91:1, e.g. 1600×840) or `icon.png` (square) into the folder and run `npm run tool -- thumbs <slug>`: existing files win unless `--force`, and the command records them as supplied by hand. Some thumbnails are screenshots captured by hand (their sidecar names the source); `--force` would replace them, so leave it off for those. To drop a bad thumbnail, delete `thumb.webp` and `thumb.webp.json` and remove the `thumbnail:` line from `index.md` (`check` fails while it points at a missing file): the tool page then shows no screenshot, and lists only ever show icons.
 
-**Rename**: `npm run tool -- mv <old> <new>`. Moves the folder and adds a 301 in `public/_redirects`.
+**Rename**: `npm run tool -- mv <old> <new>`. Moves the folder and adds a 301 in `public/_redirects` for the old URL, with and without a trailing slash.
 
-**Delete**: `npm run tool -- rm <slug>`. Removes the folder and 301s the old URL to its category (or `/` if the category is now empty).
+**Delete**: `npm run tool -- rm <slug>`. Removes the folder and 301s the old URL, with and without a trailing slash, to its category (or `/` if the category is now empty).
 
 **Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, image provenance, unwritten bodies, the write-up's "When to use it" and "Caveats" paragraphs, tags (lowercase kebab-case, at least one kind), redirects, and that every link responds. Add `--offline` to skip the network.
 

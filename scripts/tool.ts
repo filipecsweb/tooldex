@@ -8,8 +8,8 @@ import sharp, { type Sharp } from 'sharp';
 import YAML from 'yaml';
 import {
   BODY_PLACEHOLDER, botChallenged, bodyProblems, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
-  guessCategory, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
-  readmeH1, readmeImages, repoUrl, serializeRedirects, slugify, type Repo,
+  bareSource, guessCategory, normalizeRedirects, offSite, parseGithubRepo, parseRedirects, pickName, pngFromIco,
+  readmeH1, readmeImages, repoUrl, serializeRedirects, slugify, sourceForms, type Repo,
 } from './lib.ts';
 import { KINDS, isTag, splitTags } from '../src/lib/facets.ts';
 
@@ -392,12 +392,17 @@ async function check(offline: boolean) {
 
   const live = livePaths();
   const seen = new Set<string>();
-  for (const r of readRedirects()) {
+  const rules = readRedirects();
+  const lines = new Set(rules.map((r) => `${r.from} ${r.to} ${r.status}`));
+  for (const r of rules) {
     if (!r.from?.startsWith('/') || !r.to) { errors.push(`_redirects: malformed rule "${r.from} ${r.to}"`); continue; }
     if (seen.has(r.from)) errors.push(`_redirects: duplicate source ${r.from}`);
     seen.add(r.from);
-    if (live.has(r.from)) errors.push(`_redirects: ${r.from} is a live page but still redirects`);
-    if (!live.has(r.to) && !/^https?:/.test(r.to)) errors.push(`_redirects: ${r.from} -> ${r.to}, which is not a live page`);
+    for (const form of sourceForms(r.from)) {
+      if (!lines.has(`${form} ${r.to} ${r.status}`)) errors.push(`_redirects: ${r.from} has no ${form} twin with the same target (Cloudflare matches sources exactly, so each rule is written for both forms)`);
+    }
+    if (live.has(bareSource(r.from))) errors.push(`_redirects: ${r.from} is a live page but still redirects`);
+    if (!live.has(r.to) && !offSite(r.to)) errors.push(`_redirects: ${r.from} -> ${r.to}, which is not a live page`);
   }
 
   if (!offline) {
