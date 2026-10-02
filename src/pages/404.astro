@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 ---
 <Base title="Not in the catalog" noindex>
-  <section class="max-w-[60ch] pb-10 pt-12">
+  <section class="max-w-copy pb-10 pt-12">
     <h1 class="text-headline">Not in the catalog</h1>
     <p class="mt-5 font-serif text-body leading-normal">
       There is no page at this address. The tool may have been renamed or removed. Search for it below, or <a href="/categories" class="link">browse the sections</a>.
@@ -10,7 +10,7 @@ import Base from '../layouts/Base.astro';
     <form action="/" method="get" role="search" class="mt-8">
       <label for="q404" class="block text-label font-extrabold">Search the catalog</label>
       <div class="mt-2 flex items-end gap-4">
-        <input id="q404" name="q" type="search" autocomplete="off" spellcheck="false" class="min-w-0 flex-1 border-0 border-b-[3px] border-ink bg-transparent px-0 py-2 text-search font-semibold tracking-[-0.01em] outline-none focus-visible:border-spot" />
+        <input id="q404" data-main-search name="q" type="search" autocomplete="off" spellcheck="false" class="min-w-0 flex-1 border-0 border-b-[3px] border-ink bg-transparent px-0 py-2 text-search font-semibold tracking-[-0.01em] outline-none focus-visible:border-spot" />
         <button type="submit" class="border-2 border-ink bg-ink px-4 py-2 text-label font-bold text-paper transition-colors duration-150 hover:bg-spot">Search</button>
       </div>
     </form>

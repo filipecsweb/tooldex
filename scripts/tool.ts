@@ -7,7 +7,7 @@ import { parseArgs } from 'node:util';
 import sharp, { type Sharp } from 'sharp';
 import YAML from 'yaml';
 import {
-  BODY_PLACEHOLDER, botChallenged, missingSections, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
+  BODY_PLACEHOLDER, botChallenged, bodyProblems, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
   guessCategory, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
   readmeH1, readmeImages, repoUrl, serializeRedirects, slugify, type Repo,
 } from './lib.ts';
@@ -374,7 +374,7 @@ async function check(offline: boolean) {
     if (!cats.has(d.category)) errors.push(`${where}: unknown category "${d.category}"`);
     if (!d.repo && !d.website) errors.push(`${where}: needs a repo or a website`);
     if (e.body.includes(BODY_PLACEHOLDER) || !e.body.trim()) errors.push(`${where}: body not written yet`);
-    else for (const label of missingSections(e.body)) errors.push(`${where}: body has no **${label}:** paragraph`);
+    else for (const problem of bodyProblems(e.body)) errors.push(`${where}: ${problem}`);
     for (const t of (d.tags ?? []).filter((t: unknown) => typeof t !== 'string' || !isTag(t)))
       errors.push(`${where}: tag "${t}" is not lowercase kebab-case`);
     if (!splitTags(d.tags ?? []).kinds.length)

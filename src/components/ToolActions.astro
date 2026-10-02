@@ -1,0 +1,23 @@
+---
+// A tool's way out: the primary button (website, else repository) and the repository as a second
+// button when both exist.
+import ArrowOut from './ArrowOut';
+import { ctaLabel } from '../lib/format';
+import { primaryUrl, type Tool } from '../lib/data';
+interface Props { tool: Tool; class?: string }
+const { tool, class: className } = Astro.props;
+const d = tool.data;
+const base = 'flex items-center justify-between gap-3 rounded-control px-4 no-underline transition-colors duration-150';
+---
+<div class:list={['grid gap-2', className]}>
+  <a href={primaryUrl(tool)} rel="noopener" class:list={[base, 'h-12 bg-accent text-body font-semibold text-surface hover:bg-accent-deep hover:text-surface']}>
+    <span>{ctaLabel(Boolean(d.website))}<span class="sr-only"> of {d.name}</span></span>
+    <ArrowOut className="size-4 flex-none" />
+  </a>
+  {d.website && d.repo && (
+    <a href={d.repo} rel="noopener" class:list={[base, 'h-11 border border-line-strong bg-surface text-row font-medium text-ink hover:bg-fill hover:text-ink']}>
+      <span>{ctaLabel(false)}<span class="sr-only"> of {d.name}</span></span>
+      <ArrowOut className="size-3.75 flex-none" />
+    </a>
+  )}
+</div>

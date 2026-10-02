@@ -8,12 +8,9 @@ export const TOOL_FILES = new Set(['index.md', 'thumb.webp', 'thumb.webp.json', 
 export const PROVENANCE_KEY = 'impeccable:prompt';
 export const BODY_PLACEHOLDER = 'TODO(tooldex): write the body.';
 
-/** Paragraphs every write-up has, each opening with `**Label:**` (CLAUDE.md › Write-up style). */
-export const BODY_SECTIONS = ['When to use it', 'Caveats'];
-
-/** The BODY_SECTIONS labels whose paragraph is missing from a body. */
-export const missingSections = (body: string) =>
-  BODY_SECTIONS.filter((label) => !new RegExp(`^\\*\\*${label}:?\\*\\*`, 'mi').test(body));
+/** Paragraphs every write-up has, each opening with `**Label:**` (CLAUDE.md › Write-up style). The
+ *  rule lives with the tool page's splitter, so `check` passes exactly the bodies the page can split. */
+export { bodyProblems } from '../src/lib/body.ts';
 
 export type Repo = { owner: string; name: string };
 

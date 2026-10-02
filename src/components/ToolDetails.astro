@@ -1,0 +1,74 @@
+---
+// A tool's details: its links, section, the hosts it works with, its topic tags and when it was listed.
+import AccessLabel from './AccessLabel';
+import { facetLabel, splitTags } from '../lib/facets';
+import { accessLabel } from '../lib/format';
+import type { Category, Tool } from '../lib/data';
+interface Props { tool: Tool; category: Category; class?: string }
+const { tool, category, class: className } = Astro.props;
+const d = tool.data;
+// [label, url, accessible name]: the URL shows as broken-up host/path pieces, so the name is spelled out.
+const links: [string, string, string][] = [
+  ...(d.website ? [['Website', d.website, `Visit ${d.name} at ${accessLabel(d.website)}`] as [string, string, string]] : []),
+  ...(d.repo ? [['Repository', d.repo, `Visit ${d.name} at ${accessLabel(d.repo)}`] as [string, string, string]] : []),
+  ...d.links.map((l) => [l.label, l.url, `${l.label} at ${accessLabel(l.url)}`] as [string, string, string]),
+];
+const { hosts, topics } = splitTags(d.tags);
+// Past FOLD hosts the list shows the first SHOWN and folds the rest, as the home facets do.
+const FOLD = 8;
+const SHOWN = 6;
+const [hostsShown, hostsFolded] = hosts.length > FOLD ? [hosts.slice(0, SHOWN), hosts.slice(SHOWN)] : [hosts, []];
+const dates = [['Listed', d.added], ...(d.updated ? [['Updated', d.updated]] : [])] as [string, Date][];
+const long = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const dt = 'text-meta';
+// Touch screens: links grow to a 44px target; chips and the fold's summary to 44px tall.
+const link = 'pointer-coarse:inline-block pointer-coarse:py-3.25';
+const chips = 'flex flex-wrap gap-1.5 pointer-coarse:gap-2';
+const chip = 'inline-flex items-center rounded-key bg-fill px-1.75 py-0.5 text-ink-3 no-underline hover:bg-line hover:text-ink pointer-coarse:min-h-11';
+---
+<dl class:list={['grid grid-cols-[--spacing(24)_minmax(0,1fr)] gap-3 text-caption', className]}>
+  {links.map(([label, url, name]) => (
+    <>
+      <dt class={dt}>{label}</dt>
+      <dd class="min-w-0 font-mono text-data"><a href={url} rel="noopener" aria-label={name} class={link}><AccessLabel url={url} /></a></dd>
+    </>
+  ))}
+  <dt class={dt}>Section</dt>
+  <dd><a href={`/categories/${category.id}`} class={link}>{category.data.name}</a></dd>
+  {hosts.length > 0 && (
+    <>
+      <dt class={dt}>Works with</dt>
+      <dd class="min-w-0">
+        <div class={chips}>
+          {hostsShown.map((h) => <a href={`/?host=${h}`} class={chip}>{facetLabel(h)}</a>)}
+        </div>
+        {hostsFolded.length > 0 && (
+          <details class="group">
+            <summary class="mt-1.5 inline-flex cursor-pointer list-none items-center gap-1.5 rounded-key font-medium text-accent hover:text-accent-deep pointer-coarse:min-h-11 [&::-webkit-details-marker]:hidden">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform duration-150 group-open:rotate-90"><path d="m9 6 6 6-6 6" /></svg>
+              <span class="group-open:hidden">{hostsFolded.length} more</span>
+              <span class="hidden group-open:inline">Fewer</span>
+            </summary>
+            <div class:list={[chips, 'mt-1.5']}>
+              {hostsFolded.map((h) => <a href={`/?host=${h}`} class={chip}>{facetLabel(h)}</a>)}
+            </div>
+          </details>
+        )}
+      </dd>
+    </>
+  )}
+  {topics.length > 0 && (
+    <>
+      <dt class={dt}>Tags</dt>
+      <dd class:list={[chips, 'font-mono text-micro']}>
+        {topics.map((t) => <a href={`/?q=${encodeURIComponent(t)}`} class={chip}>{t}</a>)}
+      </dd>
+    </>
+  )}
+  {dates.map(([label, date]) => (
+    <>
+      <dt class={dt}>{label}</dt>
+      <dd class="text-ink-3"><time datetime={date.toISOString().slice(0, 10)}>{long(date)}</time></dd>
+    </>
+  ))}
+</dl>

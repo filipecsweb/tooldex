@@ -61,6 +61,14 @@
   --text-wordmark--font-weight: 700;
   --text-lead: 1.0625rem;
   --text-lead--line-height: 1.55;
+  --text-tagline: 1.25rem; /* a tool page's tagline under its h1 */
+  --text-tagline--line-height: 1.45;
+  --text-heading: 1.25rem; /* section heads below the write-up */
+  --text-heading--line-height: 1.3;
+  --text-heading--letter-spacing: -0.02em;
+  --text-heading--font-weight: 600;
+  --text-prose: 1.0625rem; /* the write-up */
+  --text-prose--line-height: 1.7;
   --text-title: 1rem;
   --text-title--line-height: 1.5;
   --text-title--letter-spacing: -0.01em;
@@ -90,6 +98,11 @@
   --radius-key: 5px; /* keys, tags */
 
   --container-sheet: 1280px;
+  --container-prose: 68ch;
+  --container-copy: 60ch; /* taglines and short copy */
+
+  --aspect-thumb: 1600 / 840; /* every thumbnail and screenshot (scripts/lib.ts THUMB) */
+  --shadow-halo: 0 0 0 3px var(--color-halo); /* the focus halo around a search field; the only shadow */
 }
 
 @layer base {
@@ -139,6 +152,52 @@
   kbd, code {
     font-family: var(--font-mono);
   }
+}
+
+/* The write-up as src/lib/body.ts splits it: "What it is", then the "When to use it" and "Caveats"
+   cards. The Markdown output carries only these hooks; every style for it lives here. */
+@layer components {
+  .writeup {
+    @apply mt-8 border-t border-line pt-6 md:mt-10 md:pt-7;
+  }
+  .writeup > h2 {
+    @apply text-label uppercase text-meta;
+  }
+  .prose {
+    @apply mt-3.5 max-w-prose text-prose text-ink-2;
+  }
+  .writeup-cards {
+    @apply mt-8 grid gap-4 md:auto-cols-fr md:grid-flow-col;
+  }
+  .writeup-card {
+    @apply rounded-sheet border border-line bg-surface px-5.5 py-5;
+  }
+  .writeup-card > h2 {
+    @apply flex items-center gap-2 text-ui font-semibold text-ink;
+  }
+  .writeup-card svg {
+    @apply size-4.5 flex-none text-accent;
+  }
+  .writeup-card.caveats svg {
+    @apply text-caveat;
+  }
+  .card-text {
+    @apply mt-2.5 text-body leading-relaxed text-ink-3;
+  }
+  :is(.prose, .card-text) > * + * {
+    @apply mt-4.5;
+  }
+  :is(.prose, .card-text) code {
+    @apply rounded-key bg-fill px-1;
+  }
+}
+
+/* The "/" key hints show only while the shortcut is on, which Base decides before first paint
+   (data-slash on <html>), and never on touch screens. Without JavaScript they stay hidden. */
+.slash-key { display: none; }
+:root[data-slash] .slash-key { display: inline-block; }
+@media (pointer: coarse) {
+  :root[data-slash] .slash-key { display: none; }
 }
 
 /* A filtered URL (?q=, ?section=, ?host=, ?kind=) is rendered unfiltered on the server; hold the list

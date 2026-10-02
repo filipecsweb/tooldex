@@ -2,14 +2,14 @@
 import { Image, getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import ArrowOut from '../../components/ArrowOut';
-import AccessDetails from '../../components/AccessDetails.astro';
-import Ink from '../../components/Ink';
-import Plate from '../../components/Plate';
-import { getCategories, getTools, primaryUrl, relatedTools, type Tool } from '../../lib/data';
+import ToolActions from '../../components/ToolActions.astro';
+import ToolDetails from '../../components/ToolDetails.astro';
+import { getCategories, getTools, relatedTools, type Tool } from '../../lib/data';
 import { toIndex } from '../../lib/tool-index';
-import { captionFor, ctaLabel } from '../../lib/format';
+import { captionFor } from '../../lib/format';
+import { facetLabel, splitTags } from '../../lib/facets';
 import { breadcrumbLd, toolLd } from '../../lib/jsonld';
+import { SITE } from '../../site';
 
 export async function getStaticPaths() {
   const tools = await getTools();
@@ -20,15 +20,17 @@ const { tool, all } = Astro.props as { tool: Tool; all: Tool[] };
 const d = tool.data;
 const categories = await getCategories(all);
 const category = categories.find((c) => c.id === d.category.id)!;
-const [entry] = await toIndex([tool], categories);
 const related = await toIndex(relatedTools(tool, all), categories);
+const { kinds } = splitTags(d.tags);
 const provenance = import.meta.glob<{ prompt: string }>('/src/content/tools/*/thumb.webp.json', { eager: true, import: 'default' });
 const caption = captionFor(provenance[`/src/content/tools/${tool.id}/thumb.webp.json`]?.prompt);
+// The write-up arrives split by src/lib/body.ts: "What it is", then the When to use it / Caveats cards.
 const { Content } = await render(tool);
 const og = d.thumbnail ? (await getImage({ src: d.thumbnail, width: 1200, height: 630, fit: 'cover', format: 'png' })).src : undefined;
 const site = Astro.site!;
 const pictureAlt = `${d.name}, as shown on its ${d.website ? 'website' : 'repository'}`;
-
+const crumb = 'text-ink-3 no-underline hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3.25';
+const box = 'rounded-sheet border border-line bg-surface p-5';
 ---
 <Base
   title={`${d.name}: ${category.data.name} tool for AI agents`}
@@ -40,85 +42,98 @@ const pictureAlt = `${d.name}, as shown on its ${d.website ? 'website' : 'reposi
     breadcrumbLd(site, [['Catalog', '/'], ['Sections', '/categories'], [category.data.name, `/categories/${category.id}`], [d.name, `/tools/${tool.id}`]]),
   ]}
 >
-  <nav aria-label="Breadcrumb" class="pt-4 text-label">
-    <ol class="flex flex-wrap gap-x-2 text-ink-3">
-      <li><a href="/" class="font-semibold text-ink no-underline hover:underline pointer-coarse:py-2">Catalog</a> /</li>
-      <li><a href="/categories" class="font-semibold text-ink no-underline hover:underline pointer-coarse:py-2">Sections</a> /</li>
-      <li><a href={`/categories/${category.id}`} class="font-semibold text-ink no-underline hover:underline pointer-coarse:py-2">{category.data.name}</a> /</li>
-      <li aria-current="page" class="text-ink-2">{d.name}</li>
+  <nav aria-label="Breadcrumb" class="pt-5 text-caption">
+    <ol class="flex flex-wrap gap-x-2 text-meta">
+      <li><a href="/" class={crumb}>Catalog</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href={`/categories/${category.id}`} class={crumb}>{category.data.name}</a></li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page" class="min-w-0 text-ink-4 [overflow-wrap:anywhere]">{d.name}</li>
     </ol>
   </nav>
 
-  <article class="grid grid-cols-[minmax(0,1fr)] gap-x-12 gap-y-8 pt-6 lg:grid-cols-12">
-    <header class="lg:col-span-8">
-      <div class="flex min-w-0 items-center gap-4">
-        {d.icon && d.thumbnail && <Image src={d.icon} width={64} height={64} alt="" loading="eager" class="size-14 border-2 border-ink bg-paper-2 object-cover" />}
-        <h1 class="min-w-0 text-headline">{d.name}</h1>
+  <!-- Desktop: two rows on the left (the header, then everything else) beside the sticky aside, which
+       spans both; the second row takes any height the aside has to spare, so it can only ever add
+       space at the very end. Phones: header, actions, write-up, picture, details, related; the
+       aside's two parts are repeated in that order and the aside hidden, so DOM order is reading
+       order on both. -->
+  <article class="grid items-start pb-4 pt-6 lg:grid-cols-[minmax(0,1fr)_--spacing(80)] lg:grid-rows-[auto_1fr] lg:gap-x-14">
+    <header class="min-w-0 lg:col-start-1">
+      <div class="flex min-w-0 flex-col items-start gap-3.5 sm:flex-row sm:items-center sm:gap-4.5">
+        {d.icon ? (
+          <Image src={d.icon} width={128} height={128} alt="" loading="eager" class="size-12 flex-none rounded-sheet border border-line bg-fill object-cover sm:size-16" />
+        ) : (
+          <span aria-hidden="true" class="grid size-12 flex-none place-items-center rounded-sheet border border-line bg-fill text-display text-ink-4 sm:size-16">{d.name[0]}</span>
+        )}
+        <h1 class="min-w-0 text-display [overflow-wrap:anywhere]">{d.name}</h1>
       </div>
-      <p class="mt-5 max-w-[40ch] font-serif text-lead text-ink-2">{d.tagline}</p>
+      <p class="mt-4.5 max-w-copy text-tagline text-ink-4">{d.tagline}</p>
+      <ul class="mt-4.5 flex flex-wrap gap-2 text-caption" aria-label="Section and kind">
+        <li><a href={`/categories/${category.id}`} class="inline-flex h-7 items-center rounded-row bg-accent-tint px-2.5 font-semibold text-accent-deep no-underline hover:bg-halo hover:text-accent-deep pointer-coarse:h-11">{category.data.name}</a></li>
+        {kinds.map((k) => <li class="inline-flex h-7 items-center rounded-row border border-line bg-surface px-2.5 font-medium text-ink-3">{facetLabel(k)}</li>)}
+      </ul>
     </header>
 
-    <aside class="lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:row-start-1">
-      <div class="border-[3px] border-ink p-5 lg:sticky lg:top-6">
-        <h2 class="text-label font-black uppercase tracking-[0.08em] text-spot">Access</h2>
-        <a
-          href={primaryUrl(tool)}
-          rel="noopener"
-          class="mt-3 flex items-center justify-between gap-3 bg-ink px-4 py-3 text-body-sm font-extrabold text-paper no-underline transition-colors duration-150 hover:bg-spot"
-        >
-          {ctaLabel(Boolean(d.website))}
-          <ArrowOut />
-        </a>
-        <AccessDetails tool={tool} category={category} class="mt-5 hidden lg:grid" />
+    <aside aria-label="Links and details" class="hidden lg:sticky lg:top-5 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:block">
+      <div class={box}>
+        <ToolActions tool={tool} />
+        <ToolDetails tool={tool} category={category} class="mt-5" />
       </div>
+      <p class="mx-1 mt-3 text-caption text-meta">{SITE.specifics}</p>
     </aside>
 
-    <div class="lg:col-span-8">
-      <div class="review">
-        <Content />
-      </div>
+    <ToolActions tool={tool} class="mt-6 lg:hidden" />
 
-      {d.thumbnail ? (
-        <figure class="mt-8">
-          <div class="plate" data-developed>
-            <Image
-              src={d.thumbnail}
-              widths={[640, 960, 1280, 1600]}
-              sizes="(min-width: 1100px) 840px, 100vw"
-              alt={pictureAlt}
-              class="absolute inset-0 size-full object-cover object-top mix-blend-multiply"
-            />
-          </div>
-          {caption && <figcaption class="mt-2 text-label text-ink-3">{caption}</figcaption>}
+    <div class="min-w-0 lg:col-start-1">
+      <Content />
+
+      {d.thumbnail && (
+        <figure class="mt-10">
+          <Image
+            src={d.thumbnail}
+            widths={[640, 960, 1280, 1600]}
+            sizes="(min-width: 1280px) 840px, (min-width: 1024px) calc(100vw - 440px), calc(100vw - 32px)"
+            alt={pictureAlt}
+            class="block aspect-thumb w-full rounded-sheet border border-line bg-fill object-cover object-top"
+          />
+          {caption && <figcaption class="mt-2.5 text-caption text-meta">{caption}</figcaption>}
         </figure>
-      ) : (
-        <div class="mt-8"><Plate tool={entry} developed quiet /></div>
       )}
 
-      <section aria-labelledby="details" class="rule-2 mt-10 pt-3 lg:hidden">
-        <h2 id="details" class="text-label font-extrabold">Details</h2>
-        <AccessDetails tool={tool} category={category} class="mt-3" />
+      <section aria-labelledby="details" class:list={[box, 'mt-10 lg:hidden']}>
+        <h2 id="details" class="text-label uppercase text-meta">Details</h2>
+        <ToolDetails tool={tool} category={category} class="mt-3.5" />
+        <p class="mt-5 border-t border-line-soft pt-3.5 text-caption text-meta">{SITE.specifics}</p>
       </section>
+
+      {related.length > 0 && (
+        <section aria-labelledby="related" class="mt-14">
+          <div class="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 id="related" class="text-heading">Related tools</h2>
+            {category.count > 1 && (
+              <a href={`/categories/${category.id}`} class="text-ui font-medium pointer-coarse:inline-block pointer-coarse:py-3">All {category.count} in {category.data.name}</a>
+            )}
+          </div>
+          <ul class="overflow-hidden rounded-sheet border border-line bg-surface">
+            {related.map((r) => (
+              <li class="grid grid-cols-[--spacing(9)_minmax(0,1fr)] gap-x-3.5 border-t border-line-soft px-4 py-4 transition-colors duration-150 first:border-t-0 hover:bg-fill-soft md:grid-cols-[--spacing(10)_minmax(0,1fr)] md:gap-x-4 md:px-5">
+                {r.icon ? (
+                  <img src={r.icon} alt="" width="40" height="40" loading="lazy" decoding="async" class="size-9 rounded-control border border-line bg-fill object-cover md:size-10" />
+                ) : (
+                  <span aria-hidden="true" class="grid size-9 place-items-center rounded-control border border-line bg-fill text-title text-ink-4 md:size-10">{r.name[0]}</span>
+                )}
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-baseline gap-x-2.5">
+                    <h3 class="text-title"><a href={`/tools/${r.slug}`} class="text-ink no-underline hover:text-ink hover:underline pointer-coarse:relative pointer-coarse:py-3">{r.name}</a></h3>
+                    {r.category !== category.id && <span class="text-caption text-meta">{r.categoryName}</span>}
+                  </div>
+                  <p class="mt-0.75 line-clamp-2 text-row text-ink-4">{r.tagline}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
-
   </article>
-
-  {related.length > 0 && (
-    <section aria-labelledby="see-also" class="rule-4 mt-16 pt-4">
-      <h2 id="see-also" class="text-title font-black">See also</h2>
-      <ul class="mt-5 grid gap-x-10 gap-y-5 md:grid-cols-2">
-        {related.map((r) => (
-          <li class="rule-2 pt-3">
-            <a href={`/tools/${r.slug}`} class="group flex gap-4 text-ink no-underline">
-              {r.icon && <Ink src={r.icon} ink={r.iconInk} width={48} height={48} className="size-12 shrink-0 border-2 border-ink bg-paper-2" />}
-              <span>
-                <span class="block text-[1.25rem] font-extrabold leading-tight group-hover:underline">{r.name}</span>
-                <span class="mt-1 block font-serif text-body-sm leading-snug text-ink-2">{r.tagline}</span>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
 </Base>

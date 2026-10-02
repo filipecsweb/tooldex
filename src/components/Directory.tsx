@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { facetCounts, facetOptions, filterTools, readQuery, writeQuery, type Filters } from '../lib/filter';
 import { HOSTS, KINDS, facetLabel, type Facet } from '../lib/facets';
 import { accessLabel } from '../lib/format';
+import { setSlash as storeSlash, slashOn } from '../lib/slash';
 import type { IndexTool } from '../lib/tool-index';
 import ArrowOut from './ArrowOut';
 
@@ -10,12 +11,7 @@ type Order = 'newest' | 'name';
 const PAGE = 48;
 const FOLD = 8; // past this many options a group shows its top SHOWN and folds the rest
 const SHOWN = 6;
-const SLASH_OFF = 'tooldex:slash-off'; // localStorage: the reader turned the "/" shortcut off
 const EMPTY: Filters = { q: '', section: '', hosts: [], kinds: [] };
-const NOT_TEXT = /^(checkbox|radio|button|submit|reset|range|color|file|image)$/;
-/** Where "/" is a character being typed: text-entry inputs, textarea, select, contenteditable. */
-const typing = (t: HTMLElement) =>
-  t instanceof HTMLInputElement ? !NOT_TEXT.test(t.type) : /^(textarea|select)$/i.test(t.tagName) || t.isContentEditable;
 
 /** The catalog's finding aid: search, sections, hosts and kinds, order, mirrored to the URL. */
 export default function Directory({ tools, sections }: { tools: IndexTool[]; sections: Section[] }) {
@@ -69,28 +65,15 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     ul.scrollLeft += b.getBoundingClientRect().left - ul.getBoundingClientRect().left - 16;
   }, [f.section, ready]);
 
-  // "/" jumps to the search field, as on most catalogs and code hosts. A one-character shortcut
-  // can be triggered by speech input or a stray key, so it can be turned off (WCAG 2.1.4).
+  // The "/" shortcut itself is site-wide (src/lib/slash.ts, wired in Base.astro); this field is the
+  // page's main search, and the switch below turns the shortcut off (WCAG 2.1.4).
   useEffect(() => {
-    try { setSlash(localStorage.getItem(SLASH_OFF) === null); } catch { /* storage blocked: keep it on */ }
+    setSlash(slashOn());
   }, []);
   const toggleSlash = () => {
-    try { slash ? localStorage.setItem(SLASH_OFF, '1') : localStorage.removeItem(SLASH_OFF); } catch { /* this visit only */ }
+    storeSlash(!slash);
     setSlash(!slash);
   };
-  useEffect(() => {
-    if (!slash) return;
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement;
-      if (e.ctrlKey || e.metaKey || e.altKey) return; // leave browser and OS shortcuts alone
-      if (e.key === '/' && !typing(t)) {
-        e.preventDefault();
-        input.current?.focus();
-      }
-    };
-    addEventListener('keydown', onKey);
-    return () => removeEventListener('keydown', onKey);
-  }, [slash]);
 
   const counts = useMemo(() => facetCounts(tools, f), [tools, f]);
   const results = useMemo(() => {
@@ -113,7 +96,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
   return (
     <div>
       <div className="max-w-[760px]">
-        <div className="flex h-14 items-center gap-3 rounded-sheet border border-line-strong bg-surface px-4 transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:shadow-[0_0_0_3px_var(--color-halo)]">
+        <div className="flex h-14 items-center gap-3 rounded-sheet border border-line-strong bg-surface px-4 transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:shadow-halo">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" className="flex-none text-meta">
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" />
@@ -131,15 +114,13 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
               const first = document.querySelector<HTMLElement>('#results a[data-row]');
               if (first) { e.preventDefault(); first.focus(); }
             }}
-            aria-keyshortcuts={slash ? '/' : undefined}
+            data-main-search
             placeholder="Search by tool, job or harness: diagrams, security, codex…"
             autoComplete="off"
             spellCheck={false}
             className="h-full min-w-0 flex-1 text-ellipsis border-0 bg-transparent text-lead text-ink outline-none [&::-webkit-search-cancel-button]:cursor-pointer"
           />
-          {slash && (
-            <kbd aria-hidden="true" className="flex-none rounded-key border border-line-strong bg-ground px-2 py-0.5 text-micro text-ink-4 pointer-coarse:hidden">/</kbd>
-          )}
+          <kbd aria-hidden="true" className="slash-key flex-none rounded-key border border-line-strong bg-ground px-2 py-0.5 text-micro text-ink-4">/</kbd>
         </div>
         <p className="mt-1.5 flex justify-end">
           <button type="button" onClick={toggleSlash} className="rounded-key text-micro text-meta underline decoration-line-strong underline-offset-2 hover:text-ink hover:decoration-current pointer-coarse:py-3.5">
@@ -232,7 +213,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
               <p className="text-title text-ink">
                 No tools match{query ? ` “${query}”` : ''}{sectionName ? ` in ${sectionName}` : ''}{facetsOn ? ` with ${facetsOn === 1 ? 'this filter' : 'these filters'}` : ''}.
               </p>
-              <p className="mt-1.5 max-w-[60ch] text-row text-ink-4">
+              <p className="mt-1.5 max-w-copy text-row text-ink-4">
                 Try a broader word or a harness name like “codex”, or clear the search and filters to see the whole catalog.
               </p>
               <button type="button" onClick={clear} className="mt-5 rounded-control bg-accent px-4 py-2.5 pointer-coarse:min-h-11 text-ui font-medium text-surface transition-colors duration-150 hover:bg-accent-deep">
