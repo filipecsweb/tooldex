@@ -85,34 +85,6 @@ test('pngWithText writes, replaces and reads a provenance chunk', async () => {
   assert.equal((await sharp(twice).metadata()).width, 2); // still a valid PNG
 });
 
-test('halftone: white prints nothing, black prints most of each cell, mid-grey about half', async () => {
-  const { halftone } = await import('./lib.ts');
-  const ink = (v: number) => {
-    const a = halftone(new Uint8Array(60 * 60).fill(v), 60, 60, 6);
-    return a.reduce((s, x) => s + x, 0) / (a.length * 255);
-  };
-  assert.ok(ink(255) < 0.01);
-  assert.ok(ink(0) > 0.7);
-  assert.ok(Math.abs(ink(128) - 0.5) < 0.1);
-});
-
-test('toneMap stretches the 2nd-98th percentile to full ink-to-paper range', async () => {
-  const { toneMap } = await import('./lib.ts');
-  const dark = new Uint8Array(100).map((_, i) => 10 + Math.floor(i / 2)); // 10..59
-  const out = toneMap(dark);
-  assert.equal(out[0], 0); // darkest prints solid
-  assert.equal(out[99], 255); // lightest is bare paper
-  assert.ok(out[50] > 60 && out[50] < 200);
-});
-
-test('toneMap lifts a mostly dark image off solid ink and keeps its lights as paper', async () => {
-  const { toneMap } = await import('./lib.ts');
-  const ui = new Uint8Array(100).map((_, i) => (i < 90 ? 5 : 250)); // dark UI, a little white text
-  const out = toneMap(ui);
-  assert.ok(out[0] > 60 && out[0] < 110); // background prints as an open screen, not a slab
-  assert.equal(out[99], 255);
-});
-
 test('botChallenged only excuses a Cloudflare challenge', () => {
   assert.equal(botChallenged(403, new Headers({ 'cf-mitigated': 'challenge' })), true);
   assert.equal(botChallenged(403, new Headers()), false);

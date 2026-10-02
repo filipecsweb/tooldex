@@ -196,6 +196,8 @@
    (data-slash on <html>), and never on touch screens. Without JavaScript they stay hidden. */
 .slash-key { display: none; }
 :root[data-slash] .slash-key { display: inline-block; }
+/* A page with its own main search takes "/" there, so the header's hint would point at the wrong field. */
+:root:has([data-main-search]) header .slash-key { display: none; }
 @media (pointer: coarse) {
   :root[data-slash] .slash-key { display: none; }
 }

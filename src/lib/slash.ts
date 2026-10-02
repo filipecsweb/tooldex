@@ -1,5 +1,6 @@
 // The "/" shortcut to search. One rule for every page: "/" focuses the page's main search field
-// (marked data-main-search: the home directory's, the 404's) when it has one, else the header's.
+// (marked data-main-search: the directory's on home and section pages, the 404's) when it has one,
+// else the header's.
 // A one-character shortcut can be fired by speech input or a stray key, so the reader can turn it
 // off (WCAG 2.1.4); the choice is remembered in this browser under SLASH_OFF. Base.astro sets
 // data-slash on <html> before first paint while it is on; the key hints (.slash-key) follow it.

@@ -13,8 +13,12 @@ const FOLD = 8; // past this many options a group shows its top SHOWN and folds 
 const SHOWN = 6;
 const EMPTY: Filters = { q: '', section: '', hosts: [], kinds: [] };
 
-/** The catalog's finding aid: search, sections, hosts and kinds, order, mirrored to the URL. */
-export default function Directory({ tools, sections }: { tools: IndexTool[]; sections: Section[] }) {
+/**
+ * The catalog's finding aid: search, sections, hosts and kinds, order, mirrored to the URL.
+ * With `scope` (a section id) it is that section's page: `tools` holds only its tools, the sections
+ * become links to their pages, and rows drop the section name they would all share.
+ */
+export default function Directory({ tools, sections, scope }: { tools: IndexTool[]; sections: Section[]; scope?: string }) {
   const [f, setF] = useState<Filters>(EMPTY);
   const [order, setOrder] = useState<Order>('newest');
   const [limit, setLimit] = useState(PAGE);
@@ -36,7 +40,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
   // Read state from the URL once, after hydration (the server render has no URL query).
   useEffect(() => {
     const { order, ...filters } = readQuery(location.search, {
-      sections: sections.map((s) => s.id),
+      sections: scope ? [] : sections.map((s) => s.id),
       hosts: hostOptions.map((o) => o.tag),
       kinds: kindOptions.map((o) => o.tag),
     });
@@ -45,7 +49,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
     setReady(true);
   }, []);
 
-  // The list now shows the URL's filter; release the hold set by the inline script in index.astro.
+  // The list now shows the URL's filter; release the hold set by the inline script in Catalog.astro.
   useEffect(() => {
     if (ready) delete document.documentElement.dataset.filtering;
   }, [ready]);
@@ -60,8 +64,8 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
   // On phones the section run scrolls sideways; bring the chosen section into view (horizontally only).
   useEffect(() => {
     const ul = run.current;
-    const b = ul?.querySelector('[aria-pressed="true"]');
-    if (!ul || !b || !f.section || ul.scrollWidth <= ul.clientWidth) return;
+    const b = ul?.querySelector('[aria-pressed="true"], [aria-current="page"]');
+    if (!ul || !b || !(f.section || scope) || ul.scrollWidth <= ul.clientWidth) return;
     ul.scrollLeft += b.getBoundingClientRect().left - ul.getBoundingClientRect().left - 16;
   }, [f.section, ready]);
 
@@ -84,11 +88,14 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
   const query = f.q.trim();
   const facetsOn = f.hosts.length + f.kinds.length;
   const filtered = Boolean(query || f.section || facetsOn);
-  const sectionName = sections.find((s) => s.id === f.section)?.name;
+  const scopeName = scope && sections.find((s) => s.id === scope)?.name;
+  const sectionName = scopeName || sections.find((s) => s.id === f.section)?.name;
   const noun = (n: number) => (n === 1 ? 'tool' : 'tools');
+  const where = sectionName ? ` in ${sectionName}` : '';
   const summary = !filtered
-    ? `All ${tools.length} ${noun(tools.length)}`
-    : `${results.length} of ${tools.length} ${noun(tools.length)}${query ? ` for “${query}”` : ''}${sectionName ? ` in ${sectionName}` : ''}`;
+    ? `${tools.length === 1 ? '' : 'All '}${tools.length} ${noun(tools.length)}${where}`
+    : `${results.length} of ${tools.length} ${noun(tools.length)}${query ? ` for “${query}”` : ''}${where}`;
+  const catalogSize = sections.reduce((n, s) => n + s.count, 0);
   const clear = () => { update(EMPTY); input.current?.focus(); };
   const toggle = (group: 'hosts' | 'kinds', tag: string) =>
     update({ [group]: f[group].includes(tag) ? f[group].filter((x) => x !== tag) : [...f[group], tag] });
@@ -101,7 +108,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" />
           </svg>
-          <label htmlFor="find" className="sr-only">Search the catalog</label>
+          <label htmlFor="find" className="sr-only">{scopeName ? `Search ${scopeName}` : 'Search the catalog'}</label>
           <input
             ref={input}
             id="find"
@@ -115,7 +122,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
               if (first) { e.preventDefault(); first.focus(); }
             }}
             data-main-search
-            placeholder="Search by tool, job or harness: diagrams, security, codex…"
+            placeholder={scopeName ? `Search within ${scopeName}…` : 'Search by tool, job or harness: diagrams, security, codex…'}
             autoComplete="off"
             spellCheck={false}
             className="h-full min-w-0 flex-1 text-ellipsis border-0 bg-transparent text-lead text-ink outline-none [&::-webkit-search-cancel-button]:cursor-pointer"
@@ -134,6 +141,17 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
           <nav aria-labelledby="sections-h">
             <h2 id="sections-h" className={`${groupHead} max-lg:px-0`}>Sections</h2>
             <ul ref={run} className="flex gap-0.5 max-lg:-mx-4 max-lg:overflow-x-auto max-lg:px-4 max-lg:pb-1 max-lg:[scrollbar-width:none] lg:flex-col">
+              {scope ? (
+                // A section page: every section is a page of its own, counted across the whole catalog.
+                [{ id: '', name: 'All tools', count: catalogSize }, ...sections].map((s) => (
+                  <li key={s.id} className="flex-none">
+                    <a href={s.id ? `/categories/${s.id}` : '/'} aria-current={s.id === scope ? 'page' : undefined} className={`${sectionItem} no-underline`}>
+                      <span>{s.name}</span>
+                      <span className={count}>{s.count}</span>
+                    </a>
+                  </li>
+                ))
+              ) : (<>
               <li className="flex-none">
                 <button type="button" aria-pressed={!f.section} onClick={() => update({ section: '' })} className={sectionItem}>
                   <span>All tools</span>
@@ -154,6 +172,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
                   </button>
                 </li>
               ))}
+              </>)}
             </ul>
           </nav>
 
@@ -206,7 +225,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
 
           {results.length ? (
             <ul id="results" className="overflow-hidden rounded-sheet border border-line bg-surface">
-              {results.slice(0, limit).map((t, i) => <Row key={t.slug} tool={t} eager={i < 12} />)}
+              {results.slice(0, limit).map((t, i) => <Row key={t.slug} tool={t} eager={i < 12} section={!scope} />)}
             </ul>
           ) : (
             <div className="rounded-sheet border border-line bg-surface px-5 py-8 md:px-8">
@@ -214,7 +233,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
                 No tools match{query ? ` “${query}”` : ''}{sectionName ? ` in ${sectionName}` : ''}{facetsOn ? ` with ${facetsOn === 1 ? 'this filter' : 'these filters'}` : ''}.
               </p>
               <p className="mt-1.5 max-w-copy text-row text-ink-4">
-                Try a broader word or a harness name like “codex”, or clear the search and filters to see the whole catalog.
+                Try a broader word or a harness name like “codex”, or clear the search and filters to see the whole {scope ? 'section' : 'catalog'}.
               </p>
               <button type="button" onClick={clear} className="mt-5 rounded-control bg-accent px-4 py-2.5 pointer-coarse:min-h-11 text-ui font-medium text-surface transition-colors duration-150 hover:bg-accent-deep">
                 Clear search and filters
@@ -238,7 +257,7 @@ export default function Directory({ tools, sections }: { tools: IndexTool[]; sec
 const groupHead = 'mb-2 px-2.5 text-label uppercase text-meta';
 const count = 'font-mono text-micro text-meta';
 const sectionItem =
-  'flex w-full items-baseline justify-between gap-3 whitespace-nowrap rounded-row px-2.5 py-1.5 text-left text-ui text-ink-2 transition-colors duration-150 hover:bg-fill focus-visible:-outline-offset-2 aria-pressed:bg-accent-tint aria-pressed:font-semibold aria-pressed:text-accent-deep data-zero:text-meta pointer-coarse:min-h-11 pointer-coarse:items-center';
+  'flex w-full items-baseline justify-between gap-3 whitespace-nowrap rounded-row px-2.5 py-1.5 text-left text-ui text-ink-2 transition-colors duration-150 hover:bg-fill focus-visible:-outline-offset-2 aria-pressed:bg-accent-tint aria-pressed:font-semibold aria-pressed:text-accent-deep aria-[current=page]:bg-accent-tint aria-[current=page]:font-semibold aria-[current=page]:text-accent-deep data-zero:text-meta pointer-coarse:min-h-11 pointer-coarse:items-center';
 
 function FacetGroup({ legend, options, counts, selected, onToggle }: {
   legend: string; options: Facet[]; counts: Map<string, number>; selected: string[]; onToggle: (tag: string) => void;
@@ -284,7 +303,7 @@ function FacetGroup({ legend, options, counts, selected, onToggle }: {
 }
 
 /** One tool: icon, name and section, the tagline, and its source one click away. */
-function Row({ tool, eager }: { tool: IndexTool; eager: boolean }) {
+function Row({ tool, eager, section }: { tool: IndexTool; eager: boolean; section: boolean }) {
   const access = accessLabel(tool.url);
   return (
     <li className="grid grid-cols-[36px_minmax(0,1fr)] gap-x-3.5 gap-y-2 border-t border-line-soft px-4 py-4 transition-colors duration-150 first:border-t-0 hover:bg-fill-soft md:grid-cols-[40px_minmax(0,1fr)_minmax(0,220px)] md:gap-x-4 md:px-5">
@@ -298,7 +317,7 @@ function Row({ tool, eager }: { tool: IndexTool; eager: boolean }) {
           <h3 className="text-title">
             <a data-row href={`/tools/${tool.slug}`} className="text-ink no-underline hover:text-ink hover:underline pointer-coarse:relative pointer-coarse:py-3">{tool.name}</a>
           </h3>
-          <span className="text-caption text-meta">{tool.categoryName}</span>
+          {section && <span className="text-caption text-meta">{tool.categoryName}</span>}
         </div>
         <p className="mt-0.75 line-clamp-2 text-row text-ink-4">{tool.tagline}</p>
       </div>

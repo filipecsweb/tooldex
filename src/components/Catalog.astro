@@ -1,0 +1,15 @@
+---
+// The directory island as a page uses it: home, or one section with `scope`.
+import type { ComponentProps } from 'react';
+import Directory from './Directory';
+
+type Props = ComponentProps<typeof Directory>;
+---
+<script is:inline data-astro-rerun>
+  // Cleared by the directory once it has read the URL; the timeout is a safety net if it never hydrates.
+  if (location.search) {
+    document.documentElement.dataset.filtering = '';
+    setTimeout(() => delete document.documentElement.dataset.filtering, 3000);
+  }
+</script>
+<Directory client:load {...Astro.props} />

@@ -2,17 +2,22 @@
 import Base from '../layouts/Base.astro';
 ---
 <Base title="Not in the catalog" noindex>
-  <section class="max-w-copy pb-10 pt-12">
-    <h1 class="text-headline">Not in the catalog</h1>
-    <p class="mt-5 font-serif text-body leading-normal">
-      There is no page at this address. The tool may have been renamed or removed. Search for it below, or <a href="/categories" class="link">browse the sections</a>.
+  <section aria-labelledby="title" class="max-w-[760px] pb-10 pt-10 md:pt-12">
+    <h1 id="title" class="text-display">Not in the catalog</h1>
+    <p class="mt-3.5 max-w-[62ch] text-lead text-ink-4">
+      There is no page at this address. The tool may have been renamed or removed. Search for it below, or <a href="/categories">browse the sections</a>.
     </p>
-    <form action="/" method="get" role="search" class="mt-8">
-      <label for="q404" class="block text-label font-extrabold">Search the catalog</label>
-      <div class="mt-2 flex items-end gap-4">
-        <input id="q404" data-main-search name="q" type="search" autocomplete="off" spellcheck="false" class="min-w-0 flex-1 border-0 border-b-[3px] border-ink bg-transparent px-0 py-2 text-search font-semibold tracking-[-0.01em] outline-none focus-visible:border-spot" />
-        <button type="submit" class="border-2 border-ink bg-ink px-4 py-2 text-label font-bold text-paper transition-colors duration-150 hover:bg-spot">Search</button>
+    <form action="/" method="get" role="search" class="mt-7 flex flex-col gap-3 sm:flex-row">
+      <div class="flex h-14 min-w-0 items-center sm:flex-1 gap-3 rounded-sheet border border-line-strong bg-surface px-4 transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:shadow-halo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" class="flex-none text-meta">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <label for="q404" class="sr-only">Search the catalog</label>
+        <input id="q404" data-main-search name="q" type="search" autocomplete="off" spellcheck="false" class="h-full min-w-0 flex-1 border-0 bg-transparent text-lead text-ink outline-none" />
+        <kbd aria-hidden="true" class="slash-key flex-none rounded-key border border-line-strong bg-ground px-2 py-0.5 text-micro text-ink-4">/</kbd>
       </div>
+      <button type="submit" class="h-14 rounded-control bg-accent px-6 text-ui font-medium text-surface transition-colors duration-150 hover:bg-accent-deep">Search</button>
     </form>
   </section>
   <script is:inline data-astro-rerun>

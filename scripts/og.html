@@ -1,0 +1,64 @@
+<!doctype html>
+<!--
+  The default share image, public/og.png (pages without a thumbnail use it). Not shipped: rendered
+  once with the Playwright the repo already has, then its origin embedded so check and the
+  provenance scan pass. To remake it, from the repo root:
+
+    npx playwright screenshot --channel chrome --viewport-size 1200,630 "file://$PWD/scripts/og.html" public/og.png
+    .claude/skills/impeccable/scripts/impeccable embed-prompt public/og.png --prompt "<origin>"
+
+  Values are the site's tokens (src/styles/global.css), copied: this page is not built by Astro.
+  It also repeats site copy: remake the image when the tagline (SITE.tagline in src/site.ts), the
+  home search placeholder (src/components/Directory.tsx) or the kinds (src/content/facets.json) change.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face { font-family: Geist; src: url(../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "Geist Mono"; src: url(../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #fafaf9; color: #111113; font-family: Geist, sans-serif;
+    -webkit-font-smoothing: antialiased; padding: 64px 72px 0;
+    display: flex; flex-direction: column;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; font-size: 34px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+  .brand svg { width: 44px; height: 44px; }
+  h1 { margin-top: 64px; font-size: 80px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; max-width: 15ch; }
+  .find {
+    margin-top: auto; display: flex; align-items: center; gap: 18px; height: 88px; padding: 0 28px;
+    background: #fff; border: 1px solid #d6d6d2; border-bottom: 0; border-radius: 12px 12px 0 0;
+    font-size: 27px; color: #6a6a74;
+  }
+  .find svg { width: 30px; height: 30px; flex: none; }
+  .find span { flex: 1; }
+  kbd {
+    font-family: "Geist Mono", monospace; font-size: 20px; color: #5a5a63; line-height: 1;
+    padding: 7px 12px; border: 1px solid #d6d6d2; border-radius: 6px; background: #fafaf9;
+  }
+  .kinds { display: flex; gap: 10px; padding: 0 28px 26px; background: #fff; border: 1px solid #d6d6d2; border-top: 0; }
+  .kinds li {
+    list-style: none; font-family: "Geist Mono", monospace; font-size: 19px; color: #3a3a42;
+    padding: 7px 13px; border-radius: 7px; background: #f1f1ef;
+  }
+  .kinds li:first-child { background: #e9ebfd; color: #1c258f; }
+</style>
+</head>
+<body>
+  <div class="brand">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2b37d6"/><path d="M11 6h5v6h6v4.5h-6v7c0 1.4.7 2 2 2h4V30h-5.5C12.7 30 11 28.3 11 24.8V16.5H8V12h3z" fill="#fff"/></svg>
+    tooldex
+  </div>
+  <h1>Agent tooling, explained plainly.</h1>
+  <div class="find">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <span>Search by tool, job or harness</span>
+    <kbd>/</kbd>
+  </div>
+  <ul class="kinds">
+    <li>Skills</li><li>Plugins</li><li>Subagents</li><li>MCP servers</li><li>CLIs</li>
+  </ul>
+</body>
+</html>

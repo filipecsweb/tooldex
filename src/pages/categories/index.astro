@@ -5,29 +5,32 @@ import { breadcrumbLd } from '../../lib/jsonld';
 
 const tools = await getTools();
 const categories = await getCategories(tools);
-const names = (id: string) => tools.filter((t) => t.data.category.id === id).slice(0, 4).map((t) => t.data.name);
+const SAMPLE = 4;
+const sample = (id: string) => tools.filter((t) => t.data.category.id === id).slice(0, SAMPLE);
 ---
 <Base
   title="Sections"
   description="Every section of the tooldex catalog: agent tooling grouped by the job it does."
   jsonLd={[breadcrumbLd(Astro.site!, [['Catalog', '/'], ['Sections', '/categories']])]}
 >
-  <header class="pb-8 pt-8">
-    <h1 class="text-headline">Sections</h1>
-    <p class="mt-4 max-w-[52ch] font-serif text-body leading-normal">The catalog grouped by the job a tool does, not by which harness it runs in.</p>
-  </header>
-  <ol class="rule-4">
+  <section aria-labelledby="title" class="pb-6 pt-10 md:pb-8 md:pt-12">
+    <h1 id="title" class="text-display">Sections</h1>
+    <p class="mt-3.5 max-w-[62ch] text-lead text-ink-4">The catalog grouped by the job a tool does, not by which harness it runs in.</p>
+  </section>
+  <ul class="max-w-[960px] overflow-hidden rounded-sheet border border-line bg-surface">
     {categories.map((c) => (
-      <li class="border-b-2 border-ink">
-        <a href={`/categories/${c.id}`} class="group grid gap-x-10 gap-y-2 py-6 text-ink no-underline md:grid-cols-12">
-          <h2 class="text-[clamp(1.75rem,3.5vw,2.5rem)] font-black leading-none tracking-[-0.035em] group-hover:underline md:col-span-4">{c.data.name}</h2>
-          <p class="font-serif text-body-sm text-ink-2 md:col-span-6">
-            {c.data.description}
-            <span class="mt-2 block font-sans text-label font-semibold text-ink">{names(c.id).join(', ')}{c.count > 4 ? ', …' : ''}</span>
-          </p>
-          <p class="text-label font-semibold text-ink-2 md:col-span-2 md:text-right">{c.count} {c.count === 1 ? 'entry' : 'entries'}</p>
-        </a>
+      <li class="grid gap-x-8 gap-y-1.5 border-t border-line-soft px-4 py-5 first:border-t-0 md:grid-cols-[minmax(0,1fr)_auto] md:px-6">
+        <h2 class="text-heading">
+          <a href={`/categories/${c.id}`} class="text-ink no-underline hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-2.5">{c.data.name}</a>
+        </h2>
+        <p class="font-mono text-data text-meta md:col-start-2 md:row-start-1 md:self-center md:text-right">{c.count} {c.count === 1 ? 'tool' : 'tools'}</p>
+        <p class="max-w-copy text-row text-ink-4">{c.data.description}</p>
+        <p class="text-caption text-meta md:col-start-1">
+          {sample(c.id).map((t, i) => (
+            <>{i > 0 && ', '}<a href={`/tools/${t.id}`} class="text-ink-3 no-underline hover:text-ink hover:underline">{t.data.name}</a></>
+          ))}{c.count > SAMPLE && <>, and <a href={`/categories/${c.id}`} class="text-ink-3 no-underline hover:text-ink hover:underline">{c.count - SAMPLE} more</a></>}
+        </p>
       </li>
     ))}
-  </ol>
+  </ul>
 </Base>
