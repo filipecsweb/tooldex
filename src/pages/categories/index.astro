@@ -6,6 +6,8 @@ import { breadcrumbLd } from '../../lib/jsonld';
 const tools = await getTools();
 const categories = await getCategories(tools);
 const SAMPLE = 4;
+// Touch screens: the sample names grow to a 44px target, as the breadcrumbs do.
+const sampleLink = 'text-ink-3 no-underline hover:text-ink hover:underline pointer-coarse:inline-block pointer-coarse:py-3.25';
 const sample = (id: string) => tools.filter((t) => t.data.category.id === id).slice(0, SAMPLE);
 ---
 <Base
@@ -27,8 +29,8 @@ const sample = (id: string) => tools.filter((t) => t.data.category.id === id).sl
         <p class="max-w-copy text-row text-ink-4">{c.data.description}</p>
         <p class="text-caption text-meta md:col-start-1">
           {sample(c.id).map((t, i) => (
-            <>{i > 0 && ', '}<a href={`/tools/${t.id}`} class="text-ink-3 no-underline hover:text-ink hover:underline">{t.data.name}</a></>
-          ))}{c.count > SAMPLE && <>, and <a href={`/categories/${c.id}`} class="text-ink-3 no-underline hover:text-ink hover:underline">{c.count - SAMPLE} more</a></>}
+            <>{i > 0 && ', '}<a href={`/tools/${t.id}`} class={sampleLink}>{t.data.name}</a></>
+          ))}{c.count > SAMPLE && <>, and <a href={`/categories/${c.id}`} class={sampleLink}>{c.count - SAMPLE} more</a></>}
         </p>
       </li>
     ))}

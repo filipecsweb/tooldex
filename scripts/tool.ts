@@ -231,9 +231,9 @@ async function thumbs(slug: string, force: boolean) {
       writeThumb(thumbPath, hit.buf, provenance(hit.from, hit.src));
       console.log(`    thumb: ${hit.from}`);
     } else if (existsSync(thumbPath)) {
-      console.log('    thumb: no new source found, kept the existing file (delete it by hand to use the fallback card)');
+      console.log('    thumb: no new source found, kept the existing file (to show no screenshot, delete it, its sidecar and the thumbnail: line)');
     } else {
-      console.log('    thumb: none usable, the fallback card will render');
+      console.log('    thumb: none usable, the tool page will show no screenshot');
     }
   }
 
@@ -386,7 +386,7 @@ async function check(offline: boolean) {
     if (files.includes('thumb.webp.json') && !files.includes('thumb.webp')) errors.push(`${where}/thumb.webp.json: orphaned sidecar`);
     if (files.includes('icon.png') && !pngText(readFileSync(join(TOOLS, slug, 'icon.png')), PROVENANCE_KEY)) errors.push(`${where}: icon.png has no provenance (run npm run tool -- thumbs ${slug})`);
     if (!files.includes('icon.png')) errors.push(`${where}: no icon (run npm run tool -- thumbs ${slug})`);
-    if (!files.includes('thumb.webp')) notes.push(`${where}: no thumbnail, uses the fallback card`);
+    if (!files.includes('thumb.webp')) notes.push(`${where}: no thumbnail, the tool page shows no screenshot`);
     for (const u of [d.repo, d.website, ...(d.links ?? []).map((l: any) => l.url)]) if (u) urls.set(u, slug);
   }
 

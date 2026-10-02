@@ -24,7 +24,7 @@ const dt = 'text-meta';
 // Touch screens: links grow to a 44px target; chips and the fold's summary to 44px tall.
 const link = 'pointer-coarse:inline-block pointer-coarse:py-3.25';
 const chips = 'flex flex-wrap gap-1.5 pointer-coarse:gap-2';
-const chip = 'inline-flex items-center rounded-key bg-fill px-1.75 py-0.5 text-ink-3 no-underline hover:bg-line hover:text-ink pointer-coarse:min-h-11';
+const chip = 'inline-flex max-w-full items-center [overflow-wrap:anywhere] rounded-key bg-fill px-1.75 py-0.5 text-ink-3 no-underline hover:bg-line hover:text-ink pointer-coarse:min-h-11';
 ---
 <dl class:list={['grid grid-cols-[--spacing(24)_minmax(0,1fr)] gap-3 text-caption', className]}>
   {links.map(([label, url, name]) => (
@@ -34,7 +34,7 @@ const chip = 'inline-flex items-center rounded-key bg-fill px-1.75 py-0.5 text-i
     </>
   ))}
   <dt class={dt}>Section</dt>
-  <dd><a href={`/categories/${category.id}`} class={link}>{category.data.name}</a></dd>
+  <dd class="min-w-0"><a href={`/categories/${category.id}`} class={link}>{category.data.name}</a></dd>
   {hosts.length > 0 && (
     <>
       <dt class={dt}>Works with</dt>
@@ -68,7 +68,7 @@ const chip = 'inline-flex items-center rounded-key bg-fill px-1.75 py-0.5 text-i
   {dates.map(([label, date]) => (
     <>
       <dt class={dt}>{label}</dt>
-      <dd class="text-ink-3"><time datetime={date.toISOString().slice(0, 10)}>{long(date)}</time></dd>
+      <dd class="min-w-0 text-ink-3"><time datetime={date.toISOString().slice(0, 10)}>{long(date)}</time></dd>
     </>
   ))}
 </dl>

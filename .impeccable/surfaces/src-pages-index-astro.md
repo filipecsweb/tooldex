@@ -11,7 +11,7 @@ Scope: the whole public site. Home directory is Operate (find a tool for a job);
 
 Audience and job: agent power users, often mid-task in a terminal, deciding in under a minute whether a tool is worth installing, or scanning what exists for a job. Action: open an entry or leave straight for the tool's site/repo from its row. Proof/content: the real catalog with each tool's icon and colour screenshot, tooldex's own write-ups, the kinds/hosts facet vocabulary. Constraints: light theme only, no rotting facts, no invented claims, scales from one tool per section to thousands.
 
-Replaces the newsprint "Access to Tools" world entirely: the old DESIGN.md is the anti-reference until phase 5 rewrites it.
+Replaced the newsprint "Access to Tools" world entirely; DESIGN.md and `.impeccable/design.json` now record the built Index system.
 
 ## Direction contract
 
@@ -26,3 +26,5 @@ FIRST VIEWPORT: white 64px header (wordmark left, Catalog/Sections right); a 44p
 FORM: Index (direction A), pinned by the owner on the design canvas; it overrides the roll. Seed key 834ea4fc (concept-seed run only for the key; its assignment is overridden by the owner's pin). Signature interaction: live faceted narrowing, every facet count answering "what would I get" as you type and tick, mirrored to a shareable URL.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+
+FINISH discharged (2026-10-02): the finish review ran on fresh desktop and touch-phone captures of every template (recapture, then fix with six material fixes, then a verdict pass scoring all six resolved: ship); DESIGN.md and `.impeccable/design.json` written from the build by the documenter; provenance scan over `src/content/tools` and `public` reports 0 missing.

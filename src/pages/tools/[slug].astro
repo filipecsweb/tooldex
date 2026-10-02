@@ -43,7 +43,7 @@ const box = 'rounded-sheet border border-line bg-surface p-5';
   ]}
 >
   <nav aria-label="Breadcrumb" class="pt-5 text-caption">
-    <ol class="flex flex-wrap gap-x-2 text-meta">
+    <ol class="flex flex-wrap items-baseline gap-x-2 text-meta">
       <li><a href="/" class={crumb}>Catalog</a></li>
       <li aria-hidden="true">/</li>
       <li><a href={`/categories/${category.id}`} class={crumb}>{category.data.name}</a></li>
@@ -65,11 +65,11 @@ const box = 'rounded-sheet border border-line bg-surface p-5';
         ) : (
           <span aria-hidden="true" class="grid size-12 flex-none place-items-center rounded-sheet border border-line bg-fill text-display text-ink-4 sm:size-16">{d.name[0]}</span>
         )}
-        <h1 class="min-w-0 text-display [overflow-wrap:anywhere]">{d.name}</h1>
+        <h1 class="min-w-0 text-display">{d.name}</h1>
       </div>
       <p class="mt-4.5 max-w-copy text-tagline text-ink-4">{d.tagline}</p>
       <ul class="mt-4.5 flex flex-wrap gap-2 text-caption" aria-label="Section and kind">
-        <li><a href={`/categories/${category.id}`} class="inline-flex h-7 items-center rounded-row bg-accent-tint px-2.5 font-semibold text-accent-deep no-underline hover:bg-halo hover:text-accent-deep pointer-coarse:h-11">{category.data.name}</a></li>
+        <li><a href={`/categories/${category.id}`} class="inline-flex h-7 items-center rounded-row bg-accent-tint px-2.5 font-semibold text-accent-deep no-underline hover:bg-halo hover:text-accent-deep pointer-coarse:relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-2.5 pointer-coarse:before:content-['']">{category.data.name}</a></li>
         {kinds.map((k) => <li class="inline-flex h-7 items-center rounded-row border border-line bg-surface px-2.5 font-medium text-ink-3">{facetLabel(k)}</li>)}
       </ul>
     </header>
@@ -127,7 +127,7 @@ const box = 'rounded-sheet border border-line bg-surface p-5';
                     <h3 class="text-title"><a href={`/tools/${r.slug}`} class="text-ink no-underline hover:text-ink hover:underline pointer-coarse:relative pointer-coarse:py-3">{r.name}</a></h3>
                     {r.category !== category.id && <span class="text-caption text-meta">{r.categoryName}</span>}
                   </div>
-                  <p class="mt-0.75 line-clamp-2 text-row text-ink-4">{r.tagline}</p>
+                  <p class="mt-0.75 line-clamp-2 max-w-copy text-row text-ink-4">{r.tagline}</p>
                 </div>
               </li>
             ))}

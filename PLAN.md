@@ -15,18 +15,17 @@ Status: approved 2026-09-26 with the answers in §13. All six steps of §11 are 
 | Framework | Astro 7, `output: 'static'` (default) | Every route prerendered. |
 | Adapter | `@astrojs/cloudflare` v14, `imageService: 'compile'`, `session: false` | A fully static build deploys as an assets-only Worker (no Worker code); sharp runs at build time. Sessions are off so deploy doesn't provision an unused KV namespace. |
 | UI island | `@astrojs/react`, one island | Decided. |
-| Styling | Tailwind v4 via `@tailwindcss/vite`, tokens in CSS `@theme` | Same classes work in `.astro` and the React card. **Light theme only**: no dark mode, no toggle. |
-| Design | [impeccable](https://github.com/pbakaus/impeccable) v4.3.1, project-local in `.claude/`, committed | Owner chose the **Access to Tools** direction (Whole Earth Catalog: grey newsprint, heavy rules, halftone plates, Access boxes). `PRODUCT.md`, `DESIGN.md` and `.impeccable/surfaces/` record the decisions. |
-| Fonts | Libre Franklin (display/UI), Literata (review prose), Courier Prime (access data only), self-hosted via `@fontsource*` | No third-party font request. |
+| Styling | Tailwind v4 via `@tailwindcss/vite`, tokens in CSS `@theme` | Same classes work in `.astro` and the React island. **Light theme only**: no dark mode, no toggle. |
+| Design | [impeccable](https://github.com/pbakaus/impeccable), project-local in `.claude/`, committed | Owner pinned direction **A · Index**: a dense, filterable index you operate (white list sheet on a near-white ground, 1px lines, one indigo accent, icon rows, no thumbnails in lists). It replaced the site's first design. `PRODUCT.md`, `DESIGN.md` and `.impeccable/surfaces/` record the decisions. |
+| Fonts | Geist (everything), Geist Mono (access data only: URLs, kinds, counts, keys), self-hosted via `@fontsource-variable`, latin files preloaded, metric-matched local fallbacks | No third-party font request, no shift on the swap. |
 | SEO plumbing | `@astrojs/sitemap` | Meta and JSON-LD hand-written. |
 | URLs | `trailingSlash: 'never'` + `build.format: 'file'` | Emits `tools/gstack.html`; Cloudflare's default `auto-trailing-slash` serves `/tools/gstack`. Dev and prod agree. |
 | Redirects | `public/_redirects` | Native to Workers static assets. Written by the rename/delete commands. |
 | Tool scripts | `scripts/tool.ts`, run by plain `node` (Node 24 strips TS) | One file, subcommands `add`, `thumbs`, `mv`, `rm`, `check`. |
 | Screenshots | `playwright` (dev dep, Chromium only) + sharp | Local only, never in the Worker. |
-| Halftone plates | `scripts/plates.ts` (sharp + a small AM-screen routine) → `src/generated/plates/` (gitignored) | The design prints every image as a real halftone; derived files regenerate before dev/build and after tool commands. |
 | YAML | `yaml` (dev dep) | Scripts read and rewrite frontmatter. |
 | Wrangler | `wrangler@4` dev dep | No global install. |
-| Tests | `node --test` | Zero deps. Pure logic only: search matcher, category guess, homepage classifier. |
+| Tests | `node --test` | Zero deps. Pure logic only: search matcher, filters and facet counts, facet vocabulary, write-up split, category guess, homepage classifier. |
 
 Not added: Fuse/MiniSearch, Pagefind, MDX, CMS, D1, icon library, state library, analytics, CI, submissions.
 
@@ -52,9 +51,9 @@ Why a folder per tool: everything about a tool lives in one place. Delete is `rm
 ```ts
 schema: ({ image }) => z.object({
   name: z.string(),
-  tagline: z.string().max(160),              // card copy + meta description
+  tagline: z.string().max(160),              // row copy + meta description
   category: reference('categories'),         // typo fails the build
-  tags: z.array(z.string()).default([]),     // kind (skill, plugin, subagents, mcp, cli) + hosts (claude-code, codex…) + topics
+  tags: z.array(z.string()).default([]),     // kinds + hosts (vocabulary in src/content/facets.json) + topics
   repo: z.url().optional(),                  // source repository
   website: z.url().optional(),               // ONLY a real product/landing site
   links: z.array(z.object({ label: z.string(), url: z.url() })).default([]), // docs, articles, anything else
@@ -69,6 +68,7 @@ schema: ({ image }) => z.object({
 Rules:
 - **Primary CTA** goes to `website` if present, else `repo`.
 - `website` is a real product or landing site (archify's GitHub Pages, claude-ads.md). A repo "homepage" that is a blog post or docs page goes in `links`.
+- **Kinds and hosts** are tags, not fields. `src/content/facets.json` is the vocabulary: which tags are kinds (`skill`, `plugin`, `subagents`, `mcp`, `cli`, `library`, `app`), which are hosts (`claude-code`, `codex`, …), and their labels. Every other tag is a topic. Every tool needs at least one kind (`check` enforces it); the bars a kind or host tag must clear are in `CLAUDE.md`.
 - `pricing` from the draft plan is dropped: every tool in this niche is open source so far, so it would not discriminate. Re-add with a filter when paid tools arrive.
 
 ### Category schema (`categories`, `file('src/content/categories.json')`)
@@ -101,34 +101,36 @@ Categories derived from the seven seeds, grouped by what the tool does:
 Nothing per tool is hardcoded outside its folder. `src/lib/data.ts` is the only place pages read content from:
 
 - `getTools()` sorted (featured first, then newest).
-- `getCategories()` returns **only categories with at least one tool**, each with its count. Category pages, the categories hub, the home strip, the footer and the sitemap all use it, so an empty category renders nothing.
-- `relatedTools(tool)` ranks other tools by same category (+10) plus shared topic tags (+1 each), top 6 with score > 0. Kind and harness tags (`skill`, `mcp`, `claude-code`, `codex`…) don't count: nearly every tool has them, so they made unrelated tools "related". Fewer, or none, is fine.
+- `getCategories()` returns **only categories with at least one tool**, each with its count. Category pages, the categories hub, the directory's sidebar, the footer and the sitemap all use it, so an empty category renders nothing.
+- `relatedTools(tool)` ranks other tools by same category (+10) plus shared topic tags (+1 each), top 6 with score > 0. Kind and host tags (the vocabulary in `facets.json`) don't count: nearly every tool has them, so they made unrelated tools "related". Fewer, or none, is fine.
 - Site-wide counts come from these arrays.
 
 ## 4. Routes and layouts
 
 | Route | Content |
 |---|---|
-| `/` | Hero (what tooldex is, count, search box), category strip, the directory island with every tool SSR'd as static cards first. |
-| `/tools/[slug]` | Breadcrumb · icon · name · tagline · category · tags · primary CTA + repo/other links · thumbnail or fallback card · body · related tools · JSON-LD `SoftwareApplication` + `BreadcrumbList`. |
-| `/categories` | Categories with tools, with counts and descriptions. |
-| `/categories/[slug]` | Header (name, description, count) · grid of its tools · other categories · JSON-LD `ItemList`. Unpaginated. |
-| `/tools.json` | Prerendered index for the island (§5). |
-| `/404` | Search box + categories. |
+| `/` | Hero (the tagline as `h1`, one lead sentence, the search field), then the directory island: sections, "Works with" and "Kind" filters in a sidebar beside one list of icon rows, the first page of rows SSR'd before hydration. |
+| `/tools/[slug]` | Breadcrumb · icon · name · tagline · section and kind chips · "What it is" · "When to use it" and "Caveats" cards · the screenshot when there is one · related tools; a sticky aside with the primary button, the repository button when both exist, and the details (links, section, hosts, topic tags, dates) · JSON-LD `SoftwareApplication` + `BreadcrumbList`. |
+| `/categories` | Sections with tools: name, description, count and a few tool names. |
+| `/categories/[slug]` | Breadcrumb · name · description · the same directory island scoped to the section (sections become links) · JSON-LD `ItemList` + `BreadcrumbList`. Unpaginated. |
+| `/tools.json` | Prerendered index in the island's shape (§5). Nothing fetches it yet. |
+| `/404` | A search field pre-filled from the dead address, a link to the sections. |
 | `/sitemap-index.xml`, `/robots.txt` | Sitemap integration; robots in `public/`. |
 
-Components: `Base.astro` (head, canonical, OG/Twitter, JSON-LD, `<ClientRouter />`, header, footer), `ToolCard.tsx` (one card, rendered statically by Astro and by the island), `Thumb` (image or designed fallback card), `Directory.tsx` (island). `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
+Components: `Base.astro` (head, canonical, OG/Twitter, JSON-LD, `<ClientRouter />`, header with a compact search on every page but home, footer), `Directory.tsx` (the island; `Catalog.astro` mounts it on home and, scoped, on section pages), `ToolActions.astro` and `ToolDetails.astro` (the tool page's buttons and details). `src/lib/body.ts` splits the Markdown write-up at AST level into "What it is" and the two cards; `check` reads bodies with the same rule. `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
 
-The **fallback** for tools without a thumbnail is a composed plate in HTML/CSS (halftoned icon, the name set large, the repo path), used on cards. Entry pages skip the plate in that case because the header already shows icon and name. Social shares fall back to the site default `public/og.png`.
+Lists show icons, never thumbnails. A tool without a thumbnail simply has no screenshot on its page, and its social share falls back to the site default `public/og.png` (made from `scripts/og.html`).
 
 ## 5. Search and filter
 
 `Directory.tsx`, `client:load`.
 
-- **Data.** SSR'd with the full list as props while the list is small. The same shape is served at `/tools.json`; the island switches to fetching it once the inline payload grows past ~200 tools.
-- **State.** `q`, `section`, `order` (newest, the default featured-then-newest order, or A to Z), mirrored to the URL with `history.replaceState`. `/` focuses the search field.
+- **Data.** The island gets the full list inline as props, and the server renders the first page of rows. The same shape is served at `/tools.json`. Fetching it instead of inlining is the plan past ~200 tools (a scaling ceiling, §10), not built.
+- **State.** `q`, `section`, `host` and `kind` (comma lists), `order` (newest, the default featured-then-newest order, or A to Z), mirrored to the URL with `history.replaceState` and read once after hydration; unknown values are ignored. A filtered URL holds the list until the island has applied it, so the whole catalog never flashes.
 - **Matching** (`src/lib/match.ts`, tested): normalise (lowercase, strip diacritics); every token must appear in name, tagline, tags or category name; name-prefix hits rank first, then name-contains, then the rest.
-- Category chips with counts, result count, grid, empty state. "Show more" in pages of 48 once there are that many.
+- **Filters** (`src/lib/filter.ts`, tested): sections single-select; "Works with" and "Kind" multi-select, OR inside a group, AND between groups and with search and section. Each option's count is what it would give with everything else applied. Options come from the vocabulary, only those in use, ordered by catalog-wide count; past 8 a group folds behind "N more". On phones the sections scroll sideways and the facets sit behind a "Filters" disclosure.
+- **Keyboard.** `/` focuses the page's main search from anywhere (one site-wide handler, `src/lib/slash.ts`), with a control to turn it off, remembered in the browser (WCAG 2.1.4); only a device with any fine pointer (`any-pointer: fine`) has the shortcut and the control; a touch-only device has neither. Enter or ↓ in the field moves to the first result.
+- Result summary (live region) naming the ticked hosts and kinds, each with a remove control, so a shared link says what it filters; empty state with "Clear search and filters", "Show more" in pages of 48 once there are that many.
 
 ## 6. Per-tool workflow
 
@@ -162,9 +164,9 @@ Source order. The first that yields an image wins; a file already in the folder 
 |---|---|---|
 | a website | site `og:image`/`twitter:image` if ≥ 640 px wide with aspect 1.3–2.2, else a Playwright screenshot | site's `apple-touch-icon` / `<link rel=icon>` / `/favicon.ico` (PNGs inside ICOs are extracted), else the owner's avatar |
 | a repo only | the repo's **custom** social preview (`repository-images.githubusercontent.com`), else the first large README image (badges excluded, same size/aspect gate) | owner's GitHub avatar |
-| nothing usable | none: the designed fallback card renders | owner's avatar |
+| nothing usable | none: the tool page shows no screenshot | owner's avatar |
 
-GitHub's auto-generated repo card (`opengraph.githubassets.com`) is never used. Animated sources use their most detailed frame; near-uniform images (blank frames, flat-colour icons) are rejected. All images are normalised with sharp (thumb: centre crop to 1.91:1, ≤1600 px wide, webp q82; icon: 128×128 png) and the frontmatter `thumbnail:`/`icon:` lines are written to match. Each image records its provenance (source URL and date) for impeccable's scan. `--force` refetches but keeps the existing file if nothing new is found.
+GitHub's auto-generated repo card (`opengraph.githubassets.com`) is never used. Animated sources use their most detailed frame; near-uniform images (blank frames, flat-colour icons) are rejected. All images are normalised with sharp (thumb: centre crop to 1.91:1, ≤1600 px wide, webp q82; icon: 128×128 png) and the frontmatter `thumbnail:`/`icon:` lines are written to match. Each image records its provenance (source URL and date) for impeccable's scan. `--force` refetches but keeps the existing file if nothing new is found. Some thumbnails are screenshots captured by hand with Scrapling (a website's first screen, or a README section as rendered on GitHub), which the automatic sources can't reproduce: `--force` would replace them. A thumbnail must show something of the tool (the screenshot bar in `CLAUDE.md`).
 
 ### Edit
 
@@ -195,8 +197,9 @@ npm run tool check [--offline]
 
 `tool check` verifies, for every tool:
 - `index.md` exists in each folder, and no folder holds files other than `index.md`, `thumb.webp`, `icon.png` (orphans).
-- Referenced images exist and carry provenance; a missing thumbnail is reported as "uses fallback", not an error. A missing icon is an error.
-- Body is not the `TODO` placeholder.
+- Referenced images exist and carry provenance; a missing thumbnail is a note, not an error. A missing icon is an error.
+- Body is not the `TODO` placeholder, and has exactly one non-empty `**When to use it:**` and one `**Caveats:**` paragraph, each label opening its paragraph (the same reader the tool page splits with).
+- Every tag is lowercase kebab-case, and at least one is a kind from `facets.json`.
 - Every `_redirects` source is not a live page, and every target resolves to a live page or category.
 - Every category id referenced exists (also enforced by the schema).
 - Unless `--offline`: `repo`, `website` and `links` return < 400 (HEAD, falling back to GET; 8 in parallel; 10 s timeout). A 403 carrying Cloudflare's `cf-mitigated: challenge` is a note ("behind a bot challenge, not verified"), not an error: the site is up but refuses scripts.
@@ -252,7 +255,7 @@ Deploy: a push to `main` builds and deploys through Cloudflare Workers Builds (b
 ## 9. Starter-template hygiene
 
 Generic: `astro.config.mjs`, `wrangler.jsonc`, `Base.astro`, `global.css` + `@theme`, `src/site.ts`, `.claude/` (impeccable), README setup sections.
-Site-specific: `src/content*`, `src/pages/{tools,categories}`, `Directory.tsx`, `ToolCard.tsx`, `src/lib/*`, `scripts/tool.ts`, `PRODUCT.md`, `DESIGN.md`.
+Site-specific: `src/content*`, `src/pages/{tools,categories}`, `src/components/*`, `src/lib/*`, `scripts/tool.ts`, `PRODUCT.md`, `DESIGN.md`.
 
 Nothing is parameterised now; the split is a README section. Copy the repo and delete the second list when the second site arrives.
 
@@ -265,11 +268,10 @@ The ones that live in code carry a `ponytail:` comment there.
 | Island gets the list inline as props | ~200 tools | Fetch `/tools.json` on mount (endpoint already exists). |
 | In-memory token search | ~5k tools / ~1.2 MB JSON | Prebuilt MiniSearch index, or D1 + server rendering. |
 | Unpaginated category pages | ~80 tools per category | Paginate with `paginate()`. |
-| Home renders every card in the HTML (48 shown, "Show more") | ~200 tools | Same switch as the inline index: fetch `/tools.json`, SSR only the first page. |
+| Home renders the first 48 rows in the HTML and every tool in the island's props | ~200 tools | Same switch as the inline index: fetch `/tools.json` instead of inlining every tool. |
 | Images committed to git (~60 KB per tool) | a few thousand tools | Masters in R2, derived files at build. |
-| Workers assets: 20k files, 25 MiB each | ~2.5k tools (≈7 built files per tool: page, card thumb, icon, 4 hero widths, OG) | Move image variants to R2 / Cloudflare Images. |
+| Workers assets: 20k files, 25 MiB each | ~2.5k tools (≈7 built files per tool: page, icon, 4 screenshot widths, OG) | Move image variants to R2 / Cloudflare Images. |
 | `_redirects`: 2,000 static rules | 2,000 renames + deletes | Bulk Redirects in Cloudflare, or prune rules older than a year. |
-| Halftone generation (≈0.1 s per tool, skipped when up to date) | ~5k tools on a clean checkout | Cache plates in CI or move them to R2 with the images. |
 | Full rebuild on every change | ~2k tools (minutes of sharp) | Astro's image cache already persists in `node_modules/.astro`; then incremental builds. |
 | Link check serial-ish (8 parallel) | ~1k links per run | Raise concurrency, cache results for 24 h. |
 | GitHub API anonymous (60 req/h) | ~50 adds per hour | Set `GITHUB_TOKEN` (picked up automatically). |
@@ -302,8 +304,9 @@ Exactly seven, nothing else. The owner adds more with `tool add`.
 1. **Niche:** AI agent tooling. Categories grouped by what the tool does, derived from the seeds (§2).
 2. **Domain:** workers.dev at launch; moved to `tooldex.hellofilipe.dev` (2026-10-01) to tie it to the owner's site.
 3. **Seed:** the seven in §12 only.
-4. **Thumbnails:** mixed sources per §6; never GitHub's auto-generated card; designed fallback card last; manual file always wins. Icons: owner avatar for repo-only tools.
+4. **Thumbnails:** mixed sources per §6; never GitHub's auto-generated card; no image when nothing usable (no fallback card); manual file always wins. Icons: owner avatar for repo-only tools.
 5. **Visual:** light theme only. impeccable decides type, colour and layout; the draft's font, hue and emoji choices are void.
 6. **Submissions:** none.
 7. **Analytics:** none.
 8. **Schema:** no extras beyond `repo` + `website` + other `links`, at least one of repo or website required. `pricing` dropped (§2).
+9. **Rebuild (2026-10):** the UI was rebuilt in the owner-pinned direction A · Index; the first design and the image pipeline that served only it were deleted. Kept: every entry and URL, `_redirects`, the tool CLI, SEO, deploy, light theme only. Kinds and hosts became a filterable vocabulary (§2, §5), checked against each tool's own README and site.

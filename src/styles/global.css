@@ -146,8 +146,9 @@
   }
   h1, h2, h3 {
     text-wrap: balance;
-    /* A one-word name ("changedetection.io") wider than its column breaks rather than overflowing. */
-    overflow-wrap: break-word;
+    /* A one-word name ("changedetection.io") wider than its column breaks rather than overflowing,
+       also inside a flex row, where `break-word` would still let it widen the row. */
+    overflow-wrap: anywhere;
   }
   kbd, code {
     font-family: var(--font-mono);
@@ -161,7 +162,7 @@
     @apply mt-8 border-t border-line pt-6 md:mt-10 md:pt-7;
   }
   .writeup > h2 {
-    @apply text-label uppercase text-meta;
+    @apply text-heading text-ink;
   }
   .prose {
     @apply mt-3.5 max-w-prose text-prose text-ink-2;
@@ -192,15 +193,15 @@
   }
 }
 
-/* The "/" key hints show only while the shortcut is on, which Base decides before first paint
-   (data-slash on <html>), and never on touch screens. Without JavaScript they stay hidden. */
+/* The "/" shortcut's switch shows where the shortcut exists, its key hints while it is on; Base's head
+   script decides both before first paint (data-slash-available, data-slash on <html>; the rule is in
+   src/lib/slash.ts). Without JavaScript neither shows. */
+.slash-switch { display: none; }
+:root[data-slash-available] .slash-switch { display: flex; }
 .slash-key { display: none; }
 :root[data-slash] .slash-key { display: inline-block; }
 /* A page with its own main search takes "/" there, so the header's hint would point at the wrong field. */
 :root:has([data-main-search]) header .slash-key { display: none; }
-@media (pointer: coarse) {
-  :root[data-slash] .slash-key { display: none; }
-}
 
 /* A filtered URL (?q=, ?section=, ?host=, ?kind=) is rendered unfiltered on the server; hold the list
    until the island has applied the filter, so it doesn't paint the whole catalog and then collapse. */

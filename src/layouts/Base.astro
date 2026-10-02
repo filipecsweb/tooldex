@@ -5,7 +5,7 @@ import { ClientRouter } from 'astro:transitions';
 import Seo from '../components/Seo.astro';
 import { getCategories } from '../lib/data';
 import { SITE } from '../site';
-import { SLASH_OFF } from '../lib/slash';
+import { SLASH_MEDIA, SLASH_OFF } from '../lib/slash';
 // The two faces every page sets first; preloading them keeps the fallback swap from shifting the layout.
 import geist from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
 import geistMono from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url';
@@ -44,22 +44,25 @@ const searchIcon = 'M20 20l-3.5-3.5M18 11a7 7 0 1 1-14 0 7 7 0 0 1 14 0z';
     <link rel="preload" href={geistMono} as="font" type="font/woff2" crossorigin />
     <Seo title={title} description={description} image={image} imageAlt={imageAlt} jsonLd={jsonLd} noindex={noindex} />
     <ClientRouter />
-    <script is:inline define:vars={{ key: SLASH_OFF }}>
-      // Whether the "/" shortcut is on, decided before first paint so its key hints never flash
-      // (src/lib/slash.ts). Navigation swaps <html>'s attributes, so it is set again after each swap.
+    <script is:inline define:vars={{ key: SLASH_OFF, media: SLASH_MEDIA }}>
+      // Whether the "/" shortcut exists here (data-slash-available: its switch shows) and is on
+      // (data-slash: its key hints show), decided before first paint so neither flashes; the rule is
+      // src/lib/slash.ts's. Navigation swaps <html>'s attributes, so they are set again after each swap.
       const set = () => {
-        let on = true;
-        try { on = localStorage.getItem(key) === null; } catch { /* storage blocked: on */ }
+        const available = matchMedia(media).matches;
+        let on = available;
+        try { on = available && localStorage.getItem(key) === null; } catch { /* storage blocked: on wherever available */ }
+        document.documentElement.toggleAttribute('data-slash-available', available);
         document.documentElement.toggleAttribute('data-slash', on);
       };
       set();
       document.addEventListener('astro:after-swap', set);
     </script>
   </head>
-  <body>
+  <body class="flex flex-col">
     <a href="#main" class="sr-only rounded-control bg-ink px-3 py-2 text-ui font-medium text-surface focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50">Skip to content</a>
     <header class="border-b border-line bg-surface">
-      <div class="mx-auto flex h-16 max-w-sheet items-center justify-between gap-6 px-4 md:px-8">
+      <div class="mx-auto flex min-h-16 max-w-sheet flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 md:px-8">
         <a href="/" class="text-wordmark text-ink no-underline hover:text-ink pointer-coarse:py-3.5">{SITE.name}</a>
         {headerSearch && (
           <>
@@ -81,7 +84,7 @@ const searchIcon = 'M20 20l-3.5-3.5M18 11a7 7 0 1 1-14 0 7 7 0 0 1 14 0z';
         </nav>
       </div>
     </header>
-    <main id="main" class="mx-auto max-w-sheet px-4 pb-18 md:px-8">
+    <main id="main" class="mx-auto w-full max-w-sheet grow px-4 pb-18 md:px-8">
       <slot />
     </main>
     <footer class="border-t border-line bg-surface">

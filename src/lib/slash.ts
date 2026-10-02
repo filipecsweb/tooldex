@@ -15,8 +15,15 @@ const typing = (t: HTMLElement) =>
 export const isSlash = (e: KeyboardEvent) =>
   e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !typing(e.target as HTMLElement);
 
-/** Whether the reader has left the shortcut on (storage blocked counts as on). */
+/** Whether the shortcut exists here at all: only on a device with a fine pointer (mouse or trackpad),
+ *  where a keyboard is likely; a touch-only device gets neither the shortcut nor its switch.
+ *  Base.astro's head script applies the same rule and marks <html> with data-slash-available. */
+export const SLASH_MEDIA = '(any-pointer: fine)';
+export const slashAvailable = () => matchMedia(SLASH_MEDIA).matches;
+
+/** Whether "/" is live: available here and not turned off by the reader (storage blocked counts as on). */
 export function slashOn() {
+  if (!slashAvailable()) return false;
   try { return localStorage.getItem(SLASH_OFF) === null; } catch { return true; }
 }
 

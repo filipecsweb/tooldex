@@ -17,12 +17,12 @@ npm run dev                       # https://tooldex.test (or http://localhost:44
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Generates halftone plates, then the dev server on port 4401. |
-| `npm run build` | Generates plates, type/schema check, offline tool check, then build to `dist/`. |
+| `npm run dev` | Dev server on port 4401. |
+| `npm run build` | Type/schema check, offline tool check, then build to `dist/`. |
 | `npm run preview` | Serve the build locally in workerd. |
 | `npm run deploy` | Build and `wrangler deploy`. Needs `npx wrangler login` once. |
 | `npm run check` | Schema check plus full tool check, including live links. |
-| `npm test` | Unit tests for the search matcher and the tool script helpers. |
+| `npm test` | Unit tests for the search matcher, the filters, the facet vocabulary, the write-up split and the tool script helpers. |
 | `npm run tool -- <cmd>` | Per-tool workflow, below. |
 
 ## Managing tools
@@ -46,15 +46,15 @@ It prefills name, tagline, tags, links and a category guess from the GitHub API 
 
 **Edit**: edit `index.md`. Mistakes (bad URL, unknown category, missing image, no repo and no website) fail `npm run check` and `npm run build`.
 
-**Refresh images**: `npm run tool -- thumbs <slug> --force` refetches; if no new source is found it keeps the existing file. To use your own image, drop `thumb.webp` (≈1.91:1, e.g. 1600×840) or `icon.png` (square) into the folder and run `npm run tool -- thumbs <slug>`: existing files win unless `--force`, and the command records them as supplied by hand. To drop a bad thumbnail in favour of the fallback card, delete `thumb.webp` and `thumb.webp.json`.
+**Refresh images**: `npm run tool -- thumbs <slug> --force` refetches; if no new source is found it keeps the existing file. To use your own image, drop `thumb.webp` (≈1.91:1, e.g. 1600×840) or `icon.png` (square) into the folder and run `npm run tool -- thumbs <slug>`: existing files win unless `--force`, and the command records them as supplied by hand. Some thumbnails are screenshots captured by hand (their sidecar names the source); `--force` would replace them, so leave it off for those. To drop a bad thumbnail, delete `thumb.webp` and `thumb.webp.json` and remove the `thumbnail:` line from `index.md` (`check` fails while it points at a missing file): the tool page then shows no screenshot, and lists only ever show icons.
 
 **Rename**: `npm run tool -- mv <old> <new>`. Moves the folder and adds a 301 in `public/_redirects`.
 
 **Delete**: `npm run tool -- rm <slug>`. Removes the folder and 301s the old URL to its category (or `/` if the category is now empty).
 
-**Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, image provenance, unwritten bodies, redirects, and that every link responds. Add `--offline` to skip the network.
+**Check**: `npm run tool -- check` validates every tool: folder contents (no orphaned files), frontmatter vs images, image provenance, unwritten bodies, the write-up's "When to use it" and "Caveats" paragraphs, tags (lowercase kebab-case, at least one kind), redirects, and that every link responds. Add `--offline` to skip the network.
 
-**Halftone plates**: the catalog prints every thumbnail and icon as a halftone. `scripts/plates.ts` derives them into `src/generated/plates/` (gitignored). They regenerate automatically before `dev` and `build` and after `thumbs`, `mv` and `rm`, so there is nothing to maintain by hand.
+**Kinds and hosts**: `src/content/facets.json` says which tags are kinds (skill, plugin, MCP server…) and which are hosts (Claude Code, Codex…), with their labels; every other tag is a topic. The home filters, the tool pages and `check` all read it. `CLAUDE.md` has the bar a tag must clear.
 
 **Categories** live in `src/content/categories.json`. Adding one is one object (`id`, `name`, `description`, `keywords`). `keywords` drive the category guess in `add`. A category with no tools renders no page.
 

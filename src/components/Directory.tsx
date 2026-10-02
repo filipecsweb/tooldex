@@ -97,6 +97,27 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
     : `${results.length} of ${tools.length} ${noun(tools.length)}${query ? ` for “${query}”` : ''}${where}`;
   const catalogSize = sections.reduce((n, s) => n + s.count, 0);
   const clear = () => { update(EMPTY); input.current?.focus(); };
+  // The ticked hosts and kinds, named beside the summary so a shared link says what it filters.
+  const active = [...f.hosts.map((t) => ['hosts', t] as const), ...f.kinds.map((t) => ['kinds', t] as const)];
+  // Removing a chip keeps the reader in place: focus moves to the next chip, else the previous one,
+  // else "Clear all", else the summary (focusable for that moment only). Applied once the list re-renders.
+  const refocus = useRef<string[] | null>(null);
+  const removeChip = (i: number) => {
+    const [group, tag] = active[i];
+    refocus.current = [active[i + 1], active[i - 1]].filter(Boolean).map((a) => `[data-chip="${a![1]}"]`).concat('[data-clear]', '#summary');
+    toggle(group, tag);
+  };
+  useEffect(() => {
+    const order = refocus.current;
+    if (!order) return;
+    refocus.current = null;
+    const el = order.map((sel) => document.querySelector<HTMLElement>(sel)).find(Boolean);
+    if (el?.id === 'summary') {
+      el.tabIndex = -1;
+      el.addEventListener('blur', () => el.removeAttribute('tabindex'), { once: true });
+    }
+    el?.focus();
+  }, [f]);
   const toggle = (group: 'hosts' | 'kinds', tag: string) =>
     update({ [group]: f[group].includes(tag) ? f[group].filter((x) => x !== tag) : [...f[group], tag] });
 
@@ -129,8 +150,8 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
           />
           <kbd aria-hidden="true" className="slash-key flex-none rounded-key border border-line-strong bg-ground px-2 py-0.5 text-micro text-ink-4">/</kbd>
         </div>
-        <p className="mt-1.5 flex justify-end">
-          <button type="button" onClick={toggleSlash} className="rounded-key text-micro text-meta underline decoration-line-strong underline-offset-2 hover:text-ink hover:decoration-current pointer-coarse:py-3.5">
+        <p className="slash-switch mt-1.5 justify-end">
+          <button type="button" onClick={toggleSlash} className="rounded-key text-micro text-meta underline decoration-line-strong underline-offset-2 hover:text-ink hover:decoration-current">
             {slash ? 'Turn off the / shortcut' : 'Turn on the / shortcut'}
           </button>
         </p>
@@ -200,11 +221,33 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
         <div className="min-w-0">
           <h2 className="sr-only">Tools</h2>
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-3">
-            <div className="flex flex-wrap items-baseline gap-x-3">
-              <p aria-live="polite" className="text-ui font-semibold text-ink">{summary}</p>
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <p id="summary" aria-live="polite" className="text-ui font-semibold text-ink outline-none">
+                {summary}
+                {active.length > 0 && <span className="sr-only">, filtered by {active.map(([, t]) => facetLabel(t)).join(', ')}</span>}
+              </p>
+              {active.map(([, t], i) => (
+                // The button is the whole target (44px tall on touch screens, so wrapped lines never
+                // share a tap area); the chip is drawn on the span inside it, the same size everywhere.
+                <button
+                  key={t}
+                  type="button"
+                  data-chip={t}
+                  onClick={() => removeChip(i)}
+                  aria-label={`Remove the ${facetLabel(t)} filter`}
+                  className="group inline-flex items-center focus-visible:outline-none pointer-coarse:min-h-11"
+                >
+                  <span className="inline-flex items-center gap-1 rounded-row bg-accent-tint px-2 py-0.5 text-caption font-medium text-accent-deep transition-colors duration-150 group-hover:bg-halo group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-accent">
+                    {facetLabel(t)}
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" aria-hidden="true">
+                      <path d="M6 6l12 12M18 6 6 18" />
+                    </svg>
+                  </span>
+                </button>
+              ))}
               {filtered && (
-                <button type="button" onClick={clear} className="rounded-key text-caption text-accent underline decoration-accent/40 underline-offset-2 hover:text-accent-deep hover:decoration-current pointer-coarse:py-3.25">
-                  Clear all
+                <button type="button" data-clear onClick={clear} className="group inline-flex items-center focus-visible:outline-none pointer-coarse:min-h-11">
+                  <span className="rounded-key text-caption text-accent underline decoration-accent/40 underline-offset-2 group-hover:text-accent-deep group-hover:decoration-current group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-accent">Clear all</span>
                 </button>
               )}
             </div>

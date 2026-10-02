@@ -1,289 +1,388 @@
 ---
 name: tooldex
-description: Agent tooling, explained plainly. A catalog in the manner of "access to tools", set on grey newsprint.
+description: A dense, filterable index of agent tooling: one ruled list of icon rows on a white sheet, with the source one click away.
 colors:
-  paper: "#e9eae7"
-  paper-2: "#dcddd9"
-  ink: "#16150f"
-  ink-2: "#45443c"
-  ink-3: "#5f5e55"
-  spot: "#1f55a6"
-  spot-deep: "#163f7d"
+  ground: "#fafaf9"
+  surface: "#ffffff"
+  ink: "#111113"
+  ink-2: "#24242a"
+  ink-3: "#3a3a42"
+  ink-4: "#5a5a63"
+  meta: "#6a6a74"
+  line: "#e5e5e2"
+  line-soft: "#ecece9"
+  line-strong: "#d6d6d2"
+  fill: "#f1f1ef"
+  fill-soft: "#f8f8f6"
+  accent: "#2b37d6"
+  accent-deep: "#1c258f"
+  accent-tint: "#e9ebfd"
+  halo: "#e3e6fd"
+  caveat: "#9a4a00"
 typography:
   display:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "clamp(3.75rem, 13vw, 6rem)"
-    fontWeight: 900
-    lineHeight: 0.82
-    letterSpacing: "-0.045em"
-  headline:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "clamp(2.75rem, 7vw, 5.25rem)"
-    fontWeight: 900
-    lineHeight: 0.9
-    letterSpacing: "-0.04em"
-  title:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "1.75rem"
-    fontWeight: 850
-    lineHeight: 1.02
-    letterSpacing: "-0.03em"
-  title-lead:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "clamp(1.75rem, 3vw, 2.75rem)"
-    fontWeight: 850
-    lineHeight: 1.02
-    letterSpacing: "-0.03em"
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "clamp(2.125rem, 1.5rem + 2.6vw, 2.75rem)"
+    fontWeight: 600
+    lineHeight: 1.05
+    letterSpacing: "-0.035em"
   wordmark:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "2.125rem"
-    fontWeight: 900
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 700
     lineHeight: 1
-    letterSpacing: "-0.045em"
-  note:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "1.375rem"
-    fontWeight: 850
-    lineHeight: 1.25
+    letterSpacing: "-0.03em"
+  tagline:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 400
+    lineHeight: 1.45
+  lead:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "1.0625rem"
+    fontWeight: 400
+    lineHeight: 1.55
+  heading:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 600
+    lineHeight: 1.3
     letterSpacing: "-0.02em"
-  search:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "1.625rem"
+  prose:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "1.0625rem"
+    fontWeight: 400
+    lineHeight: 1.7
+  title:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "1rem"
     fontWeight: 600
     lineHeight: 1.5
     letterSpacing: "-0.01em"
-  lead:
-    fontFamily: "Literata Variable, Georgia, serif"
-    fontSize: "clamp(1.25rem, 2.2vw, 1.5rem)"
+  body:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 400
+    lineHeight: 1.5
+    fontFeature: "\"tnum\""
+  row:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "0.90625rem"
+    fontWeight: 400
+    lineHeight: 1.45
+  ui:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.45
+  caption:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "0.8125rem"
+    fontWeight: 400
+    lineHeight: 1.45
+  label:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 600
+    lineHeight: 1.4
+    letterSpacing: "0.07em"
+  data:
+    fontFamily: "Geist Mono Variable, Geist Mono Fallback, ui-monospace, monospace"
+    fontSize: "0.78125rem"
+    fontWeight: 400
+    lineHeight: 1.45
+  micro:
+    fontFamily: "Geist Variable, Geist Fallback, system-ui, sans-serif"
+    fontSize: "0.75rem"
     fontWeight: 400
     lineHeight: 1.4
-  body:
-    fontFamily: "Literata Variable, Georgia, serif"
-    fontSize: "1.1875rem"
-    fontWeight: 400
-    lineHeight: 1.62
-  body-sm:
-    fontFamily: "Literata Variable, Georgia, serif"
-    fontSize: "1.0625rem"
-    fontWeight: 400
-    lineHeight: 1.5
-  label:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "0.9375rem"
-    fontWeight: 700
-    lineHeight: 1.5
-  count:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "0.8125rem"
-    fontWeight: 500
-    lineHeight: 1.5
-  access-label:
-    fontFamily: "Libre Franklin Variable, Franklin Gothic Medium, Arial Narrow, sans-serif"
-    fontSize: "0.9375rem"
-    fontWeight: 900
-    letterSpacing: "0.08em"
-  data:
-    fontFamily: "Courier Prime, Courier New, monospace"
-    fontSize: "0.9375rem"
-    fontWeight: 400
 rounded:
-  none: "0px"
+  sheet: "12px"
+  control: "9px"
+  row: "7px"
+  key: "5px"
 spacing:
-  gutter: "1rem"
-  gutter-sm: "1.5rem"
-  column-gap: "2.5rem"
-  entry-gap: "3.5rem"
-  container: "1320px"
+  gutter-touch: "16px"
+  gutter: "32px"
+  row-y: "16px"
+  row-x: "20px"
+  sheet-pad: "20px"
+  header: "64px"
+  sidebar: "224px"
+  sidebar-gap: "40px"
+  aside: "320px"
+  sheet-max: "1280px"
 components:
-  access-cta:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.paper}"
-    rounded: "{rounded.none}"
-    padding: "0.75rem 1rem"
-  access-cta-hover:
-    backgroundColor: "{colors.spot}"
-    textColor: "{colors.paper}"
-  access-box:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.none}"
-    padding: "1.25rem"
-  access-line:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.spot}"
-    typography: "{typography.data}"
-    rounded: "{rounded.none}"
-    padding: "0.375rem 0.625rem"
-  button-solid:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.paper}"
-    typography: "{typography.label}"
-    rounded: "{rounded.none}"
-    padding: "0.375rem 0.75rem"
-  button-outline:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.none}"
-    padding: "0.375rem 0.75rem"
-  button-outline-hover:
-    backgroundColor: "{colors.paper-2}"
-  search-field:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.none}"
-    padding: "0.5rem 0"
-  index-item:
+  button-primary:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.surface}"
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+    padding: "10px 16px"
+  button-primary-hover:
+    backgroundColor: "{colors.accent-deep}"
+  button-secondary:
+    backgroundColor: "{colors.surface}"
     textColor: "{colors.ink-2}"
-    typography: "{typography.label}"
-  index-item-current:
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+    padding: "10px 16px"
+  button-secondary-hover:
+    backgroundColor: "{colors.fill}"
+  search-field:
+    backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
-  plate:
-    backgroundColor: "{colors.paper-2}"
-    rounded: "{rounded.none}"
+    typography: "{typography.lead}"
+    rounded: "{rounded.sheet}"
+    padding: "0 16px"
+    height: "56px"
+  search-field-compact:
+    backgroundColor: "{colors.ground}"
+    textColor: "{colors.ink}"
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+    padding: "0 12px"
+    height: "40px"
+  nav-link:
+    textColor: "{colors.ink-3}"
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+    padding: "8px 12px"
+  nav-link-current:
+    backgroundColor: "{colors.fill}"
+    textColor: "{colors.ink}"
+  section-item:
+    textColor: "{colors.ink-2}"
+    typography: "{typography.ui}"
+    rounded: "{rounded.row}"
+    padding: "6px 10px"
+  section-item-selected:
+    backgroundColor: "{colors.accent-tint}"
+    textColor: "{colors.accent-deep}"
+  filter-chip:
+    backgroundColor: "{colors.accent-tint}"
+    textColor: "{colors.accent-deep}"
+    typography: "{typography.caption}"
+    rounded: "{rounded.row}"
+    padding: "2px 8px"
+  filter-chip-hover:
+    backgroundColor: "{colors.halo}"
+  tag-chip:
+    backgroundColor: "{colors.fill}"
+    textColor: "{colors.ink-3}"
+    rounded: "{rounded.key}"
+    padding: "2px 7px"
+  kind-badge:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink-3}"
+    typography: "{typography.caption}"
+    rounded: "{rounded.row}"
+    padding: "0 10px"
+    height: "28px"
+  order-switch-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.surface}"
+    typography: "{typography.caption}"
+    rounded: "{rounded.row}"
+    padding: "6px 12px"
+  list-sheet:
+    backgroundColor: "{colors.surface}"
+    rounded: "{rounded.sheet}"
+  list-row:
+    backgroundColor: "{colors.surface}"
+    padding: "16px 20px"
+  list-row-hover:
+    backgroundColor: "{colors.fill-soft}"
+  key:
+    backgroundColor: "{colors.ground}"
+    textColor: "{colors.ink-4}"
+    typography: "{typography.micro}"
+    rounded: "{rounded.key}"
+    padding: "2px 8px"
 ---
 
 # Design System: tooldex
 
 ## Overview
 
-**Creative North Star: "Access to Tools"**
+**Creative North Star: "The Index"**
 
-tooldex is a catalog you read, not a feed you scroll. The world is a pasted-up newsprint catalog in the manner of the Whole Earth Catalog: grey paper, warm black ink, one Earth-blue spot colour, and heavy black rules that cut the page into blocks. Every tool is a reviewed entry: a printed plate, a bold name, the tagline as its lead, a plain review in a book serif, and a boxed Access line that sends the reader to the source.
+tooldex is a dense, filterable index you operate, not a magazine you scroll. Every surface is built from the same few parts: a near-white ground, white sheets ruled by 1px warm-grey lines, near-black ink stepped down through four greys, and one indigo accent that only ever means "you can act here" or "this is chosen". The reader's eye runs down a list of icon rows by name, section and tagline, and the way out to the tool's own site sits at the end of every row in mono.
 
-Depth is not simulated; it is printed. Pictures arrive as real halftone plates, multiplied into the paper, and "develop" to their colour original only when the reader reaches for them. Hierarchy is carried by rule weight and type weight, never by cards, shadows or tint washes. The system is light-only by owner decision: there is no dark theme and no toggle, and nothing in it should be designed to invert.
+Density is the point, not a side effect. Rows are compact, counts sit beside every facet, and the page answers "what would I get" as you type and tick, mirrored to a shareable URL. Decoration is refused: no gradients, no shadows except the focus halo, no screenshot-card grid with pill tags. Colour screenshots appear only on a tool's own page, framed in the same ruled sheet as everything else.
 
-Density is editorial rather than dashboard: a 1320px sheet, three columns of entries on desktop, generous 3.5rem gaps between entries, and prose held to a 66ch measure.
+The theme is light only, by owner decision. There is no dark mode and no surface should assume one.
 
 **Key Characteristics:**
-- Grey newsprint ground, warm black ink, one spot blue.
-- Heavy paste-up rules (4px section, 2px block, 3px boxes); square corners everywhere.
-- Libre Franklin black for names and mastheads, Literata for reading, Courier Prime only for access data.
-- Halftone plates that develop to colour on hover, focus, and on the entry page.
-- A boxed Access line on every entry; the Access box is the primary action on every tool page.
-- Light theme only.
+- One white list sheet of ruled icon rows on a near-white ground.
+- One indigo accent, reserved for links, the primary action, selection and focus.
+- Geist for everything; Geist Mono only for access data.
+- Flat: 1px lines and tonal fills carry all structure; the focus halo is the only shadow.
+- Four radii, each tied to a scale of object (sheet, control, row, key).
+- Every target is at least 44px on touch screens.
 
 ## Colors
 
-A three-ink newsprint palette: two papers, three ink strengths, and one spot blue with its pressed-deeper variant.
+A cool-neutral greyscale with a faint warm cast in the lines, and a single saturated indigo.
 
 ### Primary
-- **Earth Spot Blue** (spot): the only colour on the sheet. Content links, the Access label, the focus ring (3px outline, 3px offset), the search caret and search-field focus underline, and the hover fill of the Access button. Nothing decorative is ever printed in it.
-- **Pressed Spot Blue** (spot-deep): hover state of spot links.
+- **Index Indigo** (accent): links, the primary button, the text caret, the focus ring, checked checkboxes, the halo border on a focused search field.
+- **Deep Indigo** (accent-deep): hover state for every accent element; the text colour on accent-tint selections and on `::selection`.
+- **Indigo Wash** (accent-tint): the background of a selected section, an active filter chip, the section badge on a tool page, the "N on" count on the mobile Filters button, and text selection.
+- **Halo Indigo** (halo): the 3px focus halo around search fields; also the hover background of accent-tint chips.
+
+### Tertiary
+- **Caveat Amber** (caveat): only the warning-triangle icon on the "Caveats" card. It is never text, never a fill, never a second accent.
 
 ### Neutral
-- **Newsprint Grey** (paper): the page ground and `theme-color`. Also the text colour on solid ink.
-- **Plate Grey** (paper-2): the unprinted plate bed behind every image and icon, the outline-button hover, the scrollbar track.
-- **Warm Black Ink** (ink): headings, names, body on the masthead, every rule and box border, solid buttons, selection background, and the halftone dot colour itself.
-- **Second Ink** (ink-2): taglines, review-adjacent secondary text, counts beside the masthead, index items at rest, plate source line.
-- **Third Ink** (ink-3): meta text ("Filed under", captions, breadcrumb separators), index counts, empty sections, placeholders.
+- **Near-White Ground** (ground): the page, the browser chrome (theme-color reads it from the token), the compact header search and key caps.
+- **Sheet White** (surface): the header, footer, list sheets, cards, aside, controls; also text on accent and ink fills.
+- **Near-Black Ink** (ink): headlines, row names, current nav item.
+- **Ink 2** (ink-2): the write-up prose, facet option text, the text of the "Show more" and Filters buttons.
+- **Ink 3** (ink-3): navigation, breadcrumbs, quiet controls, card text, tag chips.
+- **Ink 4** (ink-4): taglines, the lead, the empty-state help line, key-cap glyphs.
+- **Meta Grey** (meta): counts, group labels, field placeholders, search icons, captions, zero-result options. This is the lightest text colour allowed.
+- **Line** (line): sheet and card borders, the header and footer rules, icon frames, the write-up's top rule.
+- **Soft Line** (line-soft): the rules between rows inside a sheet.
+- **Strong Line** (line-strong): borders on interactive fields and controls (search fields, secondary buttons, the order switch, key caps), and the scrollbar thumb.
+- **Fill** (fill): hover background for nav, options and buttons; icon wells; tag chips; inline `code`.
+- **Soft Fill** (fill-soft): the hover background of a list row.
 
 ### Named Rules
-**The One Spot Rule.** Spot blue marks what the reader can act on to leave or move: content links, the Access label, focus and caret, the Access button's hover. Navigation, headings, entry names and index items stay ink and underline instead.
+**The One Voice Rule.** Indigo means "act here" or "chosen", nothing else. It is never decoration, never a heading colour, never a background panel.
 
-**The Link Ink Rule.** Links inside content are spot with a 45%-spot underline (`color-mix(in oklab, spot 45%, transparent)`, 1.5px, offset 0.2em), deepening to spot-deep with a full underline on hover. Navigation links (masthead, breadcrumbs, footer sections, entry names) are ink with no underline at rest and a plain underline on hover or when current.
+**The Meta Floor Rule.** Meta Grey is the lightest text on the site, chosen to hold 4.5:1 on every ground including Indigo Wash. No text goes lighter, even for de-emphasis; dim with size or weight instead.
+
+**The Lines Before Fills Rule.** Containers are white with a 1px line. Interactive borders step up to Strong Line; dividers inside a sheet step down to Soft Line. Fills are for hover, wells and chips.
 
 ## Typography
 
-**Display Font:** Libre Franklin Variable (with Franklin Gothic Medium, Arial Narrow)
-**Body Font:** Literata Variable (with Georgia)
+**Display Font:** Geist Variable (with Geist Fallback, then system-ui)
+**Body Font:** Geist Variable (with Geist Fallback, then system-ui)
+**Label/Mono Font:** Geist Mono Variable (with Geist Mono Fallback, then ui-monospace)
 
-The Franklin and Literata latin files are preloaded, and each family falls back first to a local face (Arial, Georgia) resized to its metrics with `size-adjust` and ascent/descent overrides, so the swap moves nothing. The lead entry's plate is fetched at high priority; a colour original hidden under its halftone at low.
-**Label/Mono Font:** Courier Prime (with Courier New), 400 only (the only weight access data uses)
+**Character:** One neutral grotesque at every size, tightened as it grows, so the hierarchy comes from size, weight and tracking rather than from a second voice. Mono is reserved for the data a reader would copy or count.
 
-**Character:** A black-weight grotesque that shouts like a catalog masthead, set against a patient book serif that does all the reading. Courier is the typewritten access data, nothing else. All numerals are tabular.
+Both fonts are self-hosted through Fontsource and the latin files are preloaded. **Geist Fallback** (local Arial, Liberation Sans or Helvetica at 105.85% size-adjust, 94.94% ascent, 27.87% descent, 0 line gap) and **Geist Mono Fallback** (local Courier New, Liberation Mono or Courier at 100% size-adjust, 100.5% ascent, 29.5% descent, 0 line gap) are metric-matched local faces, so text painted before the web fonts arrive takes the same space and the swap shifts nothing. They are part of the system: any new font stack names its fallback face second.
+
+Numerals are tabular site-wide, so counts line up in their columns. Headings balance their lines and break long single-word names anywhere rather than overflow.
 
 ### Hierarchy
-Every role below is a `--text-<role>` token in `@theme` (`src/styles/global.css`) carrying size, leading, tracking and weight together, used as `text-<role>`: display, headline, wordmark, title, title-lead, note, search, lead, body, body-sm, label, count. The sheet width is `--container-sheet` (`max-w-sheet`). New sizes join the ramp as tokens, never as one-off literals.
-
-- **Display** (900, clamp(3.75rem, 13vw, 6rem), 0.82, -0.045em): the "tooldex" masthead on the home page only.
-- **Headline** (900, clamp(2.75rem, 7vw, 5.25rem), 0.9, -0.04em): page H1s: tool name, section name, "Sections", "Not in the catalog".
-- **Title** (850, 1.75rem, 1.02, -0.03em): entry names on cards; the lead entry scales to clamp(1.75rem, 3vw, 2.75rem). Section heads such as "See also" and "Other sections" use the same size at 900. Section rows on the sections page use clamp(1.75rem, 3.5vw, 2.5rem) at 900. Smaller heads: the "How to read an entry" note at 1.375rem 850, "See also" names at 1.25rem 800.
-- **Lead** (Literata 400, clamp(1.25rem, 2.2vw, 1.5rem), 1.4, max 40ch): the tagline under an entry-page H1. On cards the tagline is body-sm in ink-2 (1.25rem on the lead entry).
-- **Body** (Literata 400, 1.1875rem, 1.62, max 66ch): the review. Run-in heads ("When to use it:", "Caveats:") are Franklin 800 at 0.94em, inline.
-- **Body-sm** (Literata 400, 1.0625rem, 1.5): taglines on cards, section descriptions, notes.
-- **Label** (Franklin 600 to 800, 0.9375rem): navigation, field labels, result summaries, `dt` terms, captions and the card's "Filed under" line; index items (1.0625rem, 700).
-- **Count** (Franklin 500, 0.8125rem, ink-3): counts beside section names in the index run and the footer.
-- **Access label** (Franklin 900, 0.9375rem, uppercase, 0.08em): the word "Access" heading the Access box, in spot. On the card's Access line it runs at 0.8125rem, 850, 0.06em.
-- **Data** (Courier Prime 400, 0.9375rem): URLs, repository paths, tags, and the plate source line.
+- **Display** (600, fluid 34 to 44px, 1.05, -0.035em): the one h1 per page: the home tagline, a section name, a tool name.
+- **Wordmark** (700, 20px, 1, -0.03em): the site name in the header; the footer repeats its tracking at caption size.
+- **Tagline** (400, 20px, 1.45): a tool's tagline under its h1, in Ink 4, at most 60ch.
+- **Lead** (400, 17px, 1.55): the one-sentence intro under a home, section or 404 h1, in Ink 4, at most 62ch; also the main search field's text.
+- **Heading** (600, 20px, 1.3, -0.02em): section heads below the fold ("What it is", "Related tools") and section names on the sections index.
+- **Prose** (400, 17px, 1.7): the write-up, at most 68ch.
+- **Title** (600, 16px, 1.5, -0.01em): tool names in rows; the empty-state message.
+- **Body** (400, 15px, 1.5): the page default; card text; the primary button.
+- **Row** (400, 14.5px, 1.45): taglines inside rows, clamped to two lines.
+- **UI** (14px, 1.45; the role sets no weight, so 400 unless the element adds one): facet options at 400; nav and buttons at 500; the result summary at 600.
+- **Caption** (400, 13px, 1.45): section names beside row titles, breadcrumbs, chips, the details list, figure captions, the footer.
+- **Label** (600, 12px, 0.07em, uppercase): names of a group of controls or a details box ("Sections", "Works with", "Kind", "Details"). It names the group it sits on; it is never a kicker above a headline.
+- **Data** (Mono 400, 12.5px, 1.45): access links (host/path) and section tool counts.
+- **Micro** (400, 12px, 1.4; the role sets size only): in Geist Mono (with `font-mono`, or a `kbd`) for facet counts, kinds under a row's link, topic tags and the "/" key; in Geist for the "Turn off the / shortcut" switch.
 
 ### Named Rules
-**The Typewriter Rule.** Courier Prime is only for access data: URLs (shown as host/path, breaking after a slash; a segment wider than its line wraps inside itself), repository paths, and tags. It never sets prose, headings, counts, dates or UI labels.
+**The Mono Means Data Rule.** Geist Mono sets only what a reader would copy, count or type: URLs, counts, kinds, tags, the "/" key and inline code. Never headings, never prose, never buttons.
 
-**The Weight Carries It Rule.** Names and heads are Franklin at 850 to 900 with tight negative tracking; there is no light or regular display. Reading text is never Franklin.
+**The Fallback Face Rule.** Every font stack carries its metric-matched local fallback face second. A new face without one is incomplete.
 
 ## Layout
 
-One 1320px sheet, centred, with 1rem side gutters (1.5rem from 640px). The home masthead splits on a 12-column grid at 1024px: name in six columns, catalog statement and live counts in the other six. The Find row sits under it: search field over five fractions, the section index run over seven.
+A single 1280px sheet column, centred, with 16px gutters on phones and 32px from the md breakpoint. A white header at least 64px tall (wordmark left, Catalog and Sections right; on pages with the header search, at about 335px and below, the nav wraps to a second line, 8px below, its text 12px in from the wordmark by the links' own padding) and a white footer are both ruled off the ground by one line. Pages leave 72px below the content.
 
-Entries paste up in a grid of one, two (640px) and three (1024px) columns with 2.5rem column gaps and 3.5rem row gaps. In the unfiltered catalog and on every section page the first entry leads across the full row, plate over two columns and text in the third; on the home page a "How to read an entry" note closes the grid. Entry pages use 12 columns: header, review and then the picture in eight, the Access box in four on the right, sticky from 1.5rem, spanning both rows. The explanation is the product, so the review comes before the picture. Below 1024px everything stacks in reading order: the header, then the Access box holding only its label and button, then the review and the picture, then the rest of the Access list (links, section, tags, date) as a block on a 2px rule headed "Details". The review starts on the first phone screen. Every grid declares `minmax(0, 1fr)` columns so a long URL or name can never widen the page; headings break a word wider than their column.
+The directory is two columns from lg: a 224px sidebar (Sections, then the Works with and Kind facets) beside the result column, 40px apart. Below lg the sidebar collapses: the sections become one horizontally scrolling run that brings the chosen section into view, and the facets fold behind a full-width Filters button. Above the list sits one line holding the live summary, any active-filter chips and the Newest / A–Z switch.
 
-The first entry on a section rule sits directly on that 4px rule (0.75rem above its plate) and draws no 2px rule of its own, so a section never opens on a double rule. Section lists everywhere (index run, sections page, footer, 404, "Other sections") run A to Z by name; the footer's two columns read down, not across.
+A list row is a grid: 40px icon, the name-and-tagline column, then a 220px access column right-aligned on desktop. On phones the icon shrinks to 36px and the access column drops under the text.
 
-Rhythm is set by rules, not boxes: a section starts on a 4px rule with a small pad above its heading (0.75 to 1rem); a block inside it starts on a 2px rule with 0.75rem above. Larger breaks (4 to 5rem) sit before "See also" and "Other sections". Pagination adds entries 48 at a time.
+A tool page is two columns from lg: the article (header, write-up, screenshot, related tools) beside a 320px sticky aside holding the actions and details, 56px apart. On phones the actions follow the header and the details follow the screenshot, so DOM order is reading order at both sizes.
+
+Measures: prose 68ch, taglines and short copy 60ch, the lead 62ch, the main search 760px wide. Spacing runs on a 4px step; sheets pad 20px, rows 16px by 16 to 20px, group gaps 24 to 28px.
+
+**The 44px Touch Rule.** On coarse pointers every target is at least 44px tall, reached by padding the target or by an invisible `::before` hit area that leaves the visual size unchanged. Desktop density is never inflated to serve touch.
 
 ## Elevation & Depth
 
-Flat. There are no shadows anywhere, no tint washes, and no layering beyond the printed plate. Depth comes from printing: halftone ink multiplied over the colour original on a plate-grey bed. Navigation between pages is the router's plain cross-fade; nothing is carried across. (Plates used to fly from their card into the entry page; that ended when the entry-page picture moved below the review, where the flight would land off screen.)
+Flat. Depth comes from the step between the near-white ground and white sheets, from 1px lines, and from tonal hover fills. The only shadow on the site is a solid 3px indigo halo that appears around a search field while it has focus.
+
+### Shadow Vocabulary
+- **Focus halo** (`box-shadow: 0 0 0 3px var(--color-halo)`): search fields only, with the border turning Index Indigo, on `:focus-within`.
 
 ### Named Rules
-**The Printed Not Lifted Rule.** Nothing floats. Separation is a rule, a 2 to 3px ink box, or a change of paper (paper to paper-2); never a shadow, blur or rounded card.
+**The Halo Only Rule.** No drop shadows, no lifted cards, no gradients. If something needs to stand out, it gets a line, a fill or the accent.
 
 ## Shapes
 
-Square everywhere (0 radius): buttons, fields, boxes, plates, icon frames. Borders are ink at deliberate weights that carry hierarchy: 4px for sections and the masthead base, 3px for the Access box and the search field underline, 2px for blocks, entry boxes, chips, the order select underline and icon frames. The hover underline in the index run is 3px.
+Four radii, each tied to the size of the object, so nested shapes always read concentrically: **sheet** (12px) for list sheets, cards, the aside, the main search field, screenshots and a tool page's large icon; **control** (9px) for buttons, the compact search, nav links, the order switch and row icons; **row** (7px) for sidebar options, filter chips, section and kind badges, and the order switch's inner buttons; **key** (5px) for key caps, topic tags and inline code. Sheets clip their rows (overflow hidden) so the first and last row inherit the corners.
 
-### Named Rules
-**The Paste-Up Rule.** Rule weight is the hierarchy: 4px opens a section, 2px opens a block, 3px frames the one box that matters (Access). Rules are ink at full strength; don't add grey hairlines to separate content.
+Screenshots are cropped to one aspect (1600 / 840), top-anchored, inside a 12px ruled frame on a Fill well. Icons are always framed by a 1px line on a Fill well; a tool without an icon shows its initial in Ink 4 in the same frame.
+
+Strokes on drawn icons are 2 to 2.25px, round-capped, at Geist's weight. The outbound arrow is one shared mark used on every way out.
 
 ## Components
 
-### Plates (signature)
-Every picture is a plate: a 1600:840 frame on plate grey, clipped, with the image anchored to its top.
-- **How the material is made:** `scripts/plates.ts` runs before dev and build. Each thumbnail (at 840px, cropped to the card aspect keeping the top) and each icon (at 240px, uncropped) is flattened on white, greyscaled, tone-mapped for newsprint (2nd percentile to solid ink, 98th to bare paper, gamma 0.9; an image whose mean tone is under 0.4, such as a dark-UI screenshot, has its darkest tone lifted off solid ink by the shortfall, so it prints as an open screen instead of a black slab), blurred to half a cell, then screened as an amplitude-modulated halftone: 5px cells on a 45-degree screen, dot area tracking tone. Dots are printed in the ink colour (22, 21, 15) as alpha, saved as a 4-colour PNG (the screen needs no more; 16 cost 2.4 times the bytes) carrying a "Derived, not generated" provenance note.
-- **How it sits:** the colour original is multiplied into the paper beneath; the halftone plate sits on top. While a plate exists, the colour original is hidden.
-- **Developing:** on hover of the entry, or hover or focus of the link that wraps the plate, the halftone fades out and the colour comes up (opacity, 0.6s, `cubic-bezier(0.16, 1, 0.3, 1)`; instant under reduced motion). On entry pages the picture is already developed: a thumbnailed entry shows its colour image multiplied into the paper with no halftone; a composed plate is marked developed.
-
-### Composed plate (fallback)
-For tools without a thumbnail.
-- **Card variant:** a grid inside the plate frame, padded 7% of its width: the halftoned icon (24% of the frame width) at left, the tool name set large at right in Franklin 900 (fitted to the longest word, max 5rem, 0.92 line height, -0.035em), and the source (repo path or host) in Courier across the foot on a 2px ink rule, in ink-2.
-- **Quiet variant (entry page):** the H1 already carries the name, so the plate drops its fixed aspect and becomes a band: the icon at clamp(7rem, 22%, 11rem) on the left, the source line set on its rule beside it, aligned to the bottom. No name.
-
-### Access
-- **Access line (cards):** a 2px ink box, 0.375rem by 0.625rem, holding the spot "Access" label and the URL in Courier as a spot link with an outbound arrow drawn to Franklin's stroke weight. Below it, "Filed under" in ink-3 plus the section as a spot link at 600; omitted on a section's own page, where every card would repeat it.
-- **Access box (entry page):** a 3px ink box, 1.25rem padding, sticky on desktop. "Access" heads it in spot capitals. Then the primary action: a full-width solid ink bar (Franklin 800, 1.0625rem, paper text, 0.75rem by 1rem) reading "Visit the website" or "View the repository" with the outbound arrow, turning spot on hover (0.15s). Below, a definition list: Website, Repository and other links in Courier; Filed under; Tags in Courier linking to a search; Listed date in ink-2.
-
 ### Buttons
-- **Shape:** square, 2px ink border.
-- **Solid:** ink ground, paper text, Franklin 700 at 0.9375rem (used for "Clear the search").
-- **Outline:** transparent ground, ink text; hover fills plate grey (used for "Show more entries").
-- **Focus:** the global 3px spot outline, 3px offset.
+Plain, solid and quiet; never more than one primary in view.
+- **Shape:** control radius (9px).
+- **Primary:** Index Indigo with white text, UI or Body weight 500 to 600. The tool page's "Visit" button is 48px tall with the label left and the outbound arrow right.
+- **Hover / Focus:** hover deepens to Deep Indigo over 150ms; focus is the site ring (2px Index Indigo outline, 2px offset).
+- **Secondary:** white with a Strong Line border, hover fills with Fill. Ink 2 text on "Show more" and the mobile Filters toggle; Ink text (row size, 500) on the tool page's "View the repository", the second way out.
+- **Text action:** underlined caption-size links in accent ("Clear all") or meta (the "/" switch), the underline brightening on hover.
 
-### Search field
-Borderless except a 3px ink underline; Franklin 600 at 1.625rem, -0.01em. On focus the underline turns spot and no outline is drawn. The caret is spot; the placeholder ink-3. Its label is Franklin 800 with a light "(press /)" hint; "/" focuses it from anywhere. The hint is hidden from screen readers (the field carries `aria-keyshortcuts="/"`) and on touch screens; "/" ignores Ctrl, Cmd and Alt. Because a one-character shortcut can be fired by speech input or a stray key, a small "Turn off the / shortcut" button (count size, ink-3, underlined) sits at the right of the label row; the choice is remembered in this browser (WCAG 2.1.4). Enter or ↓ in the field moves focus to the first result, past the section filters, which form a labelled group ("Filter by section").
+### Chips
+- **Filter chip:** Indigo Wash background, Deep Indigo caption text, row radius, a 12px cross; hover to Halo Indigo. One per ticked facet, beside the summary; activating it removes the filter and moves focus to the next chip, else the previous one, else "Clear all", else the summary. On touch screens each chip and "Clear all" sit in a full 44px button with the chip drawn inside, so wrapped lines (4px apart) never share a tap area.
+- **Section badge:** the same wash treatment, 28px tall, linking to the section.
+- **Kind badge:** white, 1px line, Ink 3, 28px tall; not interactive.
+- **Topic tag:** Fill background, mono micro, key radius; hover to Line. Links to a search.
 
-### Section index run
-A typeset run of section names with counts that doubles as the filter (buttons with `aria-pressed` on home; links elsewhere, `aria-current` where applicable). Items wrap as whole names (never inside one) with 0.35rem by 1.5rem gaps; on phones (below 640px) the home filter run is a single line that scrolls sideways, bleeding to the screen edge, so the first screen reaches the entries, and the chosen section scrolls into view at 1.0625rem Franklin 700 in ink-2, counts at 0.8125rem 500 in ink-3. Hover: ink text over a 3px ink-3 underline. Current: ink text over a 3px ink underline. Empty sections drop to ink-3 at 500. It is reused as "Other sections". The 404 page does not repeat it (the footer already lists every section); it offers a search field instead, pre-filled from the dead address.
+### Cards / Containers
+- **Corner Style:** sheet radius (12px).
+- **Background:** Sheet White on the ground.
+- **Shadow Strategy:** none (see Elevation & Depth).
+- **Border:** 1px Line.
+- **Internal Padding:** 20px; the write-up cards 20 by 22px.
+- **Write-up cards:** "When to use it" and "Caveats" sit side by side from md, each headed by a 18px drawn icon (indigo check circle; amber triangle) and a UI-size semibold title.
+
+### Inputs / Fields
+- **Main search:** 56px, sheet radius, white, Strong Line border, a meta-grey search icon, lead-size text, and the "/" key cap at the right while the shortcut is on.
+- **Compact search:** the header's version on every page without a main search, 40px, control radius, on the ground colour; on phones it collapses to a search icon linking to the home search.
+- **Focus:** border turns Index Indigo and the 3px halo appears, both over 150ms. The caret is indigo; placeholders are Meta Grey.
+- **Facet options:** a native checkbox tinted with the accent, label in Ink 2, count in mono at the right; options with zero results drop to Meta Grey but stay clickable. Groups past eight options show six and fold the rest behind an accent "N more" disclosure.
 
 ### Navigation
-On touch screens (`pointer: coarse`) small text links (nav, breadcrumbs, Access list links and tags) get 0.5rem of vertical hit padding without changing the layout, and tag rows open to 0.75rem gaps.
+- **Header nav:** UI weight 500, Ink 3, control radius, 8 by 12px. Hover and the current page both take a Fill background and Ink.
+- **Breadcrumbs:** caption size, Ink 3 links separated by meta slashes, the current page in Ink 4.
+- **Section list:** row-radius options in Ink 2 with mono counts; the chosen one in Indigo Wash, semibold Deep Indigo. On a section page they are links to each section's page.
+- **Order switch:** a segmented control in a Strong Line frame; the selected segment is solid Ink with white text.
+- **Skip link:** first in the tab order, appears as a solid Ink control at top left on focus.
 
-Masthead: full on home (tagline and nav above a 2px rule, then the display name and statement, then a 4px rule), compact everywhere else (Franklin 900 name at 2.125rem left, nav right, 4px rule). Nav links are Franklin 700 ink, underlined on hover and when current. Breadcrumbs are ink links at 600, underlined on hover, with ink-3 slashes. The footer repeats the name, a Literata note and the section list with counts.
+### The Index Row (signature)
+The unit of the whole site. Icon, then the name (title, Ink) with its section in meta caption beside it, then the tagline (row size, Ink 4, two lines max), then at the right the access link in mono indigo (host/path, truncated, with the outbound arrow) and the tool's kinds in mono meta beneath. Rows are separated by Soft Line and hover to Soft Fill. Enter or Down from the search moves focus to the first row's name. The empty state is a sheet with a title-size message, one line of help and a primary "Clear search and filters" button.
+
+### The "/" Shortcut
+"/" focuses the page's main search, else the header's. It exists only on a device with any fine pointer (`any-pointer: fine`: a mouse or trackpad, so a tablet with a trackpad keeps it); a touch-only device gets neither the shortcut, its hint nor its switch. Where it exists, a meta "Turn off the / shortcut" switch sits under the main search (WCAG 2.1.4), remembered per browser; the key caps show only while it is on. Both are decided before first paint by Base's head script (`data-slash-available`, `data-slash` on `<html>`), so neither flashes.
+
+### Motion
+State changes (colour, border, halo, disclosure chevrons) run at 150ms. Under `prefers-reduced-motion: reduce` every transition, animation and view transition is zeroed.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** open every section on a 4px ink rule and every block on a 2px ink rule.
-- **Do** print every picture as a plate on paper-2 and let it develop to colour only on hover, focus, or its own entry page.
-- **Do** give every tool without a thumbnail the composed plate: halftoned icon, name set large on cards, source in Courier on a 2px rule; the quiet band on its entry page.
-- **Do** end every entry in an Access line or Access box, with the URL in Courier as host/path.
-- **Do** keep spot blue for content links, the Access label, focus (ring and search underline), caret and the Access button's hover.
-- **Do** set reading text in Literata at a 66ch measure; set names and heads in Franklin 850 to 900 with negative tracking.
+- **Do** keep the accent for links, the primary action, selection and focus; never use it as decoration.
+- **Do** frame every list in one white sheet with 12px corners and 1px lines, rows divided by Soft Line.
+- **Do** set URLs, counts, kinds, tags and keys in Geist Mono, and everything else in Geist.
+- **Do** use the four radii by object size: 12 sheet, 9 control, 7 row, 5 key.
+- **Do** give every target 44px on coarse pointers through padding or an invisible hit area.
+- **Do** show the focus ring (2px Index Indigo, 2px offset) on every focusable element, inset where a parent would clip it.
+- **Do** put a count beside every facet and keep it live.
+- **Do** list a metric-matched fallback face second in any font stack.
 
 ### Don't:
-- **Don't** use shadows, rounded corners, soft cards or tinted panels.
-- **Don't** set anything but URLs, repository paths and tags in Courier Prime.
-- **Don't** add colour beyond the single spot blue; images carry their own colour only once developed.
-- **Don't** colour navigation, headings or entry names with the spot; they stay ink.
-- **Don't** add a dark theme, a theme toggle, or colours chosen to survive inversion.
-- **Don't** replace the section index run with pill tags or a dropdown.
+- **Don't** add drop shadows, gradients or lifted cards; the focus halo is the only shadow.
+- **Don't** set any text lighter than Meta Grey.
+- **Don't** build a grid of identical screenshot cards with pill tags; the catalog is a ruled list.
+- **Don't** use the Caveat Amber for anything but the caveats icon.
+- **Don't** put an uppercase label above a heading as a kicker; Label names a group of controls or a box, nothing else.
+- **Don't** design a dark theme; the site is light only.
+- **Don't** use emoji or text glyphs as icons; draw them as inline SVG at the 2 to 2.25px stroke.

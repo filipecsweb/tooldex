@@ -27,12 +27,12 @@ Success: a visitor understands a tool in under a minute and clicks through to it
 - Entry is usually a tool page reached from search, sometimes a category page or the home directory.
 - Visitors are often mid-task in a terminal or editor, switching to the browser to evaluate an add-on.
 - One curator (the owner) adds, edits and removes tools constantly via repo scripts; there are no user accounts, submissions, comments or ratings.
-- Tools are grouped by the job they do (dev workflow, research, marketing, design & diagrams, writing, security, agent teams), not by harness or by kind.
+- Tools are grouped by the job they do (sections such as dev workflow, research, security or writing; the full list is `src/content/categories.json`), not by harness or by kind.
 
 ## Capabilities and Constraints
 
 - Static site: Astro, prerendered, served from a Cloudflare Worker. Content lives in the repo, one Markdown file per tool.
-- Per tool: name, tagline, category, tags, repo and/or website, other links, thumbnail (or a designed fallback), icon, body copy.
+- Per tool: name, tagline, category, tags, repo and/or website, other links, thumbnail (optional; shown on its own page only, never in lists), icon, body copy.
 - Search and category filtering on the home directory.
 - **Light theme only.** No dark mode, no toggle. (Owner decision.)
 - No analytics, no submissions, no accounts.
@@ -43,11 +43,11 @@ Success: a visitor understands a tool in under a minute and clicks through to it
 - Name: **tooldex**, always lowercase.
 - Voice of write-ups: **light editorial**. Factual, plus a short "when to use it" and honest caveats (e.g. heavy setup, one harness only). No ratings, no scores, no hype.
 - **No rotting facts.** Copy never states star counts, version numbers, counts of features/patterns/platforms, pricing, or install commands. The tool's own page is the source of truth for specifics; tooldex links to it.
-- No logo or visual identity exists yet.
+- Identity: the lowercase **tooldex** wordmark set in Geist, a mark (a white "t" on an indigo rounded square, the favicon and share image), and the Index visual system recorded in `DESIGN.md`.
 
 ## Evidence on Hand
 
-- Seven real tools with real repositories, READMEs, owner avatars, and in some cases websites and custom social images (see `PLAN.md` §12 and `src/content/tools/`).
+- Real tools with real repositories, READMEs, owner avatars, and in some cases websites, custom social images and screenshots (see `src/content/tools/`).
 - No testimonials, user counts, press or partnerships. Never fabricate any.
 
 ## Product Principles
