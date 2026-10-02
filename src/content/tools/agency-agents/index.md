@@ -4,7 +4,6 @@ tagline: "A roster of specialist AI agents, from frontend engineers to community
 category: agent-teams
 tags: [subagents, claude-code, codex, cursor, gemini-cli, opencode, copilot, windsurf, aider, antigravity, openclaw, qwen-code, kimi-code, hermes, osaurus, mistral-vibe, deepseek-harness, personas, multi-agent]
 repo: https://github.com/msitarzewski/agency-agents
-website: https://agencyagents.app
 thumbnail: ./thumb.webp
 icon: ./icon.png
 added: 2026-09-26

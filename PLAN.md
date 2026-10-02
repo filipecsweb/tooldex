@@ -110,14 +110,14 @@ Nothing per tool is hardcoded outside its folder. `src/lib/data.ts` is the only 
 | Route | Content |
 |---|---|
 | `/` | Hero (the tagline as `h1`, one lead sentence, the search field), then the directory island: sections, "Works with" and "Kind" filters in a sidebar beside one list of icon rows, the first page of rows SSR'd before hydration. |
-| `/tools/[slug]` | Breadcrumb · icon · name · tagline · section and kind chips · "What it is" · "When to use it" and "Caveats" cards · the screenshot when there is one · related tools; a sticky aside with the primary button, the repository button when both exist, and the details (links, section, hosts, topic tags, dates) · JSON-LD `SoftwareApplication` + `BreadcrumbList`. |
+| `/tools/[slug]` | Breadcrumb · icon · name · tagline · section and kind chips · "What it is" · "When to use it" and "Caveats" cards · the screenshot when there is one · related tools; a sticky aside with the primary button, the repository button when both exist, and the details (links, hosts, topic tags, dates) · JSON-LD `SoftwareApplication` + `BreadcrumbList`. |
 | `/categories` | Sections with tools: name, description, count and a few tool names. |
 | `/categories/[slug]` | Breadcrumb · name · description · the same directory island scoped to the section (sections become links) · JSON-LD `ItemList` + `BreadcrumbList`. Unpaginated. |
 | `/tools.json` | Prerendered index in the island's shape (§5). Nothing fetches it yet. |
 | `/404` | A search field pre-filled from the dead address, a link to the sections. |
 | `/sitemap-index.xml`, `/robots.txt` | Sitemap integration; robots in `public/`. |
 
-Components: `Base.astro` (head, `<ClientRouter />`, header with a compact search on every page but home, footer), `Seo.astro` (rendered by `Base.astro` in the head: title, description, canonical, OG/Twitter, JSON-LD; a noindex page, the 404, gets no canonical or `og:url`, since it is served at whatever address was dead), `Directory.tsx` (the island; `Catalog.astro` mounts it on home and, scoped, on section pages), `ToolActions.astro` and `ToolDetails.astro` (the tool page's buttons and details). `src/lib/body.ts` splits the Markdown write-up at AST level into "What it is" and the two cards; `check` reads bodies with the same rule. `src/site.ts` holds the site name, URL, description and nav, the only file with product strings.
+Components: `Base.astro` (head, `<ClientRouter />`, header with a compact search on every page but home, footer), `Seo.astro` (rendered by `Base.astro` in the head: title, description, canonical, OG/Twitter, JSON-LD; a noindex page, the 404, gets no canonical or `og:url`, since it is served at whatever address was dead), `Directory.tsx` (the island; `Catalog.astro` mounts it on home and, scoped, on section pages), `ToolActions.astro` and `ToolDetails.astro` (the tool page's buttons and details). `src/lib/body.ts` splits the Markdown write-up at AST level into "What it is" and the two cards; `check` reads bodies with the same rule. `src/site.ts` holds the site's product strings (name, description, tagline, lead, footer note), the only file with them.
 
 Lists show icons, never thumbnails. A tool without a thumbnail simply has no screenshot on its page, and its social share falls back to the site default `public/og.png` (made from `scripts/og.html`).
 
@@ -287,17 +287,17 @@ The ones that live in code carry a `ponytail:` comment there.
 
 ## 12. Seed data
 
-Exactly seven, nothing else. The owner adds more with `tool add`.
+The launch seed was these seven; the owner adds more with `tool add`. Each entry's own folder is the source of truth for its links.
 
-| Tool | Repo | Website | Other links |
-|---|---|---|---|
-| gstack | garrytan/gstack | — | — |
-| last30days | mvanhorn/last30days-skill | — | — |
-| Claude Ads | AgriciDaniel/claude-ads | https://claude-ads.md | — |
-| Archify | tt-a1i/archify | https://tt-a1i.github.io/archify/ | — |
-| No AI Slop | petergyang/no-ai-slop | — | Article (creatoreconomy.so) |
-| SkillSpector | NVIDIA/SkillSpector | — | Docs (docs.nvidia.com) |
-| The Agency | msitarzewski/agency-agents | https://agencyagents.app | — |
+| Tool | Repo |
+|---|---|
+| gstack | garrytan/gstack |
+| last30days | mvanhorn/last30days-skill |
+| Claude Ads | AgriciDaniel/claude-ads |
+| Archify | tt-a1i/archify |
+| No AI Slop | petergyang/no-ai-slop |
+| SkillSpector | NVIDIA/SkillSpector |
+| The Agency | msitarzewski/agency-agents |
 
 ## 13. Decisions (answers to the draft's open questions)
 
