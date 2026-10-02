@@ -27,7 +27,7 @@ Status: approved 2026-09-26 with the answers in §13. All six steps of §11 are 
 | Wrangler | `wrangler@4` dev dep | No global install. |
 | Tests | `node --test` | Zero deps. Pure logic only: search matcher, filters and facet counts, facet vocabulary, write-up split, category guess, homepage classifier. |
 
-Not added: Fuse/MiniSearch, Pagefind, MDX, CMS, D1, icon library, state library, analytics, CI, submissions.
+Not added: Fuse/MiniSearch, Pagefind, MDX, CMS, D1, icon library, state library, analytics code (§13.7), CI, submissions.
 
 ## 2. Data model
 
@@ -307,6 +307,6 @@ Exactly seven, nothing else. The owner adds more with `tool add`.
 4. **Thumbnails:** mixed sources per §6; never GitHub's auto-generated card; no image when nothing usable (no fallback card); manual file always wins. Icons: owner avatar for repo-only tools.
 5. **Visual:** light theme only. impeccable decides type, colour and layout; the draft's font, hue and emoji choices are void.
 6. **Submissions:** none.
-7. **Analytics:** none.
+7. **Analytics:** Cloudflare Web Analytics (2026-10-02, owner decision; was none). The zone setting injects the beacon at the edge, so nothing in the repo adds or configures it.
 8. **Schema:** no extras beyond `repo` + `website` + other `links`, at least one of repo or website required. `pricing` dropped (§2).
 9. **Rebuild (2026-10):** the UI was rebuilt in the owner-pinned direction A · Index; the first design and the image pipeline that served only it were deleted. Kept: every entry and URL, `_redirects`, the tool CLI, SEO, deploy, light theme only. Kinds and hosts became a filterable vocabulary (§2, §5), checked against each tool's own README and site.

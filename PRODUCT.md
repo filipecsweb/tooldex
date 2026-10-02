@@ -35,7 +35,7 @@ Success: a visitor understands a tool in under a minute and clicks through to it
 - Per tool: name, tagline, category, tags, repo and/or website, other links, thumbnail (optional; shown on its own page only, never in lists), icon, body copy.
 - Search and category filtering on the home directory.
 - **Light theme only.** No dark mode, no toggle. (Owner decision.)
-- No analytics, no submissions, no accounts.
+- No submissions, no accounts. Analytics is Cloudflare Web Analytics alone, switched on for the zone in the Cloudflare dashboard; the repo carries no analytics code.
 - The catalogue starts at seven tools and will grow to hundreds or thousands; every surface must work with one tool in a category and with many.
 
 ## Brand Commitments
