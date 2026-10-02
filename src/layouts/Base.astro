@@ -3,12 +3,11 @@ import '../styles/global.css';
 import css from '../styles/global.css?raw';
 import { ClientRouter } from 'astro:transitions';
 import Seo from '../components/Seo.astro';
-import Masthead from '../components/Masthead.astro';
 import { getCategories } from '../lib/data';
 import { SITE } from '../site';
 // The two faces every page sets first; preloading them keeps the fallback swap from shifting the layout.
-import franklin from '@fontsource-variable/libre-franklin/files/libre-franklin-latin-wght-normal.woff2?url';
-import literata from '@fontsource-variable/literata/files/literata-latin-wght-normal.woff2?url';
+import geist from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import geistMono from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -20,42 +19,55 @@ interface Props {
 }
 const { title, description, image, imageAlt, jsonLd, noindex } = Astro.props;
 const sections = await getCategories();
-// The browser chrome takes the page's paper colour, read from its one definition in @theme.
-const paper = css.match(/--color-paper:\s*([^;]+);/)![1].trim();
+// The browser chrome takes the page's ground colour, read from its one definition in @theme.
+const ground = css.match(/--color-ground:\s*([^;]+);/)![1].trim();
+const nav = [
+  ['Catalog', '/'],
+  ['Sections', '/categories'],
+] as const;
+const here = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
+// The page itself is "page"; a page inside the section (a section page under /categories) is "true".
+const current = (href: string) => (here === href ? 'page' : href !== '/' && here.startsWith(`${href}/`) ? 'true' : undefined);
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content={paper} />
+    <meta name="theme-color" content={ground} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preload" href={franklin} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={literata} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={geist} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={geistMono} as="font" type="font/woff2" crossorigin />
     <Seo title={title} description={description} image={image} imageAlt={imageAlt} jsonLd={jsonLd} noindex={noindex} />
     <ClientRouter />
   </head>
   <body>
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-3 focus:py-2 focus:text-paper">Skip to content</a>
-    <slot name="masthead"><Masthead /></slot>
-    <main id="main" class="mx-auto max-w-sheet px-4 pb-24 sm:px-6">
+    <a href="#main" class="sr-only rounded-control bg-ink px-3 py-2 text-ui font-medium text-surface focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50">Skip to content</a>
+    <header class="border-b border-line bg-surface">
+      <div class="mx-auto flex h-16 max-w-sheet items-center justify-between gap-6 px-4 md:px-8">
+        <a href="/" class="text-wordmark text-ink no-underline hover:text-ink pointer-coarse:py-3.5">{SITE.name}</a>
+        <nav aria-label="Main" class="flex gap-1 text-ui font-medium">
+          {nav.map(([label, href]) => (
+            <a href={href} aria-current={current(href)} class="rounded-control px-3 py-2 text-ink-3 no-underline transition-colors duration-150 hover:bg-fill hover:text-ink pointer-coarse:py-3 aria-[current]:bg-fill aria-[current]:text-ink">{label}</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+    <main id="main" class="mx-auto max-w-sheet px-4 pb-18 md:px-8">
       <slot />
     </main>
-    <footer class="mx-auto max-w-sheet px-4 pb-12 sm:px-6">
-      <div class="rule-4 grid gap-10 pt-6 md:grid-cols-12">
-        <div class="md:col-span-5">
-          <a href="/" class="text-wordmark text-ink no-underline">{SITE.name}</a>
-          <p class="mt-3 max-w-[44ch] font-serif text-body-sm leading-[1.55] text-ink-2">
-            {SITE.tagline} Every entry links to the tool's own website or repository, which is the source of truth for install steps and details.
-          </p>
-        </div>
-        <nav aria-label="Sections" class="md:col-span-7">
-          <h2 class="text-label font-extrabold">Sections</h2>
-          <ul class="mt-3 gap-x-8 sm:columns-2">
+    <footer class="border-t border-line bg-surface">
+      <div class="mx-auto grid max-w-sheet gap-x-10 gap-y-7 px-4 py-8 text-caption text-ink-4 md:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <p class="max-w-[48ch]">
+          <a href="/" class="relative font-bold tracking-(--text-wordmark--letter-spacing) text-ink no-underline hover:text-ink pointer-coarse:py-4">{SITE.name}</a> · {SITE.note}
+        </p>
+        <nav aria-labelledby="footer-sections">
+          <h2 id="footer-sections" class="text-label uppercase text-meta">Sections</h2>
+          <ul class="mt-2 gap-x-8 sm:columns-2 md:columns-3">
             {sections.map((s) => (
-              <li class="flex break-inside-avoid items-baseline justify-between gap-3 pb-2">
-                <a href={`/categories/${s.id}`} class="font-semibold text-ink no-underline hover:underline">{s.data.name}</a>
-                <span class="text-count text-ink-3">{s.count}</span>
+              <li class="flex break-inside-avoid items-baseline justify-between gap-3">
+                <a href={`/categories/${s.id}`} class="py-1 text-ink-3 no-underline hover:text-ink hover:underline pointer-coarse:py-3.25">{s.data.name}</a>
+                <span class="font-mono text-micro text-meta">{s.count}</span>
               </li>
             ))}
           </ul>

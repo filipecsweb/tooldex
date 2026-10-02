@@ -3,7 +3,7 @@
     { "tag": "skill", "label": "Skill" },
     { "tag": "plugin", "label": "Plugin" },
     { "tag": "subagents", "label": "Subagents" },
-    { "tag": "mcp", "label": "MCP server" },
+    { "tag": "mcp", "label": "MCP" },
     { "tag": "cli", "label": "CLI" },
     { "tag": "library", "label": "Library" },
     { "tag": "app", "label": "App" }

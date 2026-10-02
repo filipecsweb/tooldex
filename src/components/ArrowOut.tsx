@@ -1,8 +1,8 @@
-// Outbound-link mark, drawn to match Franklin's stroke weight.
+// Outbound-link mark, drawn at Geist's stroke weight.
 export default function ArrowOut({ className = '' }: { className?: string }) {
   return (
-    <svg className={className} width="0.8em" height="0.8em" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
-      <path d="M3 9 9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="square" />
+    <svg className={className} width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

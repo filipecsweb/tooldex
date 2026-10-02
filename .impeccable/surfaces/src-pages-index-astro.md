@@ -7,20 +7,22 @@ related_targets: ["src/pages/tools/[slug].astro","src/pages/categories/[slug].as
 
 # Surface brief: tooldex catalog (home, tool entry, category section)
 
-Scope: the whole public site. Home directory is Operate (find a tool); tool entry pages are Read (understand one tool, then leave for its source); category pages are Operate. Build path: code-led (no image generation in this harness).
+Scope: the whole public site. Home directory is Operate (find a tool for a job); tool entry pages are Read (understand one tool, then leave for its source); section pages are Operate (the home directory scoped to one section). Build path: code-led; the owner-approved artboards in `.impeccable/redesign/reference/` (home and tool, 1440 and 390) are the critique reference.
 
-Audience and job: agent power users arriving mostly from search on a single entry, deciding in under a minute whether a tool is worth installing. Action: follow the Access box to the tool's website or repo. Proof/content: seven real tools, their real thumbnails/avatars, tooldex's own write-ups. Constraints: light theme only, no rotting facts, no invented claims, scales from one tool per category to thousands.
+Audience and job: agent power users, often mid-task in a terminal, deciding in under a minute whether a tool is worth installing, or scanning what exists for a job. Action: open an entry or leave straight for the tool's site/repo from its row. Proof/content: the real catalog with each tool's icon and colour screenshot, tooldex's own write-ups, the kinds/hosts facet vocabulary. Constraints: light theme only, no rotting facts, no invented claims, scales from one tool per section to thousands.
+
+Replaces the newsprint "Access to Tools" world entirely: the old DESIGN.md is the anti-reference until phase 5 rewrites it.
 
 ## Direction contract
 
-THESIS: tooldex is a catalog you read, not a feed you scroll: every tool is a reviewed catalog entry with an Access box, in the manner of the Whole Earth Catalog's "access to tools". It refuses the category default of a search hero over identical screenshot cards with pill tags.
+THESIS: tooldex is a dense, filterable index you operate, not a magazine you scroll: one ruled list of icon rows with the source link always one click away. It refuses the category default of a search hero over a grid of identical screenshot cards with pill tags.
 
-OWN-WORLD: grey newsprint ground, warm black ink, one Earth-blue spot colour for links and the Access label only. Heavy black rules (2–4px) cut the page into pasted-up blocks; no hairline soup, no soft cards, no shadows. Libre Franklin at black weight for mastheads and entry names, Literata for review prose, Courier Prime only for access data (URLs, repo paths, tags). Thumbnails print as halftone plates multiplied into the paper; tools without images get a composed plate of their halftoned icon and their name set large.
+OWN-WORLD: near-white ground (#FAFAF9) under a white list sheet, near-black ink, four grey inks down to a 4.5:1 meta grey, 1px warm-grey lines, one indigo accent (#2B37D6) reserved for links, the primary action, selection and focus. Geist for everything; Geist Mono only for access data (URLs, kinds, counts, the `/` key). Radii 12 containers, 9 to 10 controls, 7 rows and chips, 5 to 6 keys. No shadows but the focus halo; no gradients.
 
-STORY: the visitor sees at once that this is a catalog of agent tools, scans entries by what they do, reads a plain review, and leaves through Access.
+STORY: the visitor reads one sentence of what tooldex is, types or filters by section, host and kind, scans rows by name, job and tagline, then opens an entry or follows the mono access link out.
 
-FIRST VIEWPORT: full-width masthead: "tooldex" in Franklin black at display size on the left, the catalog statement and live entry/section counts on the right, a 4px rule under it. Directly below, one "Find" row: search field plus the section index (sections with counts) as the filter. Then the paste-up begins with the lead entry across the full row (plate over two columns; name, tagline, "When to use it" and Access line in the third), as DESIGN.md › Layout sets it; its plate and name start above the fold at 1440×900, and the three-column grid follows below. (Revised: three full entries above the fold cannot fit under the masthead and Find row at 900px tall, with or without the lead spread.)
+FIRST VIEWPORT: white 64px header (wordmark left, Catalog/Sections right); a 44px tagline H1, one lead sentence, a 56px search field with its `/` key; below, a 224px sidebar (Sections, Works with, Kind) beside the summary line, Newest / A to Z switch and the white list sheet, its first rows above the fold at 1440x900.
 
-FORM: Whole Earth Catalog "Access to Tools" (Impeccable's pick, rank 1 of 7 on the grounded list); seed key dbd5d781. Signature interaction: a plate "develops" from halftone to full colour on hover/focus; on its entry page it is shown developed, after the review.
+FORM: Index (direction A), pinned by the owner on the design canvas; it overrides the roll. Seed key 834ea4fc (concept-seed run only for the key; its assignment is overridden by the owner's pin). Signature interaction: live faceted narrowing, every facet count answering "what would I get" as you type and tick, mirrored to a shareable URL.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

@@ -1,269 +1,148 @@
-@import "@fontsource-variable/libre-franklin";
-@import "@fontsource-variable/literata";
-@import "@fontsource/courier-prime/400.css";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 @import "tailwindcss";
 
-/* Local faces sized to the web fonts' metrics (from their files via @capsizecss/unpack), so text
-   set before the fonts arrive takes the same space and nothing reflows on the swap. */
+/* Local faces sized to the web fonts' metrics (average lowercase width and vertical metrics read
+   from the Geist files), so text set before the fonts arrive takes the same space and nothing
+   reflows on the swap. */
 @font-face {
-  font-family: "Libre Franklin Fallback";
+  font-family: "Geist Fallback";
   src: local("Arial"), local("Liberation Sans"), local("Helvetica");
-  size-adjust: 102.06%;
-  ascent-override: 94.65%;
-  descent-override: 24.1%;
+  size-adjust: 105.85%;
+  ascent-override: 94.94%;
+  descent-override: 27.87%;
   line-gap-override: 0%;
 }
 @font-face {
-  font-family: "Literata Fallback";
-  src: local("Georgia"), local("Gelasio");
-  size-adjust: 107.67%;
-  ascent-override: 109.31%;
-  descent-override: 28.61%;
+  font-family: "Geist Mono Fallback";
+  src: local("Courier New"), local("Liberation Mono"), local("Courier");
+  size-adjust: 100%;
+  ascent-override: 100.5%;
+  descent-override: 29.5%;
   line-gap-override: 0%;
 }
 
-/* Access to Tools: grey newsprint, warm black ink, one Earth-blue spot colour. */
+/* Index: a white list sheet on a near-white ground, near-black ink, 1px warm-grey lines and one
+   indigo accent for links, the primary action, selection and focus. The defaults are cleared so
+   every colour, size and radius on the site is one of these. */
 @theme {
-  --color-paper: #e9eae7;
-  --color-paper-2: #dcddd9;
-  --color-ink: #16150f;
-  --color-ink-2: #45443c;
-  --color-ink-3: #5f5e55;
-  --color-spot: #1f55a6;
-  --color-spot-deep: #163f7d;
+  --color-*: initial;
+  --color-ground: #fafaf9;
+  --color-surface: #ffffff;
+  --color-ink: #111113;
+  --color-ink-2: #24242a; /* prose, list text */
+  --color-ink-3: #3a3a42; /* navigation, quiet controls */
+  --color-ink-4: #5a5a63; /* taglines, the lead */
+  --color-meta: #6a6a74; /* counts, labels; never lighter: the 4.5:1 floor on every ground, accent-tint included */
+  --color-line: #e5e5e2;
+  --color-line-soft: #ecece9;
+  --color-line-strong: #d6d6d2;
+  --color-fill: #f1f1ef;
+  --color-fill-soft: #f8f8f6;
+  --color-accent: #2b37d6;
+  --color-accent-deep: #1c258f;
+  --color-accent-tint: #e9ebfd;
+  --color-halo: #e3e6fd;
+  --color-caveat: #9a4a00;
 
-  --font-sans: "Libre Franklin Variable", "Libre Franklin Fallback", "Franklin Gothic Medium", "Arial Narrow", sans-serif;
-  --font-serif: "Literata Variable", "Literata Fallback", Georgia, serif;
-  --font-mono: "Courier Prime", "Courier New", monospace;
+  --font-*: initial;
+  --font-sans: "Geist Variable", "Geist Fallback", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono Fallback", ui-monospace, monospace;
 
-  /* Type roles (DESIGN.md › Typography). Each sets size, leading, tracking and weight together. */
-  --text-display: clamp(3.75rem, 13vw, 6rem);
-  --text-display--line-height: 0.82;
-  --text-display--letter-spacing: -0.045em;
-  --text-display--font-weight: 900;
-  --text-headline: clamp(2.75rem, 7vw, 5.25rem);
-  --text-headline--line-height: 0.9;
-  --text-headline--letter-spacing: -0.04em;
-  --text-headline--font-weight: 900;
-  --text-wordmark: 2.125rem;
+  /* Type roles. Each sets size, leading, tracking and weight together. */
+  --text-*: initial;
+  --text-display: clamp(2.125rem, 1.5rem + 2.6vw, 2.75rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 600;
+  --text-wordmark: 1.25rem;
   --text-wordmark--line-height: 1;
-  --text-wordmark--letter-spacing: -0.045em;
-  --text-wordmark--font-weight: 900;
-  --text-title: 1.75rem;
-  --text-title--line-height: 1.02;
-  --text-title--letter-spacing: -0.03em;
-  --text-title--font-weight: 850;
-  --text-title-lead: clamp(1.75rem, 3vw, 2.75rem);
-  --text-title-lead--line-height: 1.02;
-  --text-title-lead--letter-spacing: -0.03em;
-  --text-title-lead--font-weight: 850;
-  --text-note: 1.375rem;
-  --text-note--line-height: 1.25;
-  --text-note--letter-spacing: -0.02em;
-  --text-note--font-weight: 850;
-  --text-search: 1.625rem;
-  --text-search--line-height: 1.5;
-  --text-lead: clamp(1.25rem, 2.2vw, 1.5rem);
-  --text-lead--line-height: 1.4;
-  --text-body: 1.1875rem;
-  --text-body--line-height: 1.62;
-  --text-body-sm: 1.0625rem;
-  --text-body-sm--line-height: 1.5;
-  --text-label: 0.9375rem;
-  --text-label--line-height: 1.5;
-  --text-count: 0.8125rem;
-  --text-count--line-height: 1.5;
+  --text-wordmark--letter-spacing: -0.03em;
+  --text-wordmark--font-weight: 700;
+  --text-lead: 1.0625rem;
+  --text-lead--line-height: 1.55;
+  --text-title: 1rem;
+  --text-title--line-height: 1.5;
+  --text-title--letter-spacing: -0.01em;
+  --text-title--font-weight: 600;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5;
+  --text-row: 0.90625rem;
+  --text-row--line-height: 1.45;
+  --text-ui: 0.875rem;
+  --text-ui--line-height: 1.45;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+  --text-data: 0.78125rem;
+  --text-data--line-height: 1.45;
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1.4;
+  /* Group labels ("Sections", "Works with"), set in capitals. */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.07em;
+  --text-label--font-weight: 600;
 
-  --container-sheet: 1320px;
+  --radius-*: initial;
+  --radius-sheet: 12px; /* containers, the search field */
+  --radius-control: 9px; /* buttons, switches, icons */
+  --radius-row: 7px; /* list items, chips, sidebar options */
+  --radius-key: 5px; /* keys, tags */
 
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --container-sheet: 1280px;
 }
 
 @layer base {
   html {
-    background: var(--color-paper);
+    background: var(--color-ground);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    font-size: 100%;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    scrollbar-color: var(--color-ink-3) var(--color-paper-2);
+    scrollbar-color: var(--color-line-strong) var(--color-ground);
     font-variant-numeric: tabular-nums;
   }
   body {
     min-height: 100dvh;
-    background: var(--color-paper);
+    background: var(--color-ground);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
   }
   ::selection {
-    background: var(--color-ink);
-    color: var(--color-paper);
+    background: var(--color-accent-tint);
+    color: var(--color-accent-deep);
   }
   :focus-visible {
-    outline: 3px solid var(--color-spot);
-    outline-offset: 3px;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
   a {
-    text-underline-offset: 0.2em;
-    text-decoration-thickness: 1.5px;
+    color: var(--color-accent);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  a:hover {
+    color: var(--color-accent-deep);
   }
   input {
-    caret-color: var(--color-spot);
+    caret-color: var(--color-accent);
   }
   input::placeholder {
-    color: var(--color-ink-3);
+    color: var(--color-meta);
   }
   h1, h2, h3 {
     text-wrap: balance;
     /* A one-word name ("changedetection.io") wider than its column breaks rather than overflowing. */
     overflow-wrap: break-word;
   }
-}
-
-@layer components {
-  /* A heavy paste-up rule. Weight carries hierarchy: 4px section, 2px block. */
-  .rule-4 { border-top: 4px solid var(--color-ink); }
-  .rule-2 { border-top: 2px solid var(--color-ink); }
-
-  /* Plates: each image printed as a real halftone (scripts/plates.ts) over its colour original.
-     Hover or focus "develops" it: the halftone fades out and the colour comes up. */
-  .plate {
-    position: relative;
-    aspect-ratio: 1600 / 840;
-    overflow: hidden;
-    background: var(--color-paper-2);
-    container-type: inline-size;
-    isolation: isolate;
-  }
-  .ink {
-    position: relative;
-    display: block;
-  }
-  .ink img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top;
-    transition: opacity 0.6s var(--ease-out-expo);
-  }
-  .ink-colour {
-    mix-blend-mode: multiply;
-  }
-  .ink[data-ink] .ink-colour {
-    opacity: 0;
-  }
-  :is(.entry:hover, a:hover, a:focus-visible) .ink[data-ink] .ink-colour,
-  .plate[data-developed] .ink[data-ink] .ink-colour {
-    opacity: 1;
-  }
-  :is(.entry:hover, a:hover, a:focus-visible) .ink-plate,
-  .plate[data-developed] .ink-plate {
-    opacity: 0;
-  }
-  .plate-full {
-    position: absolute;
-    inset: 0;
-  }
-
-  /* The composed plate for tools without an image: halftoned icon plus the name set large. */
-  .plate-composed {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: 1fr auto;
-    align-items: center;
-    gap: 0 6cqw;
-    padding: 7cqw;
-  }
-  .plate-icon {
-    width: 24cqw;
-    height: 24cqw;
-  }
-  /* On an entry page the H1 already carries the name, so the composed plate shrinks to a band:
-     the portrait at left, the source set on a rule beside it. */
-  .plate:has(> .plate-composed[data-quiet]) {
-    aspect-ratio: auto;
-  }
-  .plate-composed[data-quiet] {
-    position: relative;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto;
-    align-items: end;
-    gap: 0 clamp(1rem, 4cqw, 2rem);
-    padding: clamp(1rem, 4cqw, 2rem);
-  }
-  .plate-composed[data-quiet] .plate-icon {
-    width: clamp(7rem, 22cqw, 11rem);
-    height: clamp(7rem, 22cqw, 11rem);
-  }
-  .plate-composed[data-quiet] .plate-source {
-    grid-column: 2;
-    font-size: clamp(0.8125rem, 2.2cqw, 1rem);
-  }
-  .plate-name {
-    font-weight: 900;
-    /* --len is the longest word; ~0.55em per character at this weight. */
-    font-size: min(10cqw, calc(96cqw / var(--len, 8)), 5rem);
-    line-height: 0.92;
-    letter-spacing: -0.035em;
-  }
-  .plate-source {
-    grid-column: 1 / -1;
+  kbd, code {
     font-family: var(--font-mono);
-    font-size: clamp(0.7rem, 3.2cqw, 1.1rem);
-    color: var(--color-ink-2);
-    border-top: 2px solid var(--color-ink);
-    padding-top: 2.5cqw;
-  }
-
-  /* The section index: a typeset run of names with counts, the current one underscored in ink. */
-  .index-run {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 1.5rem;
-    font-size: var(--text-body-sm);
-  }
-  .index-run > li { flex-shrink: 0; }
-  .index-item {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.35em;
-    padding-block: 0.15rem;
-    border-bottom: 3px solid transparent;
-    font-weight: 700;
-    white-space: nowrap;
-    color: var(--color-ink-2);
-    text-decoration: none;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .index-item:hover { color: var(--color-ink); border-bottom-color: var(--color-ink-3); }
-  .index-item:is([aria-pressed="true"], [aria-current]) { color: var(--color-ink); border-bottom-color: var(--color-ink); }
-  .index-item[data-empty] { color: var(--color-ink-3); font-weight: 500; }
-  .index-count { font-size: var(--text-count); font-weight: 500; color: var(--color-ink-3); }
-
-  /* Links inside content take the spot colour; navigation and headings stay ink. */
-  .link, .review a { color: var(--color-spot); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--color-spot) 45%, transparent); }
-  .link:hover, .review a:hover { color: var(--color-spot-deep); text-decoration-color: currentColor; }
-
-  /* Review prose: the catalog's reading voice. Run-in heads ("When to use it:") set in Franklin. */
-  .review {
-    font-family: var(--font-serif);
-    font-size: var(--text-body);
-    line-height: var(--text-body--line-height);
-    max-width: 66ch;
-  }
-  .review p { margin: 0 0 1.05em; }
-  .review strong {
-    font-family: var(--font-sans);
-    font-weight: 800;
-    font-size: 0.94em;
   }
 }
 
-/* A filtered URL (?q=, ?section=) is rendered unfiltered on the server; hold the list until the
-   island has applied the filter, so it doesn't paint the whole catalog and then collapse. */
+/* A filtered URL (?q=, ?section=, ?host=, ?kind=) is rendered unfiltered on the server; hold the list
+   until the island has applied the filter, so it doesn't paint the whole catalog and then collapse. */
 [data-filtering] #results { visibility: hidden; }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-10-02T01:55:53.823Z",
+        "reason": "Owner-pinned direction A: PLAN.md section 2 names Geist for everything"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-10-02T01:55:53.834Z",
+        "reason": "Owner-pinned direction A: PLAN.md section 2 names Geist Mono for access data"
+      }
+    ]
+  }
+}

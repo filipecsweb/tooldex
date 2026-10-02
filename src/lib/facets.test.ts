@@ -12,7 +12,7 @@ test('splitTags sorts tags into kinds, hosts and topics, keeping tag order', () 
 });
 
 test('facetLabel uses the vocabulary and falls back to the tag', () => {
-  assert.equal(facetLabel('mcp'), 'MCP server');
+  assert.equal(facetLabel('mcp'), 'MCP');
   assert.equal(facetLabel('claude-code'), 'Claude Code');
   assert.equal(facetLabel('self-hosted'), 'self-hosted');
 });

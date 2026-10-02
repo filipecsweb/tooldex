@@ -26,5 +26,5 @@ export const GENERIC_TAGS = new Set([...kindTags, ...hostTags]);
 /** Tags are lowercase kebab-case (CLAUDE.md › Tags). */
 export const isTag = (tag: string) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(tag);
 
-/** "mcp" -> "MCP server"; a topic tag is its own label. */
+/** "mcp" -> "MCP"; a topic tag is its own label. */
 export const facetLabel = (tag: string) => labels.get(tag) ?? tag;
