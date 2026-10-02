@@ -6,6 +6,7 @@
 // in any case.
 import type { Element, ElementContent, Root, RootContent } from 'hast';
 import { markdownToHast, type HastPluginDefinition } from 'satteri';
+import { NEW_TAB, OFFSITE } from './format.ts';
 
 export const BODY_SECTIONS = ['When to use it', 'Caveats'] as const;
 export type BodySection = (typeof BODY_SECTIONS)[number];
@@ -118,11 +119,22 @@ export function splitBody(nodes: readonly RootContent[]): RootContent[] {
   return out;
 }
 
-/** splitBody as a Sätteri hast plugin (markdown.processor in astro.config.mjs, which also keys
- *  Astro's content cache to this file so a change here re-renders every body). */
+/** A link off the site in a write-up opens in a new tab and says so, like every other way out; the
+ *  note is hidden text, so the name still comes from the link's content (an image's alt included). */
+function leave<T extends RootContent | ElementContent>(n: T): T {
+  if (n.type !== 'element') return n;
+  const children = n.children.map(leave);
+  const href = n.properties.href;
+  if (n.tagName !== 'a' || typeof href !== 'string' || !/^(https?:)?\/\//i.test(href)) return { ...n, children };
+  return { ...n, properties: { ...n.properties, ...OFFSITE }, children: [...children, el('span', 'sr-only', [{ type: 'text', value: ` ${NEW_TAB}` }])] };
+}
+
+/** splitBody as a Sätteri hast plugin, links off the site marked first (markdown.processor in
+ *  astro.config.mjs, which also keys Astro's content cache to this file and format.ts, so a change
+ *  in either re-renders every body). */
 export const splitBodyPlugin: HastPluginDefinition = {
   name: 'tooldex-split-body',
   after(root, ctx) {
-    ctx.replaceNode(root, { ...root, children: splitBody(root.children) } as Root);
+    ctx.replaceNode(root, { ...root, children: splitBody(root.children.map(leave)) } as Root);
   },
 };

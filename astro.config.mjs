@@ -30,9 +30,11 @@ function lastmod(path) {
   return newest(tools);
 }
 
-// The split's output depends on its own source and on the Sätteri version that parses the Markdown.
+// The split's output depends on its own source, on the link constants in format.ts and on the Sätteri version
+// that parses the Markdown.
 const bodyHash = createHash('sha256')
   .update(readFileSync(new URL('./src/lib/body.ts', import.meta.url)))
+  .update(readFileSync(new URL('./src/lib/format.ts', import.meta.url)))
   .update(JSON.parse(readFileSync(new URL('./node_modules/satteri/package.json', import.meta.url), 'utf8')).version)
   .digest('hex')
   .slice(0, 12);
@@ -47,8 +49,8 @@ export default defineConfig({
   adapter: cloudflare({ imageService: 'compile' }),
   // Tool pages show the write-up's "When to use it" and "Caveats" paragraphs as cards. Astro caches
   // rendered Markdown (node_modules/.astro, which CI build caches can restore) and clears it only
-  // when the serialised config changes, so the plugin's name carries a hash of its source: editing
-  // src/lib/body.ts changes the config and re-renders every body.
+  // when the serialised config changes, so the plugin's name carries a hash of its sources: editing
+  // src/lib/body.ts or src/lib/format.ts changes the config and re-renders every body.
   markdown: { processor: satteri({ hastPlugins: [{ ...splitBodyPlugin, name: `${splitBodyPlugin.name}@${bodyHash}` }] }) },
   integrations: [react(), sitemap({ serialize: (item) => ({ ...item, lastmod: lastmod(new URL(item.url).pathname) }) })],
   server: { port: 4401 },

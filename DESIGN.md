@@ -318,7 +318,7 @@ Four radii, each tied to the size of the object, so nested shapes always read co
 
 Screenshots are cropped to one aspect (1600 / 840), top-anchored, inside a 12px ruled frame on a Fill well. Icons are always framed by a 1px line on a Fill well; a tool without an icon shows its initial in Ink 4 in the same frame.
 
-Strokes on drawn icons are 2 to 2.25px, round-capped, at Geist's weight. The outbound arrow is one shared mark used on every way out.
+Strokes on drawn icons are 2 to 2.25px, round-capped, at Geist's weight. The outbound arrow is one shared mark used on every way out. Every link off the site opens in a new tab, and its accessible name says so.
 
 ## Components
 
@@ -358,7 +358,7 @@ Plain, solid and quiet; never more than one primary in view.
 - **Skip link:** first in the tab order, appears as a solid Ink control at top left on focus.
 
 ### The Index Row (signature)
-The unit of the whole site. Icon, then the name (title, Ink) with its section in meta caption beside it, then the tagline (row size, Ink 4, two lines max), then at the right the access link in mono indigo (host/path, truncated, with the outbound arrow) and the tool's kinds in mono meta beneath. Rows are separated by Soft Line and hover to Soft Fill. Enter or Down from the search moves focus to the first row's name. The empty state is a sheet with a title-size message, one line of help and a primary "Clear search and filters" button.
+The unit of the whole site. Icon (a second link to the tool's page for the pointer, which underlines the name on hover; keyboards and screen readers use the name), then the name (title, Ink) with its section in meta caption beside it, then the tagline (row size, Ink 4, two lines max), then at the right the access link in mono indigo (host/path, truncated, with the outbound arrow) and the tool's kinds in mono meta beneath. Rows are separated by Soft Line and hover to Soft Fill. Enter or Down from the search moves focus to the first row's name. The empty state is a sheet with a title-size message, one line of help and a primary "Clear search and filters" button.
 
 ### The "/" Shortcut
 "/" focuses the page's main search, else the header's. It exists only on a device with any fine pointer (`any-pointer: fine`: a mouse or trackpad, so a tablet with a trackpad keeps it); a touch-only device gets neither the shortcut, its hint nor its switch. Where it exists, a meta "Turn off the / shortcut" switch sits under the main search (WCAG 2.1.4), remembered per browser; the key caps show only while it is on. Both are decided before first paint by Base's head script (`data-slash-available`, `data-slash` on `<html>`), so neither flashes.

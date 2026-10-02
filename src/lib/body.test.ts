@@ -32,7 +32,7 @@ test('a missing label, no labels, and text after the last label', () => {
 
 test('capitalises plain words (also in em/strong), never code or links', () => {
   assert.match(html('**Caveats:** `npx foo` runs it.'), /<p><code>npx foo<\/code> runs it\.<\/p>/);
-  assert.match(html('**Caveats:** [the docs](https://x.y) say so.'), /<p><a href="https:\/\/x.y">the docs<\/a> say so\.<\/p>/);
+  assert.match(html('**Caveats:** [the docs](https://x.y) say so.'), /<p><a [^>]*>the docs<span class="sr-only">[^<]*<\/span><\/a> say so\.<\/p>/);
   assert.match(html('**Caveats:** *mostly* fine.'), /<p><em>Mostly<\/em> fine\.<\/p>/);
 });
 
@@ -53,4 +53,14 @@ test('check reads bodies the way the page does', () => {
 test('check rejects an empty label and a repeated one', () => {
   assert.deepEqual(bodyProblems('Intro.\n\n**When to use it:**\n\n**Caveats:** some.'), ["body's **When to use it:** paragraph is empty"]);
   assert.deepEqual(bodyProblems(FULL + '\n**Caveats:** more.\n'), ['body has 2 **Caveats:** paragraphs; keep one']);
+});
+
+test('a link off the site opens in a new tab and says so; a link on it does not', () => {
+  assert.match(
+    html('See [the *docs*](https://x.y/a) and [a section](/categories/x).'),
+    /<a href="https:\/\/x\.y\/a" target="_blank" rel="noopener">the <em>docs<\/em><span class="sr-only"> \(opens in a new tab\)<\/span><\/a> and <a href="\/categories\/x">a section<\/a>/,
+  );
+  assert.match(html('[docs](//x.y)'), /<a href="\/\/x\.y" target="_blank" rel="noopener">/);
+  // The name still comes from the content: an image link keeps its alt.
+  assert.match(html('[![Demo](d.png)](https://x.y)'), /<a href="https:\/\/x\.y" target="_blank" rel="noopener"><img src="d\.png" alt="Demo"><span class="sr-only">/);
 });

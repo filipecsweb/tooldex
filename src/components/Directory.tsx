@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { facetCounts, facetOptions, filterTools, readQuery, writeQuery, type Filters } from '../lib/filter';
 import { HOSTS, KINDS, facetLabel, type Facet } from '../lib/facets';
-import { accessLabel } from '../lib/format';
 import { setSlash as storeSlash, slashOn } from '../lib/slash';
 import type { IndexTool } from '../lib/tool-index';
-import ArrowOut from './ArrowOut';
+import ToolRow from './ToolRow';
 
 type Section = { id: string; name: string; count: number };
 type Order = 'newest' | 'name';
@@ -268,7 +267,7 @@ export default function Directory({ tools, sections, scope }: { tools: IndexTool
 
           {results.length ? (
             <ul id="results" className="overflow-hidden rounded-sheet border border-line bg-surface">
-              {results.slice(0, limit).map((t, i) => <Row key={t.slug} tool={t} eager={i < 12} section={!scope} />)}
+              {results.slice(0, limit).map((t, i) => <ToolRow key={t.slug} tool={t} eager={i < 12} section={!scope} out />)}
             </ul>
           ) : (
             <div className="rounded-sheet border border-line bg-surface px-5 py-8 md:px-8">
@@ -342,37 +341,5 @@ function FacetGroup({ legend, options, counts, selected, onToggle }: {
         </details>
       )}
     </fieldset>
-  );
-}
-
-/** One tool: icon, name and section, the tagline, and its source one click away. */
-function Row({ tool, eager, section }: { tool: IndexTool; eager: boolean; section: boolean }) {
-  const access = accessLabel(tool.url);
-  return (
-    <li className="grid grid-cols-[36px_minmax(0,1fr)] gap-x-3.5 gap-y-2 border-t border-line-soft px-4 py-4 transition-colors duration-150 first:border-t-0 hover:bg-fill-soft md:grid-cols-[40px_minmax(0,1fr)_minmax(0,220px)] md:gap-x-4 md:px-5">
-      {tool.icon ? (
-        <img src={tool.icon} alt="" width={40} height={40} loading={eager ? 'eager' : 'lazy'} decoding="async" className="size-9 rounded-control border border-line bg-fill object-cover md:size-10" />
-      ) : (
-        <span aria-hidden="true" className="grid size-9 place-items-center rounded-control border border-line bg-fill text-title text-ink-4 md:size-10">{tool.name[0]}</span>
-      )}
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-baseline gap-x-2.5">
-          <h3 className="text-title">
-            <a data-row href={`/tools/${tool.slug}`} className="text-ink no-underline hover:text-ink hover:underline pointer-coarse:relative pointer-coarse:py-3">{tool.name}</a>
-          </h3>
-          {section && <span className="text-caption text-meta">{tool.categoryName}</span>}
-        </div>
-        <p className="mt-0.75 line-clamp-2 text-row text-ink-4">{tool.tagline}</p>
-      </div>
-      <div className="col-start-2 min-w-0 md:col-start-3 md:pt-0.5 md:text-right">
-        <a href={tool.url} rel="noopener" aria-label={`Visit ${tool.name} at ${access}`} className="relative inline-flex max-w-full items-center gap-1 font-mono text-data no-underline hover:underline pointer-coarse:-my-3.25 pointer-coarse:py-3.25">
-          <span className="truncate">{access}</span>
-          <ArrowOut className="size-3 flex-none" />
-        </a>
-        {tool.kinds.length > 0 && (
-          <p className="mt-1.25 font-mono text-micro text-meta">{tool.kinds.map(facetLabel).join(' · ')}</p>
-        )}
-      </div>
-    </li>
   );
 }

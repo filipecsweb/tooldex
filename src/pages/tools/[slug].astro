@@ -4,6 +4,7 @@ import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ToolActions from '../../components/ToolActions.astro';
 import ToolDetails from '../../components/ToolDetails.astro';
+import ToolRow from '../../components/ToolRow';
 import { getCategories, getTools, relatedTools, type Tool } from '../../lib/data';
 import { toIndex } from '../../lib/tool-index';
 import { thumbSource } from '../../lib/provenance';
@@ -112,22 +113,7 @@ const box = 'rounded-sheet border border-line bg-surface p-5';
             )}
           </div>
           <ul class="overflow-hidden rounded-sheet border border-line bg-surface">
-            {related.map((r) => (
-              <li class="grid grid-cols-[--spacing(9)_minmax(0,1fr)] gap-x-3.5 border-t border-line-soft px-4 py-4 transition-colors duration-150 first:border-t-0 hover:bg-fill-soft md:grid-cols-[--spacing(10)_minmax(0,1fr)] md:gap-x-4 md:px-5">
-                {r.icon ? (
-                  <img src={r.icon} alt="" width="40" height="40" loading="lazy" decoding="async" class="size-9 rounded-control border border-line bg-fill object-cover md:size-10" />
-                ) : (
-                  <span aria-hidden="true" class="grid size-9 place-items-center rounded-control border border-line bg-fill text-title text-ink-4 md:size-10">{r.name[0]}</span>
-                )}
-                <div class="min-w-0">
-                  <div class="flex flex-wrap items-baseline gap-x-2.5">
-                    <h3 class="text-title"><a href={`/tools/${r.slug}`} class="text-ink no-underline hover:text-ink hover:underline pointer-coarse:relative pointer-coarse:py-3">{r.name}</a></h3>
-                    {r.category !== category.id && <span class="text-caption text-meta">{r.categoryName}</span>}
-                  </div>
-                  <p class="mt-0.75 line-clamp-2 max-w-copy text-row text-ink-4">{r.tagline}</p>
-                </div>
-              </li>
-            ))}
+            {related.map((r) => <ToolRow tool={r} section={r.category !== category.id} />)}
           </ul>
         </section>
       )}

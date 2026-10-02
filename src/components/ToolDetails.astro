@@ -2,15 +2,15 @@
 // A tool's details: its links, the hosts it works with, its topic tags and when it was listed.
 import AccessLabel from './AccessLabel';
 import { facetLabel, splitTags } from '../lib/facets';
-import { accessLabel } from '../lib/format';
+import { accessLabel, outbound, visitName } from '../lib/format';
 import type { Tool } from '../lib/data';
 interface Props { tool: Tool; class?: string }
 const { tool, class: className } = Astro.props;
 const d = tool.data;
 // [label, url, accessible name]: the URL shows as broken-up host/path pieces, so the name is spelled out.
 const links: [string, string, string][] = [
-  ...(d.website ? [['Website', d.website, `Visit ${d.name} at ${accessLabel(d.website)}`] as [string, string, string]] : []),
-  ...(d.repo ? [['Repository', d.repo, `Visit ${d.name} at ${accessLabel(d.repo)}`] as [string, string, string]] : []),
+  ...(d.website ? [['Website', d.website, visitName(d.name, d.website)] as [string, string, string]] : []),
+  ...(d.repo ? [['Repository', d.repo, visitName(d.name, d.repo)] as [string, string, string]] : []),
   ...d.links.map((l) => [l.label, l.url, `${l.label} at ${accessLabel(l.url)}`] as [string, string, string]),
 ];
 const { hosts, topics } = splitTags(d.tags);
@@ -30,7 +30,7 @@ const chip = 'inline-flex max-w-full items-center [overflow-wrap:anywhere] round
   {links.map(([label, url, name]) => (
     <>
       <dt class={dt}>{label}</dt>
-      <dd class="min-w-0 font-mono text-data"><a href={url} rel="noopener" aria-label={name} class={link}><AccessLabel url={url} /></a></dd>
+      <dd class="min-w-0 font-mono text-data"><a href={url} {...outbound(name)} class={link}><AccessLabel url={url} /></a></dd>
     </>
   ))}
   {hosts.length > 0 && (

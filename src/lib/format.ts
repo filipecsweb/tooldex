@@ -8,3 +8,13 @@ export function accessLabel(url: string): string {
 
 /** What the primary button says. */
 export const ctaLabel = (hasWebsite: boolean) => (hasWebsite ? 'Visit the website' : 'View the repository');
+
+/** Every link off the site opens in a new tab, and its accessible name ends with NEW_TAB to say so. */
+export const OFFSITE = { target: '_blank', rel: 'noopener' } as const;
+export const NEW_TAB = '(opens in a new tab)';
+
+/** OFFSITE plus the accessible name, `name`, for a link whose visible text can't be its name. */
+export const outbound = (name: string) => ({ ...OFFSITE, 'aria-label': `${name} ${NEW_TAB}` });
+
+/** The name of a link that shows a tool's URL as host/path pieces. */
+export const visitName = (tool: string, url: string) => `Visit ${tool} at ${accessLabel(url)}`;
