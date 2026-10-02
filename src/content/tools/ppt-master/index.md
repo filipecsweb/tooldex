@@ -2,7 +2,7 @@
 name: "PPT Master"
 tagline: "An agent skill that turns documents or a topic into a natively editable PowerPoint deck, with real shapes, charts and tables instead of flat images."
 category: design
-tags: [skill, claude-code, codex, slides, powerpoint, presentations]
+tags: [skill, plugin, claude-code, codex, cursor, copilot, cline, gemini-cli, windsurf, zed, trae, codebuddy, slides, powerpoint, presentations]
 repo: https://github.com/hugohe3/ppt-master
 website: https://hugohe3.github.io/ppt-master-examples/
 thumbnail: ./thumb.webp

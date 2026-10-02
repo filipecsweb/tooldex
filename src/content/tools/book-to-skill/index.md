@@ -2,10 +2,11 @@
 name: "book-to-skill"
 tagline: "Turns a technical book, a docs folder or a stack of papers into an agent skill your coding agent can consult while you work."
 category: research
-tags: [skill, claude-code, codex, copilot-cli, amp, knowledge-base, books]
+tags: [skill, cli, claude-code, codex, copilot, amp, hermes, openclaw, opencode, knowledge-base, books]
 repo: https://github.com/virgiliojr94/book-to-skill
 icon: ./icon.png
 added: 2026-09-27
+thumbnail: ./thumb.webp
 ---
 
 book-to-skill converts long-form reading into something your agent can use. Point it at a PDF, an EPUB, a folder of documents or a set of files, and it extracts the text, then has your agent distil it into a structured skill: the core mental models and a chapter index up front, with per-chapter files, a glossary, a catalogue of patterns and a cheat sheet that load only when a question needs them.

@@ -2,7 +2,7 @@
 name: "last30days"
 tagline: "Researches any topic across social platforms, forums, prediction markets and the web, and writes a grounded brief on the last 30 days."
 category: research
-tags: [skill, plugin, claude-code, codex, deep-research, social-media, trends]
+tags: [skill, plugin, mcp, claude-code, codex, cursor, copilot, gemini-cli, grok, claude-ai, claude-desktop, openclaw, deep-research, social-media, trends]
 repo: https://github.com/mvanhorn/last30days-skill
 thumbnail: ./thumb.webp
 icon: ./icon.png

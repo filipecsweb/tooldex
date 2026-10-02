@@ -2,7 +2,7 @@
 name: "OpenSEO"
 tagline: "An open-source, pay-as-you-go alternative to Semrush and Ahrefs, with an MCP server and agent skills so your AI agent can do the SEO work too."
 category: marketing
-tags: [mcp, skill, claude-code, seo, keyword-research, site-audit]
+tags: [app, mcp, skill, plugin, claude-code, codex, hermes, openclaw, opencode, gemini-cli, claude-ai, claude-desktop, seo, keyword-research, site-audit]
 repo: https://github.com/every-app/open-seo
 website: https://openseo.so
 thumbnail: ./thumb.webp

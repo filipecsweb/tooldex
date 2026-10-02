@@ -2,7 +2,7 @@
 name: "changedetection.io"
 tagline: "Self-hosted website change monitoring: watch pages for edits, price drops and restocks, and get alerts, with optional AI rules and summaries."
 category: data
-tags: [self-hosted, web-monitoring, change-detection, price-tracking, notifications]
+tags: [app, self-hosted, web-monitoring, change-detection, price-tracking, notifications]
 repo: https://github.com/dgtlmoon/changedetection.io
 website: https://changedetection.io
 thumbnail: ./thumb.webp

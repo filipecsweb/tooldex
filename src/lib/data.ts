@@ -1,6 +1,7 @@
 // The only place pages read content from. Counts, category lists and related
 // tools all derive from the collections, so nothing per tool lives elsewhere.
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { GENERIC_TAGS } from './facets';
 
 export type Tool = CollectionEntry<'tools'>;
 export type Category = CollectionEntry<'categories'> & { count: number };
@@ -30,9 +31,6 @@ export async function getCategories(tools?: Tool[]): Promise<Category[]> {
     .filter((c) => c.count > 0)
     .sort((a, b) => a.data.name.localeCompare(b.data.name));
 }
-
-/** Tags that say what a tool is or where it runs (CLAUDE.md › Tags), not what it does. */
-const GENERIC_TAGS = new Set(['skill', 'plugin', 'subagents', 'mcp', 'cli', 'claude-code', 'codex', 'cursor', 'gemini-cli', 'opencode', 'copilot', 'windsurf']);
 
 /** Same category scores 10, each shared topic tag scores 1. Top `limit` with any overlap; fewer is fine. */
 export function relatedTools(tool: Tool, all: Tool[], limit = 6): Tool[] {

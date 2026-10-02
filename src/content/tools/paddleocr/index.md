@@ -2,11 +2,12 @@
 name: "PaddleOCR"
 tagline: "An open-source OCR and document parsing toolkit that turns PDFs and images into structured Markdown or JSON ready for LLMs and RAG pipelines."
 category: data
-tags: [cli, python, ocr, document-parsing, pdf, rag]
+tags: [library, cli, mcp, skill, openclaw, python, ocr, document-parsing, pdf, rag]
 repo: https://github.com/PaddlePaddle/PaddleOCR
 website: https://www.paddleocr.com
 icon: ./icon.png
 added: 2026-09-27
+thumbnail: ./thumb.webp
 ---
 
 PaddleOCR reads text out of images and documents. At its simplest it's a multilingual OCR engine that finds and recognises text in scans, photos, screenshots and real-world scenes. On top of that sit document-parsing pipelines that understand layout, tables, formulas, charts and reading order, and turn a whole PDF into clean Markdown or JSON.

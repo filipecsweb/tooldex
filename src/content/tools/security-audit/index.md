@@ -2,13 +2,14 @@
 name: "Cloudflare security-audit"
 tagline: "Cloudflare's coding-agent skill for multi-phase security audits: isolated hunters find bugs, fresh agents try to disprove them, and verified findings remain."
 category: security
-tags: [skill, subagents, claude-code, code-audit, vulnerability, owasp]
+tags: [skill, code-audit, vulnerability, owasp]
 repo: https://github.com/cloudflare/security-audit-skill
 links:
   - label: Article
     url: https://blog.cloudflare.com/build-your-own-vulnerability-harness
 icon: ./icon.png
 added: 2026-09-27
+thumbnail: ./thumb.webp
 ---
 
 security-audit turns a coding agent into a structured security auditor for a single codebase. It's the skill Cloudflare started from before building its larger vulnerability-discovery system. You ask your agent for a security audit and it runs a fixed process: map the architecture, trust boundaries and inputs; send isolated hunter agents through a coverage ledger of what has and hasn't been checked; hand every candidate finding to a fresh agent that tries to disprove it; then verify the surviving records again before writing the report.

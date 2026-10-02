@@ -2,7 +2,7 @@
 name: "Tinycast"
 tagline: "A small, native macOS launcher with hotkeys, clipboard history, snippets, window management and optional AI chat, which also runs Raycast extensions."
 category: productivity
-tags: [macos, launcher, raycast, clipboard, productivity]
+tags: [app, macos, launcher, raycast, clipboard, productivity]
 repo: https://github.com/abue-ammar/tinycast
 website: https://tinycast.dev
 thumbnail: ./thumb.webp

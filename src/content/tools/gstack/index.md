@@ -2,10 +2,11 @@
 name: "gstack"
 tagline: "Garry Tan's Claude Code setup: role-based skills that plan, review, test and ship your code like a small engineering team."
 category: dev-workflow
-tags: [skill, claude-code, code-review, qa, planning, release]
+tags: [skill, claude-code, codex, opencode, cursor, factory-droid, kiro, slate, openclaw, hermes, code-review, qa, planning, release]
 repo: https://github.com/garrytan/gstack
 icon: ./icon.png
 added: 2026-09-26
+thumbnail: ./thumb.webp
 ---
 
 gstack packages the way Y Combinator's Garry Tan works with Claude Code into a set of slash-command skills, each playing a role on a product team. A CEO-style reviewer challenges the scope of an idea, an engineering manager locks down the architecture, a designer flags generic AI-looking UI, a reviewer hunts for production bugs, a QA lead drives a real browser against your staging site, and a release manager gets the branch shipped.

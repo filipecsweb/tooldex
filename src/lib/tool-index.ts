@@ -3,6 +3,7 @@
 import { getImage } from 'astro:assets';
 import type { Category, Tool } from './data';
 import { primaryUrl } from './data';
+import { splitTags } from './facets';
 import { inkFor } from './plates';
 
 export type IndexTool = {
@@ -12,6 +13,9 @@ export type IndexTool = {
   category: string;
   categoryName: string;
   tags: string[];
+  /** Kind and host tags (src/content/facets.json), in tag order. */
+  kinds: string[];
+  hosts: string[];
   url: string;
   /** "owner/repo" for repos, the host for websites. Set on composed plates. */
   source: string;
@@ -32,6 +36,7 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
         ? await getImage({ src: t.data.thumbnail, width: 800, format: 'webp' })
         : null;
       const icon = t.data.icon ? await getImage({ src: t.data.icon, width: 128, format: 'webp' }) : null;
+      const { kinds, hosts } = splitTags(t.data.tags);
       return {
         slug: t.id,
         name: t.data.name,
@@ -39,6 +44,8 @@ export async function toIndex(tools: Tool[], categories: Category[]): Promise<In
         category: t.data.category.id,
         categoryName: names.get(t.data.category.id) ?? t.data.category.id,
         tags: t.data.tags,
+        kinds,
+        hosts,
         url: primaryUrl(t),
         whenToUse: whenToUse(t.body ?? ''),
         source: t.data.repo ? new URL(t.data.repo).pathname.slice(1) : new URL(t.data.website!).hostname,

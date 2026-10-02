@@ -9,6 +9,7 @@ links:
     url: https://k2-fsa.github.io/sherpa/onnx/index.html
 icon: ./icon.png
 added: 2026-09-30T21:20:04Z
+thumbnail: ./thumb.webp
 ---
 
 sherpa-onnx is a speech toolkit from the next-gen Kaldi project that runs entirely on your own hardware, with no internet connection. It handles speech recognition in both streaming and batch modes, text-to-speech, voice activity detection, speaker identification and diarization, keyword spotting, spoken-language identification, punctuation, speech enhancement and source separation. Models run through ONNX Runtime, and you choose from a large catalogue of pretrained open models covering many languages.

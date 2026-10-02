@@ -2,7 +2,7 @@
 name: "Perchance AI Image Generator"
 tagline: "A free text-to-image generator in the browser: describe a picture, pick an art style and get a batch of images, with no account or watermark."
 category: media
-tags: [web-app, image-generation, text-to-image, free, no-signup]
+tags: [app, web-app, image-generation, text-to-image, free, no-signup]
 website: https://perchance.org/ai-text-to-image-generator
 thumbnail: ./thumb.webp
 icon: ./icon.png

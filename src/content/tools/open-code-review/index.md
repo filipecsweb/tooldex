@@ -2,7 +2,7 @@
 name: "Open Code Review"
 tagline: "Alibaba's AI code review CLI: a deterministic pipeline picks files and rules, an agent reviews them, and comments land on the exact lines."
 category: dev-workflow
-tags: [cli, plugin, skill, mcp, claude-code, codex, cursor, opencode, code-review]
+tags: [cli, plugin, skill, claude-code, codex, cursor, opencode, kimi-code, code-review]
 repo: https://github.com/alibaba/open-code-review
 website: https://open-codereview.ai
 thumbnail: ./thumb.webp

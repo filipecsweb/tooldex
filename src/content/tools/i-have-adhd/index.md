@@ -2,10 +2,11 @@
 name: "i-have-adhd"
 tagline: "An output-style skill that makes your coding agent lead with the next action, number its steps and drop the preamble, recaps and tangents."
 category: writing
-tags: [skill, plugin, claude-code, codex, cursor, gemini-cli, opencode, output-style, focus]
+tags: [skill, plugin, claude-code, codex, cursor, gemini-cli, opencode, copilot, antigravity, grok, hermes, kimi-code, pi, oh-my-pi, qwen-code, zed, amp, astronclaw, output-style, focus]
 repo: https://github.com/ayghri/i-have-adhd
 icon: ./icon.png
 added: 2026-09-27
+thumbnail: ./thumb.webp
 ---
 
 i-have-adhd changes how your coding agent talks to you, not what it does. Agents tend to bury the answer under "Great question!", a tour of the codebase and a friendly sign-off. This skill replaces that with a short set of rules: lead with the next action, number multi-step tasks, cut tangents, restate where things stand each turn, give concrete time estimates and end with one clear next step.

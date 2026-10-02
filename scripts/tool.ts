@@ -7,11 +7,12 @@ import { parseArgs } from 'node:util';
 import sharp, { type Sharp } from 'sharp';
 import YAML from 'yaml';
 import {
-  BODY_PLACEHOLDER, botChallenged, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
+  BODY_PLACEHOLDER, botChallenged, missingSections, ICON_SIZE, PROVENANCE_KEY, pngText, pngWithText, THUMB, TOOL_FILES, classifyHomepage, clip, cropBox, goodThumb,
   guessCategory, normalizeRedirects, parseGithubRepo, parseRedirects, pickName, pngFromIco,
   readmeH1, readmeImages, repoUrl, serializeRedirects, slugify, type Repo,
 } from './lib.ts';
 import { makePlates } from './plates.ts';
+import { KINDS, isTag, splitTags } from '../src/lib/facets.ts';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const TOOLS = join(ROOT, 'src/content/tools');
@@ -373,6 +374,11 @@ async function check(offline: boolean) {
     if (!cats.has(d.category)) errors.push(`${where}: unknown category "${d.category}"`);
     if (!d.repo && !d.website) errors.push(`${where}: needs a repo or a website`);
     if (e.body.includes(BODY_PLACEHOLDER) || !e.body.trim()) errors.push(`${where}: body not written yet`);
+    else for (const label of missingSections(e.body)) errors.push(`${where}: body has no **${label}:** paragraph`);
+    for (const t of (d.tags ?? []).filter((t: unknown) => typeof t !== 'string' || !isTag(t)))
+      errors.push(`${where}: tag "${t}" is not lowercase kebab-case`);
+    if (!splitTags(d.tags ?? []).kinds.length)
+      errors.push(`${where}: no kind tag (one of ${KINDS.map((k) => k.tag).join(', ')}; see src/content/facets.json)`);
     for (const [key, file] of [['thumbnail', 'thumb.webp'], ['icon', 'icon.png']] as const) {
       const has = files.includes(file);
       if (d[key] && !has) errors.push(`${where}: ${key} is set but ${file} is missing`);

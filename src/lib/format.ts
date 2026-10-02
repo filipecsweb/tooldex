@@ -18,6 +18,7 @@ export function captionFor(provenance: string | undefined): string | null {
     {
       'website og:image': "The project's own preview image",
       'website screenshot': "The project's website",
+      'repository screenshot': "The project's README",
       'repo social preview': "The repository's social preview",
       'README image': "From the project's README",
     }[from ?? ''] ?? null

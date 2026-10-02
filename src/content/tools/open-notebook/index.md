@@ -2,7 +2,7 @@
 name: "Open Notebook"
 tagline: "A self-hosted, open-source take on NotebookLM: chat with your sources, search them and turn them into podcasts, using the AI models you choose."
 category: research
-tags: [mcp, claude-desktop, self-hosted, notebooklm, note-taking, podcasts]
+tags: [app, mcp, claude-desktop, cline, self-hosted, notebooklm, note-taking, podcasts]
 repo: https://github.com/lfnovo/open-notebook
 website: https://www.open-notebook.ai
 thumbnail: ./thumb.webp

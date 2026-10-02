@@ -2,13 +2,14 @@
 name: "Scrapling"
 tagline: "A Python web scraping framework, from single requests to full crawls, with selectors that survive site redesigns and an MCP server and skill for agents."
 category: data
-tags: [mcp, skill, cli, claude-code, web-scraping, crawler, python]
+tags: [library, cli, mcp, skill, claude-code, claude-desktop, openclaw, cursor, windsurf, web-scraping, crawler, python]
 repo: https://github.com/D4Vinci/Scrapling
 links:
   - label: Docs
     url: https://scrapling.readthedocs.io/en/latest/
 icon: ./icon.png
 added: 2026-09-27
+thumbnail: ./thumb.webp
 ---
 
 Scrapling is a Python framework for getting data out of websites. It covers the whole range, from fetching and parsing a single page to running a crawl across many sites, with plain HTTP requests or real browsers depending on what the site needs. Its parser can remember the elements you selected and find them again after the site changes its layout, so scrapers break less often.

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  botChallenged, classifyHomepage, cropBox, goodThumb, guessCategory, normalizeRedirects, parseGithubRepo,
+  botChallenged, classifyHomepage, missingSections, cropBox, goodThumb, guessCategory, normalizeRedirects, parseGithubRepo,
   parseRedirects, pickName, pngFromIco, pngText, pngWithText, readmeImages, slugify,
 } from './lib.ts';
 
@@ -117,4 +117,11 @@ test('botChallenged only excuses a Cloudflare challenge', () => {
   assert.equal(botChallenged(403, new Headers({ 'cf-mitigated': 'challenge' })), true);
   assert.equal(botChallenged(403, new Headers()), false);
   assert.equal(botChallenged(404, new Headers({ 'cf-mitigated': 'challenge' })), false);
+});
+
+test('missingSections finds the write-up paragraphs the body lacks', () => {
+  const full = 'Intro.\n\n**When to use it:** often.\n\n**Caveats:** some.\n';
+  assert.deepEqual(missingSections(full), []);
+  assert.deepEqual(missingSections('Intro.\n\n**When to use it**: often.\n'), ['Caveats']);
+  assert.deepEqual(missingSections('Intro mentions **Caveats:** mid-line.'), ['When to use it', 'Caveats']);
 });

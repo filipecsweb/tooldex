@@ -2,7 +2,7 @@
 name: "The Agency"
 tagline: "A roster of specialist AI agents, from frontend engineers to community managers, each with its own personality, process and deliverables."
 category: agent-teams
-tags: [subagents, claude-code, codex, cursor, gemini-cli, personas, multi-agent]
+tags: [subagents, claude-code, codex, cursor, gemini-cli, opencode, copilot, windsurf, aider, antigravity, openclaw, qwen-code, kimi-code, hermes, osaurus, mistral-vibe, deepseek-harness, personas, multi-agent]
 repo: https://github.com/msitarzewski/agency-agents
 website: https://agencyagents.app
 thumbnail: ./thumb.webp

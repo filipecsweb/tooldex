@@ -6,6 +6,7 @@ tags: [skill, claude-code, claude-ai, prompt-engineering, prompts]
 repo: https://github.com/nidhinjs/prompt-master
 icon: ./icon.png
 added: 2026-09-27
+thumbnail: ./thumb.webp
 ---
 
 Prompt Master is a skill for writing prompts that you'll paste into another AI tool. Tell Claude what you want to ask Cursor, Claude Code, ChatGPT, Midjourney or a video model, or hand it a prompt that isn't working, and it returns one clean prompt ready to copy, with a one-line note on the approach it took.
